@@ -1,0 +1,15 @@
+version: '3'
+services:
+  pinepods-docs:
+    image: awesometic/docusaurus
+    ports:
+      - "8080:80"
+    environment:
+      TARGET_UID: 1000 
+      TARGET_GID: 1000 
+      AUTO_UPDATE: true 
+      WEBSITE_NAME: "pinepods-docs"
+      TEMPLATE: classic
+    volumes: 
+      - ~/Documents/GitHub/Pinepods-Docs/config/:/docusaurus
+

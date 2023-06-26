@@ -56,7 +56,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
           {to: '/blog', label: 'Blog', position: 'left'},
           {
             type: 'doc',
-            docId: 'api',
+            docId: 'API/api_intro',
             position: 'left',
             label: 'API',
           },

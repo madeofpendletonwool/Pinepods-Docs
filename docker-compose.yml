@@ -11,5 +11,5 @@ services:
       WEBSITE_NAME: "pinepods-docs"
       TEMPLATE: classic
     volumes: 
-      - ~/Documents/GitHub/Pinepods-Docs/config/:/docusaurus
+      - /home/collinp/Documents/GitHub/Pinepods-Docs/config/:/docusaurus
 

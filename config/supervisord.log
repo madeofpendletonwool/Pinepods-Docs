@@ -6,3 +6,7 @@
 2023-06-26 19:33:05,479 INFO supervisord started with pid 47
 2023-06-26 19:33:06,483 INFO spawned: 'docusaurus' with pid 48
 2023-06-26 19:33:07,540 INFO success: docusaurus entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2023-06-26 20:12:03,480 INFO Set uid to user 0 succeeded
+2023-06-26 20:12:03,481 INFO supervisord started with pid 11
+2023-06-26 20:12:04,489 INFO spawned: 'docusaurus' with pid 12
+2023-06-26 20:12:05,672 INFO success: docusaurus entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)

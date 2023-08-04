@@ -1,10 +1,12 @@
-# Nginx
+# Reverse Proxy Configuration
+
+## Nginx
 To be added.
 
-# Nginx Proxy Manager
+## Nginx Proxy Manager
 To be added.
 
-# Traefik
+## Traefik
 
 ### Pinepods 
 For Pinepods to be functioning behind a reverse proxy there are three services that will need to be allocated a subdomain each.

@@ -1,10 +1,20 @@
 # Reverse Proxy Configuration
 
 ## Nginx
-To be added.
+
+### Pinepods 
+Coming Soon
+
+### Pinepods Search API
+Coming Soon
 
 ## Nginx Proxy Manager
-To be added.
+
+### Pinepods 
+Coming Soon
+
+### Pinepods Search API
+Coming Soon
 
 ## Traefik
 
@@ -36,7 +46,7 @@ The below labels will run the above format in Traefik with an entry point of `we
 ```
 
 ### Pinepods Search API
-There's no absolute need to put the [Search API container](https://www.pinepods.online/docs/API/search_api) behind a reverse proxy as it can be run locally for access only to your own Pinepods instance, however if you wish to make the API availeble on WAN then the below labels will run an instance on `https://pinepods-seach-api.server.tld`
+There's no absolute need to put the [Search API container](https://www.pinepods.online/docs/API/search_api) behind a reverse proxy unless you intend to use the Pinepods client externally, as it can be run locally for access only to your own Pinepods instance, however if you wish to make the API availeble on WAN then the below labels will run an instance on `https://pinepods-seach-api.server.tld`
 ```yaml
         labels:
             # Pinepods Search API
@@ -49,4 +59,64 @@ There's no absolute need to put the [Search API container](https://www.pinepods.
 Within your Pinepods docker compose file the variable `API_URL` should then be set as 
 ```
 API_URL=https://pinepods-search-api.server.tld/api/search`
+```
+
+## Caddy
+
+### Pinepods 
+Coming Soon
+
+:::caution
+
+This caddy config has not yet been fully tested. If you try it and it works, please, [open a PR](https://github.com/madeofpendletonwool/Pinepods-Docs/pulls)!
+
+:::
+```
+proxy.pinepods.home.arpa:80 {
+	reverse_proxy pinepods:8033
+	log {
+		output file /var/caddy/log/pinepods/proxy {
+			roll_keep 2
+			roll_size 10mb
+			roll_keep_for 48h
+		}
+	}
+}
+
+api.pinepods.home.arpa:80 {
+	reverse_proxy pinepods:8032
+	log {
+		output file /var/caddy/log/pinepods/api {
+			roll_keep 2
+			roll_size 10mb
+			roll_keep_for 48h
+		}
+	}
+}
+
+pinepods.home.arpa:80 {
+	reverse_proxy pinepods:8034
+	log {
+		output file /var/caddy/log/pinepods/web {
+			roll_keep 2
+			roll_size 10mb
+			roll_keep_for 48h
+		}
+	}
+}
+```
+
+### Pinepods Search API
+
+```
+search.pinepods.home.arpa:80 {
+	reverse_proxy pinepods:5000
+	log {
+		output file /var/caddy/log/pinepods/search {
+			roll_keep 2
+			roll_size 10mb
+			roll_keep_for 48h
+		}
+	}
+}
 ```

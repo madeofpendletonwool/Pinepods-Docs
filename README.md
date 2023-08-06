@@ -1,6 +1,8 @@
 # Pinepods-Docs
 
-This is the documentation site for PinePods. Built with Docusaurus 2. 
+<img src="https://discordapp.com/api/guilds/[1134490753012334592]/widget.png?style=shield" alt="Pinepods Discord"/>
+
+This is the documentation site for PinePods. Built with Docusaurus 2.
 
 Run with 
 

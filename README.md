@@ -1,6 +1,7 @@
 # Pinepods-Docs
 
 ![Discord Shield](https://discordapp.com/api/guilds/1134490753012334592/widget.png?style=shield)
+[![Discord](https://img.shields.io/discord/1134490753012334592.svg?color=768AD4&label=discord&logo=https%3A%2F
 
 This is the documentation site for PinePods. Built with Docusaurus 2.
 

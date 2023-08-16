@@ -11,8 +11,10 @@ Coming Soon
 ## Nginx Proxy Manager
 
 ### Pinepods 
-- Setting up Pinepods on NPM Is hoenstly a snap. Super quick and easy. First of all, decide on a domain name of your choosing. Perhaps something along the lines of pods.*yourdomain.com*? Regardless, once you've decided on that, create a new proxy host in NPM. Whatever you set the web portal port in the compose file should be your main forward port. Default is 8034. So you want something like this
+- Setting up Pinepods on NPM Is hoenstly a snap. Super quick and easy. First of all, decide on a domain name of your choosing. Perhaps something along the lines of pods.*yourdomain.com*? Regardless, once you've decided on that, create a new proxy host in NPM. Whatever you set the web portal port in the compose file should be your main forward port. Default is 8034. So you want something like this:
+
 ![NPM-Main_Config](../../static/img/npmmain.png)
+
 As you can see, Pinepods uses assets and Websockets. So be sure to also enable that. 
 
 - Next, on the custom locations page, configure 2 locations. One for /proxy, and one for /api. Proxy is for the image proxy to work correctly with client versions and /api is for the fastapi server to respond properly.

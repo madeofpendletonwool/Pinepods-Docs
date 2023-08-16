@@ -31,7 +31,7 @@ export default function Home() {
   return (
     <Layout
       title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />">
+      description="A Forest of Podcasts, Rooted in the Spirit of Self-Hosting <head />">
       <HomepageHeader />
       <main>
         <HomepageFeatures />

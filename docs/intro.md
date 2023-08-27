@@ -1,3 +1,4 @@
+
 # Getting Started
 
 PinePods is a Python based app that can sync podcasts for individual accounts that relies on a central database with a web frontend and apps available on multiple platforms
@@ -41,16 +42,11 @@ services:
   pinepods:
     image: madeofpendletonwool/pinepods:latest
     ports:
-    # Web Portal Port
-      - "8034:8034"
-    # API Server Port - Needed for Client Connections
-      - "8032:8032"
-    # Image Proxy Port - Needed to Display Some Images
-      - "8000:8000"
+    # Pinepods Main Port
+      - "8040:443"
     environment:
       # Basic Server Info
       HOSTNAME: try.pinepods.online
-      API_SERVER_PORT: 8032
       SEARCH_API_URL: 'https://search.pinepods.online/api/search'
       # Default Admin User Information
       USERNAME: myadminuser01
@@ -58,16 +54,17 @@ services:
       FULLNAME: Pinepods Admin
       EMAIL: user@pinepods.online
       # Database Vars
-      DB_TYPE: mysql
+      DB_TYPE: mariadb
       DB_HOST: db
       DB_PORT: 3306
       DB_USER: root
       DB_PASSWORD: myS3curepass
       DB_NAME: pypods_database
       # Image/Audio Proxy Vars
-      PROXY_PORT: 8000
+      PINEPODS_PORT: 443
       PROXY_PROTOCOL: https
       REVERSE_PROXY: "True"
+
     volumes:
     # Mount the download and the backup location on the server if you want to. You could mount a nas to the downloads folder or something like that. 
     # The backups directory is used if backups are made on the web version on pinepods. When taking backups on the client version it downloads them locally.
@@ -88,8 +85,8 @@ Make sure you change these variables to variables specific to yourself.
       FULLNAME: John Pinepods
       EMAIL: john@pinepods.com
       DB_PASSWORD: password # This should match the MSQL_ROOT_PASSWORD
-      PROXY_PORT: 8033
-      PROXY_PROTOCOL: http
+      PINEPODS_PORT: 443
+      PROXY_PROTOCOL: https
       REVERSE_PROXY: "True"
 ```
 
@@ -99,16 +96,21 @@ Most of those are pretty obvious, but let's break a couple of them down.
 
 First of all, the USERNAME, PASSWORD, FULLNAME, and EMAIL vars are your details for your default admin account. This account will have admin credentails and will be able to log in right when you start up the app. Once started you'll be able to create more users and even more admins but you need an account to kick things off on. If you don't specify credentials in the compose file it will create an account with a random password for you but I would recommend just creating one for yourself.
 
+#### Basic Info
+
+The HOSTNAME variable is simply the hostname you'll be using for the name of your pinepods server. There's an image proxy, fastapi server, and web client of pinepods that all runs over this hostname.
+
 #### Proxy Info
 
-Second, the PROXY_PORT, PROXY_PROTOCOL, and REVERSE_PROXY vars. Pinepods uses a proxy to route both images and audio files in order to prevent CORs issues in the app (Essentially so podcast images and audio displays correctly and securely). It runs a little internal Flask app to accomplish this. That's the Image/Audio Proxy Vars portion of the compose file. The application itself will then use this proxy to route media though. This proxy can also be ran over a reverse proxy. Here's few examples
+Second, the PINEPODS_PORT, PROXY_PROTOCOL, and REVERSE_PROXY vars. Pinepods uses a proxy to route both images and audio files in order to prevent CORs issues in the app (Essentially so podcast images and audio displays correctly and securely). It runs a little internal Flask app to accomplish this. That's the Image/Audio Proxy Vars portion of the compose file. Everything all runs over the one port, so you don't need to worry about much as the application itself will then use this proxy to route media though. Just make sure you set up the PINEPODS_PORT variable to be the port you exposed, and then setup PROXY_PROTOCOL and REVERSE_PROXY based on your setup. Pinepods can oc course be run over a reverse proxy. Here's a few examples of different setups
+PINEPODS_PORT can be anything, but if you're running it through a reverse proxy it MUST be 443. You can still map it to any other port externally, but it needs to be 443 interally.
 
 **Recommended:**
 Routed through proxy, secure, with reverse proxy
 
 ```
       HOSTNAME: try.pinepods.online
-      PROXY_PORT: 8033
+      PROXY_PORT: 443
       PROXY_PROTOCOL: https
       REVERSE_PROXY: "True"
 ```
@@ -121,7 +123,7 @@ Direct to ip, insecure, and no reverse proxy
 
 ```
       HOSTNAME: 192.168.0.30
-      PROXY_PORT: 8033
+      PINEPODS_PORT: 8033
       PROXY_PROTOCOL: http
       REVERSE_PROXY: "False"
 ```
@@ -130,7 +132,7 @@ Hostname, secure, and no reverse proxy
 
 ```
       HOSTNAME: proxy.pinepods.online
-      PROXY_PORT: 8033
+      PINEPODS_PORT: 8033
       PROXY_PROTOCOL: https
       REVERSE_PROXY: "False"
 ```

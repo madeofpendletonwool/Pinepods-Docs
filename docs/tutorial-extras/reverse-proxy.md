@@ -11,20 +11,16 @@ Coming Soon
 ## Nginx Proxy Manager
 
 ### Pinepods 
-- Setting up Pinepods on NPM Is hoenstly a snap. Super quick and easy. First of all, decide on a domain name of your choosing. Perhaps something along the lines of pods.*yourdomain.com*? Regardless, once you've decided on that, create a new proxy host in NPM. Whatever you set the web portal port in the compose file should be your main forward port. Default is 8034. So you want something like this:
+- Setting up Pinepods on NPM Is hoenstly a snap. Super quick and easy. First of all, decide on a domain name of your choosing. Perhaps something along the lines of pods.*yourdomain.com*? Regardless, once you've decided on that, create a new proxy host in NPM. Whatever you set the web portal port in the compose file should be your main forward port. Default is 8040. So you want something like this:
 
 ![NPM-Main_Config](../../static/img/npmmain.png)
 
 As you can see, Pinepods uses assets and Websockets. So be sure to also enable that. 
 
-- Next, on the custom locations page, configure 2 locations. One for /proxy, and one for /api. Proxy is for the image proxy to work correctly with client versions and /api is for the fastapi server to respond properly.
-![NPM-Main_Config](../../static/img/npmcustomlocations.png)
-
-- Lastly, Let's configure the ssl portion. On the SSL tab of your proxy host simply requrest the cert (After configuring your site DNS) and turn on the ForceSSL and HTTP/2 Support options
-![NPM-Main_Config](../../static/img/npmssl.png)
+That's it!
 
 ### Pinepods Search API
-Coming Soon
+The search API reverse proxy setup is even easier. Do the exact same thing after starting up the backend container by setting up a new proxy host and choose a domain for your pinepods backend service. Set it to point to the external container of your choosing and enable 'cache assets'. Websocket support can be left disabled. 
 
 ## Traefik
 

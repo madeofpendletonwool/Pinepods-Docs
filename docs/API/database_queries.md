@@ -5,25 +5,9 @@
 This API is used to manage and interact with data in the database. The API requires authentication via an API key, which should be provided in the header with the name "pinepods_api". API keys are retrieved from the web version of the app in settings. You MUST be an admin user to get an api key.
 
 
-##  Endpoints:
+##  Open Endpoints:
 
-### GET /api/data
 
-This endpoint returns the data associated with a client, identified by the API key.
-
-Request Headers
-
-    pinepods_api : string
-
-Response
-
-    status : string
-    data : string
-
-Example usage with curl:
-```
-curl -H "pinepods_api: YOUR_API_KEY" http://localhost:8000/api/data
-```
 ### GET /api/pinepods_check
 
 This endpoint is used for a simple health check of the service. Essentially validating that you've connected properly
@@ -38,6 +22,88 @@ Example usage with curl:
 ```
 curl http://localhost:8000/api/pinepods_check
 ```
+
+GET /api/data/get_stats
+
+Retrieves the statistics for a specified user. Users can only fetch stats for their own accounts.
+
+Endpoint: /api/data/get_stats
+
+HTTP Method: GET
+
+Parameters:
+
+    user_id: The ID of the user for whom the stats are being retrieved.
+
+Request Headers
+
+vbnet
+
+Api-Key : string
+
+Request Body
+
+css
+
+None
+
+Response
+The response format will depend on the structure of the stats returned by the database_functions.functions.get_stats function. However, it will generally contain various statistics related to the user.
+
+Possible Errors
+
+    "You can only get stats for your own account."
+    "Your API key is either invalid or does not have correct permission."
+
+Example usage with curl:
+
+bash
+
+curl -X GET -H "Api-Key: YOUR_API_KEY" "http://localhost:8000/api/data/get_stats?user_id=USER_ID"
+
+
+GET /api/data/get_user_episode_count
+
+Retrieves the total count of episodes associated with a specified user. Only the user themselves or an admin can fetch this count.
+
+Endpoint: /api/data/get_user_episode_count
+
+HTTP Method: GET
+
+Parameters:
+
+    user_id: The ID of the user for whom the episode count is being retrieved.
+
+Request Headers
+
+vbnet
+
+Api-Key : string
+
+Request Body
+
+css
+
+None
+
+Response
+The response format will primarily be the episode count for the specified user. The exact structure will depend on how database_functions.functions.get_user_episode_count structures its return data.
+
+Possible Errors
+
+    "Your API key is either invalid or does not have correct permission."
+    "You are not authorized to access these user details."
+    "User not found."
+
+Example usage with curl:
+
+bash
+
+curl -X GET -H "Api-Key: YOUR_API_KEY" "http://localhost:8000/api/data/get_user_episode_count?user_id=USER_ID"
+
+
+##  Endpoints that require Api_Key:
+
 ### POST /api/data/clean_expired_sessions/
 
 This endpoint is used to clean up expired sessions in the database. Requires API key for authentication.
@@ -94,126 +160,6 @@ Example usage with curl:
 curl -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/config
 ```
 
-### POST /api/data/enable_disable_guest
-
-This endpoint enables or disables the guest access. Requires API key for authentication.
-
-Headers
-
-```
-Api-Key : string
-```
-Response
-```
-success : boolean
-```
-Example usage with curl:
-```
-curl -X POST -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/enable_disable_guest
-```
-### POST /api/data/enable_disable_downloads
-
-This endpoint enables or disables the downloads. Requires API key for authentication.
-
-Headers
-```
-Api-Key : string
-```
-Response
-```
-success : boolean
-```
-Example usage with curl:
-
-```
-curl -X POST -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/enable_disable_downloads
-```
-### POST /api/data/enable_disable_self_service
-
-This endpoint enables or disables the self service. Requires API key for authentication.
-
-Headers
-```
-Api-Key : string
-```
-Response
-```
-success : boolean
-```
-Example usage with curl:
-```
-curl -X POST -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/enable_disable_self_service
-```
-### GET /api/data/self_service_status
-
-This endpoint gets the current status of the self service. Requires API key for authentication.
-
-Headers
-```
-Api-Key : string
-```
-Response
-```
-status : string
-```
-Example usage with curl:
-```
-curl -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/self_service_status
-```
-### PUT /api/data/increment_listen_time/{user_id}
-
-This endpoint increments the listen time for a given user_id. Requires API key for authentication.
-
-Headers
-```
-Api-Key : string
-```
-Response
-```
-detail : string
-```
-Example usage with curl:
-```
-curl -X PUT -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/increment_listen_time/USER_ID
-```
-### PUT /api/data/increment_played/{user_id}
-
-This endpoint increments the play count for a given user_id. Requires API key for authentication.
-
-Headers
-```
-Api-Key : string
-```
-Response
-```
-detail : string
-```
-Example usage with curl:
-```
-curl -X PUT -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/increment_played/USER_ID
-```
-### POST /api/data/record_podcast_history
-
-This endpoint records the podcast history. Requires API key for authentication.
-
-Headers
-```
-Api-Key : string
-```
-Body
-```
-episode_title: string
-user_id: int
-episode_pos: float
-```
-Response
-```
-detail : string
-```
-Example usage with curl:
-```
-curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"episode_title":"EPISODE_TITLE", "user_id": USER_ID, "episode_pos": EPISODE_POS}' http://localhost:8000/api/data/record_podcast_history
-```
 ### GET /api/data/guest_status
 
 This endpoint returns the guest status. Requires API key for authentication.
@@ -246,9 +192,10 @@ Example usage with curl:
 ```
 curl -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/download_status
 ```
+
 ### GET /api/data/user_details/{username}
 
-This endpoint returns details of a user with the specified username. Requires API key for authentication.
+This endpoint returns details of a user with the specified username. Requires API key for authentication. If the user is an admin they can pull all user details, if standard user they can only pull their own.
 
 Request Headers
 ```
@@ -262,9 +209,10 @@ Example usage with curl:
 ```
 curl -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/user_details/USERNAME
 ```
+
 ### POST /api/data/create_session/{user_id}
 
-This endpoint is used to create a session for a user with the given user_id. Requires API key for authentication.
+This endpoint is used to create a session for a user with the given user_id. Requires API key for authentication. You can only make login sessions for your own user!
 
 Request Headers
 ```
@@ -305,7 +253,7 @@ curl -X POST -H "Api-Key: YOUR_API_KEY" -d '{"username":"USERNAME", "password":"
 ```
 ### GET /api/data/return_episodes/{user_id}
 
-This endpoint returns all episodes related to the user with the given user_id. Requires API key for authentication.
+This endpoint returns all episodes related to the user with the given user_id. Requires API key for authentication. Only allows a user to pull their own episodes.
 
 Request Headers
 ```
@@ -319,9 +267,10 @@ Example usage with curl:
 ```
 curl -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/return_episodes/USER_ID
 ```
+
 ### POST /api/data/check_episode_playback
 
-This endpoint checks if an episode was played back. Requires API key for authentication.
+This endpoint checks if an episode was played back. Requires API key for authentication. You can only pull playback for yourself.
 
 Request Headers
 ```
@@ -342,9 +291,10 @@ Example usage with curl:
 ```
 curl -X POST -H "Api-Key: YOUR_API_KEY" -d '{"user_id":USER_ID, "episode_title":"EPISODE_TITLE", "episode_url":"EPISODE_URL"}' http://localhost:8000/api/data/check_episode_playback
 ```
+
 ### GET /api/data/user_details_id/{user_id}
 
-This endpoint returns the details of a user with the given user_id. Requires API key for authentication.
+This endpoint returns the details of a user with the given user_id. Requires API key for authentication. Allows a user to only get their own details unless they are an admin.
 
 Request Headers
 ```
@@ -360,7 +310,7 @@ curl -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/user_details_id/U
 ```
 ### GET /api/data/get_theme/{user_id}
 
-This endpoint returns the theme settings of a user with the given user_id. Requires API key for authentication.
+This endpoint returns the theme settings of a user with the given user_id. Requires API key for authentication. Allows a user to only get their own theme settings.
 
 Request Headers
 ```
@@ -376,7 +326,7 @@ curl -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/get_theme/USER_ID
 ```
 ### POST /api/data/add_podcast
 
-This endpoint adds a podcast for a user. Requires API key for authentication.
+This endpoint adds a podcast for a user. Requires API key for authentication. Only allows a user to add podcasts to their own account.
 
 Request Headers
 ```
@@ -395,22 +345,212 @@ Example usage with curl:
 ```
 curl -X POST -H "Api-Key: YOUR_API_KEY" -d '{"podcast_values":"PODCAST_VALUES_JSON", "user_id":USER_ID}' http://localhost:8000/api/data/add_podcast
 ```
-### GET /api/data/get_user_info
 
-This endpoint returns the user info from the database. Requires API key for authentication.
+### GET /api/data/self_service_status
 
-Request Headers
+This endpoint gets the current status of the self service. Requires API key for authentication.
+
+Headers
 ```
 Api-Key : string
 ```
 Response
 ```
-user_info : dictionary
+status : string
 ```
 Example usage with curl:
 ```
-curl -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/get_user_info
+curl -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/self_service_status
 ```
+### PUT /api/data/increment_listen_time/{user_id}
+
+This endpoint increments the listen time for a given user_id. Requires API key for authentication. If you really want to hit this over and over again with a loop you sure could. Only allows you to increment your own listen time.
+
+Headers
+```
+Api-Key : string
+```
+Response
+```
+detail : string
+```
+Example usage with curl:
+```
+curl -X PUT -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/increment_listen_time/USER_ID
+```
+### PUT /api/data/increment_played/{user_id}
+
+This endpoint increments the play count for a given user_id. Requires API key for authentication. Only allows you to increment your own play count.
+
+Headers
+```
+Api-Key : string
+```
+Response
+```
+detail : string
+```
+Example usage with curl:
+```
+curl -X PUT -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/increment_played/USER_ID
+```
+### POST /api/data/record_podcast_history
+
+This endpoint records the podcast history. Requires API key for authentication. Only allows you to record your own history.
+
+Headers
+```
+Api-Key : string
+```
+Body
+```
+episode_title: string
+user_id: int
+episode_pos: float
+```
+Response
+```
+detail : string
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"episode_title":"EPISODE_TITLE", "user_id": USER_ID, "episode_pos": EPISODE_POS}' http://localhost:8000/api/data/record_podcast_history
+```
+
+### GET /api/data/user/download_podcast
+
+Downloads a specified podcast to the server. Only allows you to download podcasts for your own user. 
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+episode_url: string
+title: string
+user_id: integer
+```
+Response
+```
+{
+    detail: string
+}
+```
+Example usage with curl:
+```
+curl -X GET -H "Api-Key: YOUR_API_KEY" -d '{"episode_url":"EPISODE_URL", "title":"TITLE", "user_id":"USER_ID"}' "http://localhost:8000/api/data/download_podcast"
+```
+
+### POST /api/data/delete_podcast
+
+Deletes a specified podcast from the server. Only allows you to delete podcasts for your own user.
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "episode_url": "string",
+    "title": "string",
+    "user_id": "integer"
+}
+```
+Response
+```
+{
+    "detail": "string"
+}
+```
+Example usage with curl:
+```
+curl -X DELETE -H "Api-Key: YOUR_API_KEY" -d '{"episode_url":"EPISODE_URL", "title":"TITLE", "user_id":"USER_ID"}' "http://localhost:8000/api/data/delete_podcast"
+```
+
+### POST /api/data/save_episode
+
+Saves a specified episode to the server. Only allows you to save episodes for your own user.
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "episode_url": "string",
+    "title": "string",
+    "user_id": "integer"
+}
+```
+Response
+```
+{
+    "detail": "string"
+}
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" -d '{"episode_url":"EPISODE_URL", "title":"TITLE", "user_id":"USER_ID"}' "http://localhost:8000/api/data/save_episode"
+```
+
+### POST /api/data/remove_saved_episode
+
+Removes a specified saved episode from the server. Only allows you to remove saved episodes for your own user.
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "episode_url": "string",
+    "title": "string",
+    "user_id": "integer"
+}
+```
+Response
+```
+{
+    "detail": "string"
+}
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" -d '{"episode_url":"EPISODE_URL", "title":"TITLE", "user_id":"USER_ID"}' "http://localhost:8000/api/data/remove_saved_episode"
+```
+
+### POST /api/data/record_listen_duration
+
+Records the listening duration of a specified episode for a user. Only allows you to use on episodes associated with your user.
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "episode_url": "string",
+    "title": "string",
+    "user_id": "integer",
+    "listen_duration": "float"
+}
+```
+Response
+```
+{
+    "detail": "string"
+}
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" -d '{"episode_url":"EPISODE_URL", "title":"TITLE", "user_id":"USER_ID", "listen_duration":"DURATION_FLOAT"}' "http://localhost:8000/api/data/record_listen_duration"
+```
+
 ### POST /api/data/check_podcast
 
 This endpoint checks if a podcast exists for a given user_id and podcast_name. Requires API key for authentication. The request must include a CheckPodcastData model in the request body.
@@ -436,31 +576,10 @@ Example usage with curl:
 ```
 curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1, "podcast_name":"Podcast Name"}' http://localhost:8000/api/data/check_podcast
 ```
-### GET /api/data/user_admin_check/{user_id}
 
-This endpoint checks if the user is an admin. Requires API key for authentication.
-
-Request Headers
-```
-Api-Key : string
-```
-Path Parameters
-```
-user_id : integer
-```
-Response
-```
-{
-    "is_admin": boolean
-}
-```
-Example usage with curl:
-```
-curl -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/user_admin_check/1
-```
 ### POST /api/data/remove_podcast
 
-This endpoint removes a podcast. Requires API key for authentication. The request must include a RemovePodcastData model in the request body.
+This endpoint removes a podcast. Requires API key for authentication. The request must include a RemovePodcastData model in the request body. Only admin apis can remove podcasts for other users. 
 
 Request Headers
 ```
@@ -483,9 +602,10 @@ Example usage with curl:
 ```
 curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1, "podcast_name":"Podcast Name"}' http://localhost:8000/api/data/remove_podcast
 ```
+
 ### GET /api/data/return_pods/{user_id}
 
-This endpoint returns the list of podcasts for a user. Requires API key for authentication.
+This endpoint returns the list of podcasts for a user. Requires API key for authentication. Can only return pods for your own user.
 
 Request Headers
 ```
@@ -507,7 +627,7 @@ curl -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/return_pods/1
 ```
 ### GET /api/data/user_history/{user_id}
 
-This endpoint returns the user's history. Requires API key for authentication.
+This endpoint returns the user's history. Requires API key for authentication. Can only return history for yourself.
 
 Request Headers
 ```
@@ -529,7 +649,7 @@ curl -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/user_history/1
 ```
 ### GET /api/data/saved_episode_list/{user_id}
 
-This endpoint retrieves a list of episodes saved by a specific user. Requires API key for authentication.
+This endpoint retrieves a list of episodes saved by a specific user. Requires API key for authentication. Can only return saved episodes for yourself.
 
 Request Headers
 ```
@@ -551,7 +671,7 @@ curl -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/saved_episode_lis
 ```
 ### POST /api/data/download_episode_list
 
-This endpoint allows a user to download a list of episodes. Requires API key for authentication. The request must include a user id in the request body.
+This endpoint allows a user to download a list of episodes. Requires API key for authentication. The request must include a user id in the request body. Can only return downloaded episodes for yourself.
 
 Request Headers
 ```
@@ -573,9 +693,10 @@ Example usage with curl:
 ```
 curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1}' http://localhost:8000/api/data/download_episode_list
 ```
+
 ### POST /api/data/return_selected_episode
 
-This endpoint retrieves information about a selected episode. Requires API key for authentication. The request must include a user id, title, and url in the request body.
+This endpoint retrieves information about a selected episode. Requires API key for authentication. The request must include a user id, title, and url in the request body. Can only return episode information for your own episodes.
 
 Request Headers
 ```
@@ -651,8 +772,9 @@ Example usage with curl:
 ```
 curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"fullname":"John Doe", "username":"johndoe", "email":"johndoe@example.com", "hash_pw":"SGVsbG8gd29ybGQ=", "salt":"SGVsbG8gd29ybGQ="}' http://localhost:8000/api/data/add_user
 ```
-###
-This endpoint updates the full name of a user based on the user ID.
+### PUT /api/data/set_fullname
+
+This endpoint updates the full name of a user based on the user ID. Only admins can set user details for users other than themselves.
 
 Request Headers
 ```
@@ -678,7 +800,7 @@ curl -X PUT -H "Api-Key: YOUR_API_KEY" "http://localhost:8000/api/data/set_fulln
 ```
 ### PUT /api/data/set_password/{user_id}
 
-This endpoint updates the password of a user. The new password's hash and salt should be included in the body as a Base64 string.
+This endpoint updates the password of a user. The new password's hash and salt should be included in the body as a Base64 string. Only admins can set user details for users other than themselves.
 
 Request Headers
 ```
@@ -707,7 +829,7 @@ curl -X PUT -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{
 ```
 ### PUT /api/data/user/set_email
 
-This endpoint updates the email of a user. User ID and new email should be included in the request body.
+This endpoint updates the email of a user. User ID and new email should be included in the request body. Only admins can set user details for users other than themselves.
 
 Request Headers
 ```
@@ -732,7 +854,7 @@ Example usage with curl:
 ```
 ### PUT /api/data/user/set_username
 
-This endpoint updates the username of a user. User ID and new username should be included in the request body.
+This endpoint updates the username of a user. User ID and new username should be included in the request body. Only admins can set user details for users other than themselves.
 
 Request Headers
 ```
@@ -755,78 +877,9 @@ Example usage with curl:
 ```
 curl -X PUT -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1, "new_username":"newusername"}' http://localhost:8000/api/data/user/set_username
 ```
-### PUT /api/data/user/set_isadmin
-
-This endpoint updates the admin status of a user. User ID and new admin status should be included in the request body.
-
-Request Headers
-```
-Api-Key : string
-```
-Request Body
-```
-{
-    "user_id": integer,
-    "isadmin": boolean
-}
-```
-Response
-```
-{
-    "detail": string
-}
-```
-Example usage with curl:
-```
-curl -X PUT -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1, "isadmin":true}' http://localhost:8000/api/data/user/set_isadmin
-```
-### GET /api/data/user/final_admin/{user_id}
-
-This endpoint checks if the specified user is the last remaining admin.
-
-Request Headers
-```
-Api-Key : string
-```
-Path Parameters
-```
-user_id : integer
-```
-Response
-```
-{
-    "final_admin": boolean
-}
-```
-Example usage with curl:
-```
-curl -X GET -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/user/final_admin/1
-```
-### DELETE /api/data/user/delete/{user_id}
-
-This endpoint deletes a user by their ID.
-
-Request Headers
-```
-Api-Key : string
-```
-Path Parameters
-```
-user_id : integer
-```
-Response
-```
-{
-    "status": string
-}
-```
-Example usage with curl:
-```
-curl -X DELETE -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/user/delete/1
-```
 ### PUT /api/data/user/set_theme
 
-This endpoint updates the theme for a user. User ID and new theme should be included in the request body.
+This endpoint updates the theme for a user. User ID and new theme should be included in the request body. You can only set your own theme.
 
 Request Headers
 ```
@@ -849,9 +902,10 @@ Example usage with curl:
 ```
     curl -X PUT -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1, "new_theme":"dark"}' http://localhost:8000/api/data/user/set_theme
 ```
+
 ### GET /api/data/user/check_downloaded
 
-This endpoint checks if a specific episode has been downloaded by the user.
+This endpoint checks if a specific episode has been downloaded by the user. You can only check your own episodes.
 
 Request Headers
 ```
@@ -899,7 +953,7 @@ curl -X GET -H "Api-Key: YOUR_API_KEY" "http://localhost:8000/api/data/user/chec
 ```
 ### POST /api/data/create_api_key
 
-This endpoint creates a new API key for the user.
+This endpoint creates a new API key for the user. The API permissions granted will depend on user who creates the key. Admin users creating keys will be tied to their account granting admin credentials, standard users will be unable to run api endpoints that require admin.
 
 Request Headers
 ```
@@ -921,70 +975,9 @@ Example usage with curl:
 ```
 curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1}' http://localhost:8000/api/data/create_api_key
 ```
-### POST /api/data/save_email_settings
-
-This endpoint allows the user to save their email settings.
-
-Request Headers
-```
-Api-Key : string
-```
-Request Body
-```
-{
-    "email_settings": {
-        // The specific keys and their types depend on what the email settings are.
-    }
-}
-```
-Response
-```
-{
-    "message": string
-}
-```
-Example usage with curl:
-```
-curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"email_settings":{...}}' http://localhost:8000/api/data/save_email_settings
-```
-### GET /api/data/get_encryption_key
-This endpoint retrieves the encryption key.
-
-Request Headers
-```
-Api-Key : string
-```
-Response
-```
-{
-    "encryption_key": string
-}
-```
-Example usage with curl:
-```
-    curl -X GET -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/get_encryption_key
-```
-### GET /api/data/get_email_settings
-
-This endpoint retrieves the email settings of the user.
-
-Request Headers
-```
-Api-Key : string
-```
-Response
-```
-{
-    // The keys and their types in the response body depend on what the email settings are.
-}
-```
-Example usage with curl:
-```
-curl -X GET -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/get_email_settings
-```
 ### DELETE /api/data/delete_api_key/{api_id}
 
-This endpoint deletes a specific API key.
+This endpoint deletes a specific API key. Only admins can remove other users api-keys.
 
 Request Headers
 ```
@@ -1004,6 +997,294 @@ Example usage with curl:
 ```
 curl -X DELETE -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/delete_api_key/1
 ```
+##  Endpoints that require admin Api_Key:
+
+### GET /api/data/get_encryption_key
+This endpoint retrieves the encryption key.
+
+Request Headers
+```
+Api-Key : string
+```
+Response
+```
+{
+    "encryption_key": string
+}
+```
+Example usage with curl:
+```
+    curl -X GET -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/get_encryption_key
+```
+
+### POST /api/data/save_email_settings
+
+This endpoint allows the user to save their email settings for password reset emails.
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "email_settings": {
+        "server_name": server_name,
+        "server_port": server_port,
+        "from_email": from_email,
+        "send_mode": send_mode,
+        "encryption": encryption,
+        "auth_required": auth_required,
+        "email_username": email_username,
+        "email_password": decoded_password,
+    }
+}
+```
+Response
+```
+{
+    "message": string
+}
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"email_settings":{...}}' http://localhost:8000/api/data/save_email_settings
+```
+
+### DELETE /api/data/user/delete/{user_id}
+
+This endpoint deletes a user by their ID.
+
+Request Headers
+```
+Api-Key : string
+```
+Path Parameters
+```
+user_id : integer
+```
+Response
+```
+{
+    "status": string
+}
+```
+Example usage with curl:
+```
+curl -X DELETE -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/user/delete/1
+```
+
+### GET /api/data/user/final_admin/{user_id}
+
+This endpoint checks if the specified user is the last remaining admin.
+
+Request Headers
+```
+Api-Key : string
+```
+Path Parameters
+```
+user_id : integer
+```
+Response
+```
+{
+    "final_admin": boolean
+}
+```
+Example usage with curl:
+```
+curl -X GET -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/user/final_admin/1
+```
+
+### PUT /api/data/user/set_isadmin
+
+This endpoint updates the admin status of a user. User ID and new admin status should be included in the request body.
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "user_id": integer,
+    "isadmin": boolean
+}
+```
+Response
+```
+{
+    "detail": string
+}
+```
+Example usage with curl:
+```
+curl -X PUT -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1, "isadmin":true}' http://localhost:8000/api/data/user/set_isadmin
+```
+
+### GET /api/data/user_admin_check/{user_id}
+
+This endpoint checks if the user is an admin. Requires API key for authentication.
+
+Request Headers
+```
+Api-Key : string
+```
+Path Parameters
+```
+user_id : integer
+```
+Response
+```
+{
+    "is_admin": boolean
+}
+```
+Example usage with curl:
+```
+curl -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/user_admin_check/1
+```
+
+### GET /api/data/get_user_info
+
+This endpoint returns the all user info from the database. Requires API key for authentication.
+
+Request Headers
+```
+Api-Key : string
+```
+Response
+```
+user_info : dictionary
+```
+Example usage with curl:
+```
+curl -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/get_user_info
+```
+
+### GET /api/data/refresh_pods
+
+Initiates a refresh of podcasts in the server's database. Only admin users can utilize this endpoint due to the nature of refreshing. It occurs automatically in the background and there's no real reason for a user to call this.
+
+Request Headers
+
+```
+Api-Key : string
+```
+Response
+```
+{
+    "detail": "Refresh initiated."
+}
+```
+Example usage with curl:
+```
+curl -X GET -H "Authorization: YOUR_AUTH_TOKEN_OR_CREDENTIALS" "http://localhost:8000/api/data/refresh_pods"
+```
+
+### POST /api/data/enable_disable_guest
+
+This endpoint enables or disables the guest access. Requires API key for authentication.
+
+Headers
+
+```
+Api-Key : string
+```
+Response
+```
+success : boolean
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/enable_disable_guest
+```
+### POST /api/data/enable_disable_downloads
+
+This endpoint enables or disables the downloads. Requires API key for authentication.
+
+Headers
+```
+Api-Key : string
+```
+Response
+```
+success : boolean
+```
+Example usage with curl:
+
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/enable_disable_downloads
+```
+### POST /api/data/enable_disable_self_service
+
+This endpoint enables or disables the self service. Requires API key for authentication.
+
+Headers
+```
+Api-Key : string
+```
+Response
+```
+success : boolean
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/enable_disable_self_service
+```
+
+
+### GET /api/data/saved_episode_list/{user_id}
+
+This endpoint retrieves a list of episodes saved by a specific user. Requires API key for authentication.
+
+Request Headers
+```
+Api-Key : string
+```
+Path Parameters
+```
+user_id : integer
+```
+Response
+```
+{
+    "saved_episodes": list
+}
+```
+Example usage with curl:
+```
+curl -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/saved_episode_list/1
+```
+### GET /api/data/get_email_settings
+
+This endpoint retrieves the email settings of the user.
+
+Request Headers
+```
+Api-Key : string
+```
+Response
+```
+{
+    {
+        "EmailSettingsID":int,
+        "Server_Name":"string",
+        "Server_Port":int,
+        "From_Email":"string",
+        "Send_Mode":"string",
+        "Encryption":"string",
+        "Auth_Required":boolean,
+        "Username":"string",
+        "Password":"string"
+    }
+}
+```
+Example usage with curl:
+```
+curl -X GET -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/get_email_settings
+```
 ### GET /api/data/get_api_info
 
 This endpoint retrieves information about the API.
@@ -1015,11 +1296,18 @@ Api-Key : string
 Response
 ```
 {
-    "api_info": {
-        // The specific keys and their types in the response body depend on what the API information is.
-    }
+    "api_info": 
+        {
+            "APIKeyID": int,
+            "UserID": int,
+            "Username": "string",
+            "LastFourDigits": "string",
+            "Created": "date-string"
+        }
 }
 ```
+Example of created: "Created": "2023-09-28 11:22:33"
+
 Example usage with curl:
 ```
 curl -X GET -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/get_api_info

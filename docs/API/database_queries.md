@@ -997,6 +997,647 @@ Example usage with curl:
 ```
 curl -X DELETE -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/delete_api_key/1
 ```
+### POST /api/data/reset_password_create_code
+
+This endpoint creates a reset password code for a user. You can only reset your own pw using email resets. Admins can reset all passwords in the admin settings area of settings.
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "email": string,
+    "reset_code": string
+}
+```
+Response
+```
+{
+    "user_exists": boolean
+}
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"email":"user@email.com","reset_code":"123456"}' http://localhost:8000/api/data/reset_password_create_code
+```
+#### POST /api/data/verify_reset_code
+
+This endpoint verifies a reset password code. You can only reset your own pw using email resets. Admins can reset all passwords in the admin settings area of settings.
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "email": string,
+    "reset_code": string
+}
+```
+Response
+```
+{
+    "code_valid": boolean
+}
+```
+Example usage with curl:
+```
+    curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"email":"user@email.com","reset_code":"123456"}' http://localhost:8000/api/data/verify_reset_code
+```
+### POST /api/data/reset_password_prompt
+
+This endpoint verifies the reset password process. You can only reset your own pw using email resets. Admins can reset all passwords in the admin settings area of settings.
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "email": string,
+    "salt": string,
+    "hashed_pw": string
+}
+```
+Response
+```
+{
+    "message": string
+}
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"email":"user@email.com","salt":"your_salt","hashed_pw":"your_hashed_password"}' http://localhost:8000/api/data/reset_password_prompt
+```
+
+### POST /api/data/clear_guest_data
+
+This endpoint clears guest data. Used after a guest logout to remove saved data.
+
+Request Headers
+```
+Api-Key : string
+```
+Response
+```
+{
+    "message": string
+}
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/clear_guest_data
+```
+### POST /api/data/get_episode_metadata
+
+This endpoint retrieves metadata for a specific episode. You can only get metadata for yourself.
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "episode_url": string,
+    "episode_title": string,
+    "user_id": integer
+}
+```
+Response
+```
+{
+    "episode": {
+        // The specific keys and their types in the response body depend on what the episode metadata is.
+    }
+}
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"episode_url":"http://episode_url","episode_title":"episode_title","user_id":1}' http://localhost:8000/api/data/get_episode_metadata
+```
+### POST /api/data/save_mfa_secret
+
+This endpoint saves the multi-factor authentication (MFA) secret for a user. You can only save MFA secrets for yourself
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "user_id": integer,
+    "mfa_secret": string
+}
+```
+Response
+```
+{
+    "status": string // "success" or "error"
+}
+```
+Example usage with curl:
+```
+    curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1,"mfa_secret":"your_mfa_secret"}' http://localhost:8000/api/data/save_mfa_secret
+```
+### GET /api/data/check_mfa_enabled/{user_id}
+
+This endpoint checks if MFA (Multi-Factor Authentication) is enabled for a given user ID. Only admins can check MFA status for users other than themselves.
+
+Request Headers
+```
+Api-Key : string
+```
+Response
+```
+{
+    "mfa_enabled": boolean
+}
+```
+Example usage with curl:
+```
+curl -X GET -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/check_mfa_enabled/1
+```
+### POST /api/data/verify_mfa
+
+This endpoint verifies the MFA code for a given user. You can only verify codes for your own account.
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "user_id": integer,
+    "mfa_code": string
+}
+```
+Response
+```
+{
+    "verified": boolean
+}
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1,"mfa_code":"123456"}' http://localhost:8000/api/data/verify_mfa
+```
+### DELETE /api/data/delete_mfa
+
+This endpoint deletes the MFA secret for a given user ID. Only admins can remove MFA settings for users other than themselves.
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "user_id": integer
+}
+```
+Response
+```
+{
+    "deleted": boolean
+}
+```
+Example usage with curl:
+```
+curl -X DELETE -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1}' http://localhost:8000/api/data/delete_mfa
+```
+### POST /api/data/get_all_episodes
+
+This endpoint retrieves all episodes for a given podcast feed.
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "pod_feed": string
+}
+```
+Response
+```
+{
+    "episodes": [
+        // The specific keys and their types in the response body depend on what the episode metadata is.
+    ]
+}
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"pod_feed":"http://podcast_feed"}' http://localhost:8000/api/data/get_all_episodes
+```
+### POST /api/data/remove_episode_history
+
+This endpoint removes an episode from the user's history. You can only remove your own episode history.
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "url": string,
+    "title": string,
+    "user_id": integer
+}
+```
+Response
+```
+{
+    "success": boolean
+}
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"url":"http://episode_url","title":"Episode Title","user_id":1}' http://localhost:8000/api/data/remove_episode_history
+```
+### POST /api/data/setup_time_info
+
+This endpoint sets up timezone information for a user. Only admins are allowed to edit timezones for other users.
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "user_id": integer,
+    "timezone": string,
+    "hour_pref": integer
+}
+```
+Response
+```
+{
+    "success": boolean
+}
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1,"timezone":"GMT","hour_pref":12}' http://localhost:8000/api/data/setup_time_info
+```
+### GET /api/data/get_time_info
+
+This endpoint retrieves the timezone information for a user. Only admins are allowed to get time info for other users.
+
+Request Headers
+```
+Api-Key : string
+```
+Response
+```
+{
+    "timezone": string,
+    "hour_pref": integer
+}
+```
+Example usage with curl:
+```
+    curl -X GET -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/get_time_info/1
+```
+### POST /api/data/first_login_done
+
+This endpoint updates a user's first login status in the database. You can only get first time login info for yourself.
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "user_id": integer
+}
+```
+Response
+```
+{
+    "FirstLogin": boolean
+}
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1}' http://localhost:8000/api/data/first_login_done
+```
+ ### POST /api/data/delete_selected_episodes
+
+This endpoint deletes the selected episodes from the user's list. You can only delete your own selected episodes.
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "selected_episodes": [integer, integer, ...],
+    "user_id": integer
+}
+```
+Response
+```
+{
+    "status": boolean
+}
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"selected_episodes":[1,2,3],"user_id":1}' http://localhost:8000/api/data/delete_selected_episodes
+```
+### POST /api/data/delete_selected_podcasts
+
+This endpoint deletes the selected podcasts from the user's list. You can only delete your own selected podcasts.
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "delete_list": [integer, integer, ...],
+    "user_id": integer
+}
+```
+Response
+```
+{
+    "status": boolean
+}
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"delete_list":[1,2,3],"user_id":1}' http://localhost:8000/api/data/delete_selected_podcasts
+``` 
+### POST /api/data/search_data
+
+This endpoint searches the database for a specific podcast based on a provided search term.
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "search_term": string,
+    "user_id": integer
+}
+```
+Response
+```
+{
+    "data": array
+}
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"search_term":"podcast_name","user_id":1}' http://localhost:8000/api/data/search_data
+```
+### POST /api/data/queue_pod
+
+This endpoint adds a podcast episode to the user's queue. You can only add episodes to your own queue
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "episode_title": string,
+    "ep_url": string,
+    "user_id": integer
+}
+```
+Response
+```
+{
+    "data": array
+}
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"episode_title":"Episode 1","ep_url":"http://episode.url","user_id":1}' http://localhost:8000/api/data/queue_pod
+```
+### POST /api/data/remove_queued_pod
+
+This endpoint removes a podcast episode from the user's queue. You can only remove episodes for your own queue.
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "episode_title": string,
+    "ep_url": string,
+    "user_id": integer
+}
+```
+Response
+```
+{
+    "data": array
+}
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"episode_title":"Episode 1","ep_url":"http://episode.url","user_id":1}' http://localhost:8000/api/data/remove_queued_pod
+```
+### GET /api/data/get_queued_episodes
+
+This endpoint retrieves all podcast episodes in the user's queue. You can only get episodes from your own queue.
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+
+```
+{
+    "user_id": integer
+}
+```
+Response
+
+```
+{
+    "data": array
+}
+```
+Example usage with curl:
+
+bash
+```
+curl -X GET -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1}' http://localhost:8000/api/data/get_queued_episodes
+```
+
+### POST /api/data/queue_bump
+
+This endpoint allows a user to move a specific episode to the front of their personal episode queue. If the episode is already present in the queue, it will be removed from its current position and placed at the front. The positions of other episodes in the queue will be adjusted accordingly. A user can only bump episodes in their own queue.
+
+Request Headers:
+```
+Api-Key : string (Your API Key)
+```
+Request Body:
+```
+{
+    "ep_url": "string (URL of the episode)",
+    "title": "string (Title of the episode)",
+    "user_id": "integer (ID of the user)"
+}
+```
+Responses:
+```
+{
+    "data": {
+        "detail": str
+    }
+}
+```
+Example Usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" -d '{"ep_url":"EPISODE_URL", "title":"EPISODE_TITLE", "user_id":USER_ID}' "http://localhost:8000/api/data/queue_bump"
+```
+### POST /api/data/backup_user
+
+This endpoint provides a mechanism for a user to backup their podcast subscriptions. The backup is presented in the OPML format, which is a standard format used to represent lists of web feeds, such as RSS and Atom.
+
+Request Headers:
+```
+Api-Key : string (Your API Key)
+```
+Request Body:
+```
+{
+    "user_id": "integer (ID of the user)"
+}
+```
+Responses:
+
+200 OK:
+When the backup is successfully generated, the response contains the OPML content of the user's podcast subscriptions. This will look like:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>Podcast Subscriptions</title>
+  </head>
+  <body>
+    <outline text="PodcastName1" title="PodcastName1" type="rss" xmlUrl="FeedURL1" />
+    <outline text="PodcastName2" title="PodcastName2" type="rss" xmlUrl="FeedURL2" />
+    ...
+  </body>
+</opml>
+```
+400 Bad Request:
+Returns an error message indicating the reason for the failure.
+```
+{
+    "detail": "Specific error message"
+}
+```
+Example Usage with curl:
+
+```
+
+curl -X POST -H "Api-Key: YOUR_API_KEY" -d '{"user_id":USER_ID}' "http://localhost:8000/api/data/backup_user"
+```
+Notes:
+
+    The backup_user function in the database fetches podcast subscriptions for the specified user and constructs the OPML content.
+    The resulting OPML format can then be imported into various podcast players to restore the user's subscriptions.
+
+### GET /api/data/backup_server
+
+This endpoint provides a mechanism for an admin user to backup the entire server database. It utilizes the mysqldump command-line utility to take a backup of the specified MySQL database. Given the sensitive nature of this operation, it is restricted to admin users only.
+
+Request Headers:
+
+```
+Api-Key : string (Your API Key)
+```
+Request Body:
+```
+{
+    "backup_dir": "string (Path to the directory where the backup should be saved)",
+    "database_pass": "string (Password for the database user)"
+}
+```
+Responses:
+```
+200 OK:
+Returns the output of the mysqldump command, essentially a dump of the entire database. This content will be in the form of SQL statements.
+```
+```
+400 Bad Request:
+Returns an error message indicating the reason for the failure.
+```
+```json
+
+{
+    "detail": "Specific error message"
+}
+```
+Example Usage with curl:
+
+```bash
+
+curl -X GET -H "Api-Key: YOUR_ADMIN_API_KEY" -d '{"backup_dir":"BACKUP_DIR_PATH", "database_pass":"DATABASE_PASSWORD"}' "http://localhost:8000/api/data/backup_server"
+```
+### POST /api/data/restore_server
+
+This endpoint facilitates the restoration of the entire server database. It utilizes the mysql command-line utility to restore the database from the provided SQL dump. Given the sensitive nature and potential consequences of this operation, it is restricted to admin users only.
+
+Request Headers:
+```
+Api-Key : string (Your Admin API Key)
+```
+Request Body:
+```
+{
+    "database_pass": "string (Password for the database user)",
+    "server_restore_data": "string (SQL statements/data used for restoring the database)"
+}
+```
+Responses:
+```
+200 OK:
+Returns a confirmation message indicating successful restoration.
+```
+```
+{
+    "detail": "Specific error message"
+}
+```
+Example Usage with curl:
+
+```bash
+curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" -d '{"database_pass":"DATABASE_PASSWORD", "server_restore_data":"RESTORE_SQL_DATA"}' "http://localhost:8000/api/data/restore_server"
+```
+Notes:
+
+    The restore_server function creates a temporary file to store the SQL data, as the mysql utility expects to read from a file. 
+    **THIS WILL OVERWRITE YOUR DATABASE**
+    
 ##  Endpoints that require admin Api_Key:
 
 ### GET /api/data/get_encryption_key
@@ -1160,8 +1801,8 @@ user_info : dictionary
 ```
 Example usage with curl:
 ```
-curl -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/get_user_info
-```
+curl -H "Api-Key: YOUR_API_KEY" http://localhost:800    curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"delete_list":[1,2,3],"user_id":1}' http://localhost:8000/api/data/delete_selected_podcasts
+``` 
 
 ### GET /api/data/refresh_pods
 
@@ -1311,495 +1952,4 @@ Example of created: "Created": "2023-09-28 11:22:33"
 Example usage with curl:
 ```
 curl -X GET -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/get_api_info
-```
-### POST /api/data/reset_password_create_code
-
-This endpoint creates a reset password code for a user.
-
-Request Headers
-```
-Api-Key : string
-```
-Request Body
-```
-{
-    "email": string,
-    "reset_code": string
-}
-```
-Response
-```
-{
-    "user_exists": boolean
-}
-```
-Example usage with curl:
-```
-curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"email":"user@email.com","reset_code":"123456"}' http://localhost:8000/api/data/reset_password_create_code
-```
-#### POST /api/data/verify_reset_code
-
-This endpoint verifies a reset password code.
-
-Request Headers
-```
-Api-Key : string
-```
-Request Body
-```
-{
-    "email": string,
-    "reset_code": string
-}
-```
-Response
-```
-{
-    "code_valid": boolean
-}
-```
-Example usage with curl:
-```
-    curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"email":"user@email.com","reset_code":"123456"}' http://localhost:8000/api/data/verify_reset_code
-```
-### POST /api/data/reset_password_prompt
-
-This endpoint verifies the reset password process.
-
-Request Headers
-```
-Api-Key : string
-```
-Request Body
-```
-{
-    "email": string,
-    "salt": string,
-    "hashed_pw": string
-}
-```
-Response
-```
-{
-    "message": string
-}
-```
-Example usage with curl:
-```
-curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"email":"user@email.com","salt":"your_salt","hashed_pw":"your_hashed_password"}' http://localhost:8000/api/data/reset_password_prompt
-```
-### POST /api/data/clear_guest_data
-
-This endpoint clears guest data.
-
-Request Headers
-```
-Api-Key : string
-```
-Response
-```
-{
-    "message": string
-}
-```
-Example usage with curl:
-```
-curl -X POST -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/clear_guest_data
-```
-### POST /api/data/get_episode_metadata
-
-This endpoint retrieves metadata for a specific episode.
-
-Request Headers
-```
-Api-Key : string
-```
-Request Body
-```
-{
-    "episode_url": string,
-    "episode_title": string,
-    "user_id": integer
-}
-```
-Response
-```
-{
-    "episode": {
-        // The specific keys and their types in the response body depend on what the episode metadata is.
-    }
-}
-```
-Example usage with curl:
-```
-curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"episode_url":"http://episode_url","episode_title":"episode_title","user_id":1}' http://localhost:8000/api/data/get_episode_metadata
-```
-### POST /api/data/save_mfa_secret
-
-This endpoint saves the multi-factor authentication (MFA) secret for a user.
-
-Request Headers
-```
-Api-Key : string
-```
-Request Body
-```
-{
-    "user_id": integer,
-    "mfa_secret": string
-}
-```
-Response
-```
-{
-    "status": string // "success" or "error"
-}
-```
-Example usage with curl:
-```
-    curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1,"mfa_secret":"your_mfa_secret"}' http://localhost:8000/api/data/save_mfa_secret
-```
-
-### GET /api/data/check_mfa_enabled/{user_id}
-
-This endpoint checks if MFA (Multi-Factor Authentication) is enabled for a given user ID.
-
-Request Headers
-```
-Api-Key : string
-```
-Response
-```
-{
-    "mfa_enabled": boolean
-}
-```
-Example usage with curl:
-```
-curl -X GET -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/check_mfa_enabled/1
-```
-### POST /api/data/verify_mfa
-
-This endpoint verifies the MFA code for a given user.
-
-Request Headers
-```
-Api-Key : string
-```
-Request Body
-```
-{
-    "user_id": integer,
-    "mfa_code": string
-}
-```
-Response
-```
-{
-    "verified": boolean
-}
-```
-Example usage with curl:
-```
-curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1,"mfa_code":"123456"}' http://localhost:8000/api/data/verify_mfa
-```
-### DELETE /api/data/delete_mfa
-
-This endpoint deletes the MFA secret for a given user ID.
-
-Request Headers
-```
-Api-Key : string
-```
-Request Body
-```
-{
-    "user_id": integer
-}
-```
-Response
-```
-{
-    "deleted": boolean
-}
-```
-Example usage with curl:
-```
-curl -X DELETE -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1}' http://localhost:8000/api/data/delete_mfa
-```
-### POST /api/data/get_all_episodes
-
-This endpoint retrieves all episodes for a given podcast feed.
-
-Request Headers
-```
-Api-Key : string
-```
-Request Body
-```
-{
-    "pod_feed": string
-}
-```
-Response
-```
-{
-    "episodes": [
-        // The specific keys and their types in the response body depend on what the episode metadata is.
-    ]
-}
-```
-Example usage with curl:
-```
-curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"pod_feed":"http://podcast_feed"}' http://localhost:8000/api/data/get_all_episodes
-```
-### POST /api/data/remove_episode_history
-
-This endpoint removes an episode from the user's history.
-
-Request Headers
-```
-Api-Key : string
-```
-Request Body
-```
-{
-    "url": string,
-    "title": string,
-    "user_id": integer
-}
-```
-Response
-```
-{
-    "success": boolean
-}
-```
-Example usage with curl:
-```
-curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"url":"http://episode_url","title":"Episode Title","user_id":1}' http://localhost:8000/api/data/remove_episode_history
-```
-### POST /api/data/setup_time_info
-
-This endpoint sets up timezone information for a user.
-
-Request Headers
-```
-Api-Key : string
-```
-Request Body
-```
-{
-    "user_id": integer,
-    "timezone": string,
-    "hour_pref": integer
-}
-```
-Response
-```
-{
-    "success": boolean
-}
-```
-Example usage with curl:
-```
-curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1,"timezone":"GMT","hour_pref":12}' http://localhost:8000/api/data/setup_time_info
-```
-### GET /api/data/get_time_info
-
-This endpoint retrieves the timezone information for a user.
-
-Request Headers
-```
-Api-Key : string
-```
-Response
-```
-{
-    "timezone": string,
-    "hour_pref": integer
-}
-```
-Example usage with curl:
-```
-    curl -X GET -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/get_time_info/1
-```
-### POST /api/data/first_login_done
-
-This endpoint updates a user's first login status in the database.
-
-Request Headers
-```
-Api-Key : string
-```
-Request Body
-```
-{
-    "user_id": integer
-}
-```
-Response
-```
-{
-    "FirstLogin": boolean
-}
-```
-Example usage with curl:
-```
-curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1}' http://localhost:8000/api/data/first_login_done
-```
- ### POST /api/data/delete_selected_episodes
-
-This endpoint deletes the selected episodes from the user's list.
-
-Request Headers
-```
-Api-Key : string
-```
-Request Body
-```
-{
-    "selected_episodes": [integer, integer, ...],
-    "user_id": integer
-}
-```
-Response
-```
-{
-    "status": boolean
-}
-```
-Example usage with curl:
-```
-curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"selected_episodes":[1,2,3],"user_id":1}' http://localhost:8000/api/data/delete_selected_episodes
-```
-### POST /api/data/delete_selected_podcasts
-
-This endpoint deletes the selected podcasts from the user's list.
-
-Request Headers
-```
-Api-Key : string
-```
-Request Body
-```
-{
-    "delete_list": [integer, integer, ...],
-    "user_id": integer
-}
-```
-Response
-```
-{
-    "status": boolean
-}
-```
-Example usage with curl:
-```
-    curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"delete_list":[1,2,3],"user_id":1}' http://localhost:8000/api/data/delete_selected_podcasts
-``` 
-### POST /api/data/search_data
-
-This endpoint searches the database for a specific podcast based on a provided search term.
-
-Request Headers
-```
-Api-Key : string
-```
-Request Body
-```
-{
-    "search_term": string,
-    "user_id": integer
-}
-```
-Response
-```
-{
-    "data": array
-}
-```
-Example usage with curl:
-```
-curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"search_term":"podcast_name","user_id":1}' http://localhost:8000/api/data/search_data
-```
-### POST /api/data/queue_pod
-
-This endpoint adds a podcast episode to the user's queue.
-
-Request Headers
-```
-Api-Key : string
-```
-Request Body
-```
-{
-    "episode_title": string,
-    "ep_url": string,
-    "user_id": integer
-}
-```
-Response
-```
-{
-    "data": array
-}
-```
-Example usage with curl:
-```
-curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"episode_title":"Episode 1","ep_url":"http://episode.url","user_id":1}' http://localhost:8000/api/data/queue_pod
-```
-### POST /api/data/remove_queued_pod
-
-This endpoint removes a podcast episode from the user's queue.
-
-Request Headers
-```
-Api-Key : string
-```
-Request Body
-```
-{
-    "episode_title": string,
-    "ep_url": string,
-    "user_id": integer
-}
-```
-Response
-```
-{
-    "data": array
-}
-```
-Example usage with curl:
-```
-curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"episode_title":"Episode 1","ep_url":"http://episode.url","user_id":1}' http://localhost:8000/api/data/remove_queued_pod
-```
-#### GET /api/data/get_queued_episodes
-
-This endpoint retrieves all podcast episodes in the user's queue.
-
-Request Headers
-```
-Api-Key : string
-```
-Request Body
-
-```
-{
-    "user_id": integer
-}
-```
-Response
-
-```
-{
-    "data": array
-}
-```
-Example usage with curl:
-
-bash
-```
-curl -X GET -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1}' http://localhost:8000/api/data/get_queued_episodes
 ```

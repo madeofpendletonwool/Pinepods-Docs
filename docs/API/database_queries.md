@@ -101,7 +101,6 @@ bash
 
 curl -X GET -H "Api-Key: YOUR_API_KEY" "http://localhost:8000/api/data/get_user_episode_count?user_id=USER_ID"
 
-
 ##  Endpoints that require Api_Key:
 
 ### POST /api/data/clean_expired_sessions/
@@ -1488,6 +1487,28 @@ bash
 curl -X GET -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1}' http://localhost:8000/api/data/get_queued_episodes
 ```
 
+### GET /api/data/get_user
+
+This endpoint will get the userID from an api key. This is restricted to the owner of the api key or admins can run against any key.
+
+Request Headers
+```
+Api-Key : string
+```
+Response
+
+```
+{
+    "status": "success", "retrieved_id": retrieved_id
+}
+```
+Example usage with curl:
+
+bash
+```
+curl -X GET -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/get_user
+```
+
 ### POST /api/data/queue_bump
 
 This endpoint allows a user to move a specific episode to the front of their personal episode queue. If the episode is already present in the queue, it will be removed from its current position and placed at the front. The positions of other episodes in the queue will be adjusted accordingly. A user can only bump episodes in their own queue.
@@ -1566,6 +1587,13 @@ Notes:
     The backup_user function in the database fetches podcast subscriptions for the specified user and constructs the OPML content.
     The resulting OPML format can then be imported into various podcast players to restore the user's subscriptions.
 
+
+
+
+
+    
+##  Endpoints that require admin Api_Key:
+
 ### GET /api/data/backup_server
 
 This endpoint provides a mechanism for an admin user to backup the entire server database. It utilizes the mysqldump command-line utility to take a backup of the specified MySQL database. Given the sensitive nature of this operation, it is restricted to admin users only.
@@ -1603,6 +1631,7 @@ Example Usage with curl:
 
 curl -X GET -H "Api-Key: YOUR_ADMIN_API_KEY" -d '{"backup_dir":"BACKUP_DIR_PATH", "database_pass":"DATABASE_PASSWORD"}' "http://localhost:8000/api/data/backup_server"
 ```
+
 ### POST /api/data/restore_server
 
 This endpoint facilitates the restoration of the entire server database. It utilizes the mysql command-line utility to restore the database from the provided SQL dump. Given the sensitive nature and potential consequences of this operation, it is restricted to admin users only.
@@ -1637,8 +1666,6 @@ Notes:
 
     The restore_server function creates a temporary file to store the SQL data, as the mysql utility expects to read from a file. 
     **THIS WILL OVERWRITE YOUR DATABASE**
-    
-##  Endpoints that require admin Api_Key:
 
 ### GET /api/data/get_encryption_key
 This endpoint retrieves the encryption key.
@@ -1952,4 +1979,25 @@ Example of created: "Created": "2023-09-28 11:22:33"
 Example usage with curl:
 ```
 curl -X GET -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/get_api_info
+```
+
+##  Special Endpoints that require other information:
+
+### POST /api/data/get_key
+
+This endpoint retrieves a user api key using login credentials. This can be used from a client for a logon via username and password. This endpoint will create a new api key for a user if one doesn't already exist (or just use an existing one) and then return it. It checks the user and password in the header to verify the users identity prior to returning the key.
+
+Request Headers
+```
+Authorization: Basic {credentials}
+```
+Note: {credentials} should be replaced with a base64-encoded string of username:password.
+Response
+```
+{"status": "success", "retrieved_key": retrieved_key}
+```
+
+Example usage with curl:
+```
+curl -X GET -H "Authorization: Basic [credentials]" http://localhost:8000/api/data/get_key
 ```

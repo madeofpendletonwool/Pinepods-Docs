@@ -23,7 +23,7 @@ Example usage with curl:
 curl http://localhost:8000/api/pinepods_check
 ```
 
-GET /api/data/get_stats
+### GET /api/data/get_stats
 
 Retrieves the statistics for a specified user. Users can only fetch stats for their own accounts.
 
@@ -31,76 +31,38 @@ Endpoint: /api/data/get_stats
 
 HTTP Method: GET
 
-Parameters:
-
-    user_id: The ID of the user for whom the stats are being retrieved.
-
 Request Headers
 
-vbnet
-
+```
 Api-Key : string
+```
 
-Request Body
-
-css
-
-None
 
 Response
 The response format will depend on the structure of the stats returned by the database_functions.functions.get_stats function. However, it will generally contain various statistics related to the user.
 
-Possible Errors
-
-    "You can only get stats for your own account."
-    "Your API key is either invalid or does not have correct permission."
 
 Example usage with curl:
 
-bash
+```
 
 curl -X GET -H "Api-Key: YOUR_API_KEY" "http://localhost:8000/api/data/get_stats?user_id=USER_ID"
-
-
-GET /api/data/get_user_episode_count
+```
+### GET /api/data/get_user_episode_count
 
 Retrieves the total count of episodes associated with a specified user. Only the user themselves or an admin can fetch this count.
 
-Endpoint: /api/data/get_user_episode_count
-
-HTTP Method: GET
-
-Parameters:
-
-    user_id: The ID of the user for whom the episode count is being retrieved.
-
 Request Headers
-
-vbnet
-
+```
 Api-Key : string
-
-Request Body
-
-css
-
-None
-
+```
 Response
 The response format will primarily be the episode count for the specified user. The exact structure will depend on how database_functions.functions.get_user_episode_count structures its return data.
 
-Possible Errors
-
-    "Your API key is either invalid or does not have correct permission."
-    "You are not authorized to access these user details."
-    "User not found."
-
 Example usage with curl:
-
-bash
-
+```
 curl -X GET -H "Api-Key: YOUR_API_KEY" "http://localhost:8000/api/data/get_user_episode_count?user_id=USER_ID"
-
+```
 ##  Endpoints that require Api_Key:
 
 ### POST /api/data/clean_expired_sessions/
@@ -251,6 +213,49 @@ Example usage with curl:
 curl -X POST -H "Api-Key: YOUR_API_KEY" -d '{"username":"USERNAME", "password":"PASSWORD"}' http://localhost:8000/api/data/verify_password/
 ```
 ### GET /api/data/return_episodes/{user_id}
+
+This endpoint returns all episodes related to the user with the given user_id. Requires API key for authentication. Only allows a user to pull their own episodes.
+
+Request Headers
+```
+Api-Key : string
+```
+Response
+```
+episodes : list
+```
+Example usage with curl:
+```
+curl -H "Api-Key: YOUR_API_KEY" http://localhost:8000/api/data/return_episodes/USER_ID
+```
+
+### GET /api/data/podcast_episodes
+
+This endpoint returns all episodes related to a specific podcast. It can only be ran by users who have that particular podcast added. 
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "podcast_id: integer"
+    "user_id": integer
+}
+```
+Response
+```
+{
+    "FirstLogin": boolean
+}
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"podcast_id":2, "user_id":1}' http://localhost:8000/api/data/podcast_episodes
+```
+
+### GET /api/data/get_podcast_id
 
 This endpoint returns all episodes related to the user with the given user_id. Requires API key for authentication. Only allows a user to pull their own episodes.
 

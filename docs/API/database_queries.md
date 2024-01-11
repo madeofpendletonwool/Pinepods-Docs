@@ -23,7 +23,7 @@ Example usage with curl:
 curl http://localhost:8000/api/pinepods_check
 ```
 
-GET /api/data/get_stats
+### GET /api/data/get_stats
 
 Retrieves the statistics for a specified user. Users can only fetch stats for their own accounts.
 
@@ -62,7 +62,7 @@ bash
 curl -X GET -H "Api-Key: YOUR_API_KEY" "http://localhost:8000/api/data/get_stats?user_id=USER_ID"
 
 
-GET /api/data/get_user_episode_count
+### GET /api/data/get_user_episode_count
 
 Retrieves the total count of episodes associated with a specified user. Only the user themselves or an admin can fetch this count.
 
@@ -589,6 +589,32 @@ Request Body
 {
     "user_id": integer,
     "podcast_name": string
+}
+```
+Response
+```
+{
+    "status": string
+}
+```
+Example usage with curl:
+```
+curl -X POST -H "Api-Key: YOUR_API_KEY" -H "Content-Type: application/json" -d '{"user_id":1, "podcast_name":"Podcast Name"}' http://localhost:8000/api/data/remove_podcast
+```
+
+### POST /api/data/remove_podcast_id
+
+Same as remove_podcast except it takes the PodcastID as an argument instead of the Title. Permissions are the same. 
+
+Request Headers
+```
+Api-Key : string
+```
+Request Body
+```
+{
+    "user_id": integer,
+    "podcast_id": string
 }
 ```
 Response

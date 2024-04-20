@@ -106,7 +106,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Pinepods, Built by GooseberryDevelopment. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Pinepods, Created by GooseberryDevelopment. Built with Docusaurus.`,
       },
       prism: {
         theme: lightCodeTheme,

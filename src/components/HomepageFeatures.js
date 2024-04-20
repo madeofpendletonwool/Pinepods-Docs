@@ -8,7 +8,7 @@ const FeatureList = [
     Svg: require('../../static/img/os.svg').default,
     description: (
       <>
-        Every aspect of PinePods is fully open sourced and the code is available on Github. There's zero data collection and you can self-host every aspect of the application. Run anywhere you can run a browser or python. There's a client on linux, mac, and windows. A mobile client is in the works. 
+        Every aspect of PinePods is fully open sourced and the code is available on Github. There's zero data collection and you can self-host every aspect of the application. Run anywhere you can run a browser. There's a client on linux, mac, and windows. A mobile client is in the works. 
       </>
     ),
   },
@@ -23,10 +23,10 @@ const FeatureList = [
   },
   {
     title: 'Powered by Python',
-    Svg: require('../../static/img/pythonlogo.svg').default,
+    Svg: require('../../static/img/pythonlogo.png').default,
     description: (
       <>
-        Everything, and I mean everything in this application is made with python. The UI, the API, the client, and web component. PinePods is made primarily with the framework Flet. 
+        Created with a Python Backend and a Rust frontend for speed and performance where it counts. The UI is made with the Yew web framework, the API is FastAPI.
       </>
     ),
   },

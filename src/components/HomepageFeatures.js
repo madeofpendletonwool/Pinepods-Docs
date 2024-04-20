@@ -8,7 +8,7 @@ const FeatureList = [
     Svg: require('../../static/img/os.svg').default,
     description: (
       <>
-        Every aspect of PinePods is fully open sourced and the code is available on Github. There's zero data collection and you can self-host every aspect of the application. Run anywhere you can run a browser. There's a client on linux, mac, and windows. A mobile client is in the works. 
+        Every aspect of PinePods is fully open sourced and the code is available on Github. There's zero data collection and you can self-host every aspect of the application. Run anywhere you can run a browser. There's a client on linux, mac, and windows. A mobile client is in the works.
       </>
     ),
   },
@@ -23,7 +23,7 @@ const FeatureList = [
   },
   {
     title: 'Powered by Python',
-    Svg: require('../../static/img/pythonlogo.png').default,
+    imageSrc: require('../../static/img/pythonlogo.png').default,
     description: (
       <>
         Created with a Python Backend and a Rust frontend for speed and performance where it counts. The UI is made with the Yew web framework, the API is FastAPI.
@@ -32,11 +32,12 @@ const FeatureList = [
   },
 ];
 
-function Feature({Svg, title, description}) {
+function Feature({ Svg, title, description, imageSrc }) {
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center">
-        <Svg className={styles.featureSvg} alt={title} />
+        {Svg && <Svg className={styles.featureSvg} alt={title} />}
+        {imageSrc && <img src={imageSrc} className={styles.featureSvg} alt={title} />}
       </div>
       <div className="text--center padding-horiz--md">
         <h3>{title}</h3>
@@ -45,6 +46,7 @@ function Feature({Svg, title, description}) {
     </div>
   );
 }
+
 
 export default function HomepageFeatures() {
   return (

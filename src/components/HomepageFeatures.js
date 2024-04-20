@@ -22,7 +22,7 @@ const FeatureList = [
     ),
   },
   {
-    title: 'Powered by Python',
+    title: 'Powered by Python and Rust',
     imageSrc: require('../../static/img/pythonlogo.png').default,
     description: (
       <>

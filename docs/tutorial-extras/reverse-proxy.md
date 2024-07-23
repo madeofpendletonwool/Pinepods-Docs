@@ -25,10 +25,8 @@ The search API reverse proxy setup is even easier. Do the exact same thing after
 ## Traefik
 
 ### Pinepods 
-For Pinepods to be functioning behind a reverse proxy there are three services that will need to be allocated a subdomain each.
+For Pinepods to function behind a reverse proxy you just need to provide the main service a subdomain.
   1. Pinepods Webui - `https://pinepods.server.tld`
-  2. Pinepods Proxy - `https://pinepods-proxy.server.tld`
-  3. Pinepods Client API - `https://pinepods-api.server.tld`
 
 The below labels will run the above format in Traefik with an entry point of `websecure`
 
@@ -38,17 +36,7 @@ The below labels will run the above format in Traefik with an entry point of `we
             - "traefik.http.routers.pinepods.entrypoints=websecure"
             - "traefik.http.routers.pinepods.service=pinepods"
             - "traefik.http.routers.pinepods.rule=Host(`pinepods.server.tld`)"
-            - "traefik.http.services.pinepods.loadbalancer.server.port=8034"
-            # PinePods Proxy
-            - "traefik.http.routers.pinepods-proxy.entrypoints=websecure"
-            - "traefik.http.routers.pinepods-proxy.service=pinepods-proxy"
-            - "traefik.http.routers.pinepods-proxy.rule=Host(`pinepods-proxy.server.tld`)"
-            - "traefik.http.services.pinepods-proxy.loadbalancer.server.port=8000"
-            # Pinepods Client API
-            - "traefik.http.routers.pinepods-api.entrypoints=websecure"
-            - "traefik.http.routers.pinepods-api.service=pinepods-api"
-            - "traefik.http.routers.pinepods-api.rule=Host(`pinepods-api.server.tld`)"
-            - "traefik.http.services.pinepods-api.loadbalancer.server.port=8032"
+            - "traefik.http.services.pinepods.loadbalancer.server.port=8040"
 ```
 
 ### Pinepods Search API
@@ -78,30 +66,9 @@ This caddy config has not yet been fully tested. If you try it and it works, ple
 
 :::
 ```
-proxy.pinepods.home.arpa:80 {
-	reverse_proxy pinepods:8033
-	log {
-		output file /var/caddy/log/pinepods/proxy {
-			roll_keep 2
-			roll_size 10mb
-			roll_keep_for 48h
-		}
-	}
-}
-
-api.pinepods.home.arpa:80 {
-	reverse_proxy pinepods:8032
-	log {
-		output file /var/caddy/log/pinepods/api {
-			roll_keep 2
-			roll_size 10mb
-			roll_keep_for 48h
-		}
-	}
-}
 
 pinepods.home.arpa:80 {
-	reverse_proxy pinepods:8034
+	reverse_proxy pinepods:8040
 	log {
 		output file /var/caddy/log/pinepods/web {
 			roll_keep 2

@@ -22,13 +22,13 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://github.com/madeofpendletonwool/Pinepods-Docs/blob/main/docs',
+          editUrl: 'https://github.com/madeofpendletonwool/Pinepods-Docs/blob/main',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/madeofpendletonwool/Pinepods-Docs/tree/main/blog',
+            'https://github.com/madeofpendletonwool/Pinepods-Docs/tree/main',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

@@ -38,7 +38,7 @@ Now, what you've just done is run the web frontend of the project. The backend i
 
 ```
 cd Pinepods/
-sudo docker build -t madeofpendletonwool/pinepods:latest
+sudo docker build -t madeofpendletonwool/pinepods:latest .
 ```
 
 Then once built you can run the container with **[Docker Compose](https://github.com/madeofpendletonwool/PinePods/tree/main/deployment/docker/compose-files)**. Once you have the backend running you can connect to the server and sign in with your development frontend. Go to the development server url: http://localhost:8080 by default. Click the connect to different server button:

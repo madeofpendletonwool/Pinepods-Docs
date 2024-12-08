@@ -85,7 +85,7 @@ Whether you're a podcast app developer looking to integrate host/guest data, a p
 
 Entering an id will take you to a page for that particular podcast where you can submit host information. 
 
-![Podpeople;](../../static/img/podpeopledbpod.png)
+![Podpeople;](../../static/img/podpeoplepod.png)
 
 Note: It's much easier to just open a particular podcast in Pinepods where you'll be presented with the option to click a link directly to this page.
 

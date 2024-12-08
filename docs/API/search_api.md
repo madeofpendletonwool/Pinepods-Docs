@@ -1,100 +1,143 @@
-# Search documentation
-
-# Search API
+# Search API Documentation
 
 ## Overview
+The Search API is a Rust-based Actix application that provides endpoints to:
+- Search for podcasts using either PodcastIndex or iTunes
+- Search for podcasts by host/person
+- Retrieve detailed podcast information by feed ID
 
-This API comes built into it's own container and is used to find new podcasts by returning results from either the podcast index or itunes depending on your selection. 
+The API is containerized and can be easily deployed using Docker.
 
-## Setup your own searching API
+## Setup Instructions
 
-Head over to the podcast index API website and sign up to get your very own api and key. It's free and makes everything extra secure.
-[Podcast Index API Website](https://api.podcastindex.org/)
+1. Get API Credentials
+   - Visit [Podcast Index API Website](https://api.podcastindex.org/)
+   - Sign up for free API credentials (recommended over iTunes)
 
-Once you have it. Use this docker compose file
-
-```
-version: '3'
-services:
-    pypods-backend:
+2. Create Docker Configuration
+   ```yaml
+   version: '3'
+   services:
+     pypods-backend:
        image: madeofpendletonwool/pinepods_backend:latest
        container_name: pypods-be
        env_file: env_file
        ports:
-            - 5000:5000
+         - 5000:5000
        restart: unless-stopped
-```
-You also need to create the env file. It should contain your api key and secret NOTE: You MUST use the env file. Docker compose will not interpret certain characters if not in an env file. Don't smash your face against that issue for hours like I did
+   ```
 
-PS The Itunes podcast API does not require an API key. It just tracks everything from everyone instead. I'd recommend using the podcast index unless your podcast isn't available there.
+3. Create Environment File (env_file)
+   ```
+   API_KEY=your_api_key
+   API_SECRET=your_api_secret
+   ```
+   Note: Using an env_file is required as Docker compose may not correctly interpret certain characters in environment variables.
 
-env_file
-```
-API_KEY=your_api_key
-API_SECRET=your_api_secret
-```
+4. Deploy the Container
+   ```bash
+   sudo docker-compose up
+   ```
 
-Now go ahead and ```sudo docker-compose up``` your file. Then, in the pinepods compose file update the api_url.
+5. Configure Pinepods
+   Update your Pinepods compose file with the API URL:
+   ```yaml
+   API_URL: 'http://<YOUR_IP>/api/search'
+   ```
+   Or with a domain:
+   ```yaml
+   API_URL: 'https://<YOUR_DOMAIN>/api/search'
+   ```
 
-```
-API_URL: 'http://<YOUR_IP>/api/search'
-```
+## API Endpoints
 
-Or, even better, stick this behind a reverse proxy with your own domain as well.
-
-```
-API_URL: 'https://<YOUR_DOMAIN>/api/search'
-```
-## How it works
-
-The Search API is a Flask application that provides an endpoint /api/search to search for podcasts on either the PodcastIndex or iTunes based on a provided search query.
-
-API Endpoints:
+### 1. Search Endpoint
 ```
 GET /api/search
-
-This endpoint performs a search for podcasts based on a provided search term.
-
-Request Parameters:
-
-query : string (the term to search)
-index : string (the search index to use. 'itunes' or 'podcastindex'. If not provided, defaults to 'podcastindex')
 ```
-Example usage with curl:
-```
+
+Parameters:
+- `query` (string): The search term
+- `index` (string): Search provider ('itunes' or 'podcastindex', defaults to 'podcastindex')
+- `search_type` (string): Search type ('term' or 'person', defaults to 'term')
+
+Example Requests:
+```bash
+# Standard podcast search
+curl -X GET 'http://localhost:5000/api/search?query=mypodcast&index=podcastindex'
+
+# Search by person/host
+curl -X GET 'http://localhost:5000/api/search?query=joe%20rogan&search_type=person'
+
+# iTunes search
 curl -X GET 'http://localhost:5000/api/search?query=mypodcast&index=itunes'
 ```
-This command sends a GET request to the /api/search endpoint of the application with the query parameter set as 'mypodcast' and the index parameter set as 'itunes'.
 
-Response:
-
-The server responds with a JSON object containing the search results. If the request was not successful, the server responds with the error status code it received.
-
-For instance, a successful response may look like:
+### 2. Podcast Details Endpoint
 ```
+GET /api/podcast
+```
+
+Parameters:
+- `id` (string): The podcast feed ID
+
+Example Request:
+```bash
+curl -X GET 'http://localhost:5000/api/podcast?id=12345'
+```
+
+## Response Format
+
+### Standard Search Response
+```json
 {
-    "results": [
-        {
-            "wrapperType": "track",
-            "kind": "podcast",
-            "collectionId": 123456,
-            "trackId": 123456,
-            "artistName": "Python Bytes",
-            "collectionName": "Python Bytes",
-            "trackName": "Python Bytes",
-            "collectionCensoredName": "Python Bytes",
-            "trackCensoredName": "Python Bytes",
-            ...
-        },
-        ...
-    ],
-    "resultCount": 50
+  "results": [
+    {
+      "wrapperType": "track",
+      "kind": "podcast",
+      "collectionId": 123456,
+      "trackId": 123456,
+      "artistName": "Python Bytes",
+      "collectionName": "Python Bytes",
+      "trackName": "Python Bytes",
+      "collectionCensoredName": "Python Bytes",
+      "trackCensoredName": "Python Bytes"
+    }
+  ],
+  "resultCount": 50
 }
 ```
-The results array contains the search results, and resultCount is the number of results. Each object in the results array represents a podcast and includes details about the podcast.
 
-If the request was not successful, you might get a response like:
+### Person Search Response (PodcastIndex)
+```json
+{
+  "status": "true",
+  "feeds": [
+    {
+      "id": 12345,
+      "title": "Podcast Title",
+      "url": "https://example.com/feed.xml",
+      "host": "John Doe",
+      "description": "Podcast description"
+    }
+  ],
+  "count": 10
+}
+```
+
+### Error Response
+For unsuccessful requests, you'll receive an appropriate HTTP status code and error message:
 ```
 << Received 404 >>
 ```
-This means the server responded with a status code of 404, indicating that the requested resource was not found.
+
+## Notes
+- PodcastIndex is recommended over iTunes as it:
+  - Provides more detailed metadata
+  - Supports person/host searches
+  - Respects user privacy
+  - Offers better data accuracy
+- The API includes CORS configuration allowing cross-origin requests
+- Person search is only available when using PodcastIndex
+- All endpoints support preflight caching for 1 hour
+- Request rate limiting follows PodcastIndex API guidelines

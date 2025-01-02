@@ -52,6 +52,49 @@ export default function HomepageFeatures() {
   return (
     <section className={styles.features}>
       <div className="container">
+        {/* Detailed Introduction Section */}
+        <div className="text--center padding-horiz--md">
+          <div className="key-features margin-bottom--xl">
+            <h2>Self-Hosted Podcast Management</h2>
+            <p>
+              Pinepods is a powerful, self-hosted podcast management system that puts you in control. Built with Rust for performance and reliability, it's designed to be your personal podcast server that follows you across all your devices.
+            </p>
+          </div>
+
+          <div className="features-grid margin-bottom--xl">
+            <div className="row">
+              <div className="col">
+                <h3>Core Features</h3>
+                <ul className="clean-list">
+                  <li>🌐 Access your podcasts everywhere</li>
+                  <li>👥 Multi-user support</li>
+                  <li>🔍 Smart podcast discovery</li>
+                  <li>🔄 Nextcloud & gpodder sync</li>
+                  <li>🎨 Multiple themes</li>
+                  <li>🔐 Privacy-focused</li>
+                </ul>
+              </div>
+              <div className="col">
+                <h3>Technical Stack</h3>
+                <ul className="clean-list">
+                  <li>⚡️ Rust & Python powered</li>
+                  <li>🗄️ PostgreSQL/MySQL support</li>
+                  <li>🔧 Docker ready</li>
+                  <li>📱 PWA enabled</li>
+                  <li>🔌 Podcast Index & iTunes API</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="try-pinepods margin-bottom--xl">
+            <p>
+              Try it now at <a href="https://try.pinepods.online">try.pinepods.online</a> or set up your own server with our simple guide.
+            </p>
+          </div>
+        </div>
+
+        {/* Original Feature List */}
         <div className="row">
           {FeatureList.map((props, idx) => (
             <Feature key={idx} {...props} />

@@ -9,3 +9,30 @@
   height: 200px;
   width: 200px;
 }
+
+.clean-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  display: inline-block;
+}
+
+.clean-list li {
+  margin: 0.5rem 0;
+}
+
+.features-grid {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.key-features h2 {
+  margin-bottom: 1rem;
+}
+
+.key-features p {
+  font-size: 1.2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}

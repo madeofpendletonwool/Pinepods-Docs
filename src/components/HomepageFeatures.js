@@ -8,7 +8,7 @@ const FeatureList = [
     Svg: require('../../static/img/os.svg').default,
     description: (
       <>
-        Every aspect of PinePods is fully open sourced and the code is available on Github. There's zero data collection and you can self-host every aspect of the application. Run anywhere you can run a browser. There's a client on linux, mac, and windows. A mobile client is in the works.
+        Every aspect of PinePods is fully open source and the code is available on Github. There's zero data collection and you can self-host every aspect of the application. Run anywhere you can run a browser. There's a client on linux, mac, windows and android. An ios client is in the works.
       </>
     ),
   },
@@ -57,7 +57,7 @@ export default function HomepageFeatures() {
           <div className={styles.keyFeatures}>
             <h2>Self-Hosted Podcast Management</h2>
             <p>
-              Pinepods is a powerful, self-hosted podcast management system that puts you in control. Built with Rust for performance and reliability, it's designed to be your personal podcast server that follows you across all your devices.
+              Pinepods is a powerful, self-hosted podcast management system that puts you in control. Built with Rust for performance and reliability, it's designed to be your personal podcast server that follows you across all your devices because of it's centralized server hosted in your own homelab. You own all your data, and it can be accessed anywhere that runs a web browser with changes available between devices almost instantly! There's also client editions available as desktop and android apps that connect right up to your server!
             </p>
           </div>
 

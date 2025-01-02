@@ -10,29 +10,37 @@
   width: 200px;
 }
 
-.clean-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  text-align: left;
-  display: inline-block;
-}
-
-.clean-list li {
-  margin: 0.5rem 0;
-}
-
-.features-grid {
+.featuresGrid {
   max-width: 800px;
-  margin: 0 auto;
+  margin: 2rem auto;
 }
 
-.key-features h2 {
+.featureList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.featureList p {
+  margin: 0;
+  padding: 0;
+}
+
+.keyFeatures {
+  margin-bottom: 2rem;
+}
+
+.keyFeatures h2 {
   margin-bottom: 1rem;
 }
 
-.key-features p {
+.keyFeatures p {
   font-size: 1.2rem;
   max-width: 800px;
   margin: 0 auto;
+}
+
+.tryPinepods {
+  margin: 2rem 0;
 }

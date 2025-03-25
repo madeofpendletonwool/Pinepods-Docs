@@ -8,7 +8,7 @@ const FeatureList = [
     Svg: require('../../static/img/os.svg').default,
     description: (
       <>
-        Every aspect of PinePods is fully open sourced and the code is available on Github. There's zero data collection and you can self-host every aspect of the application. Run anywhere you can run a browser. There's a client on linux, mac, and windows. A mobile client is in the works.
+        Every aspect of PinePods is fully open source and the code is available on Github. There's zero data collection and you can self-host every aspect of the application. Run anywhere you can run a browser. There's a client on linux, mac, windows and android. An ios client is in the works.
       </>
     ),
   },
@@ -52,6 +52,49 @@ export default function HomepageFeatures() {
   return (
     <section className={styles.features}>
       <div className="container">
+        {/* Detailed Introduction Section */}
+        <div className="text--center padding-horiz--md">
+          <div className={styles.keyFeatures}>
+            <h2>Self-Hosted Podcast Management</h2>
+            <p>
+              Pinepods is a powerful, self-hosted podcast management system that puts you in control. Built with Rust for performance and reliability, it's designed to be your personal podcast server that follows you across all your devices because of it's centralized server hosted in your own homelab. You own all your data, and it can be accessed anywhere that runs a web browser with changes available between devices almost instantly! There's also client editions available as desktop and android apps that connect right up to your server!
+            </p>
+          </div>
+
+          <div className={styles.featuresGrid}>
+            <div className="row">
+              <div className="col col--6">
+                <h3>Core Features</h3>
+                <div className={styles.featureList}>
+                  <p>🌐 Access your podcasts everywhere</p>
+                  <p>👥 Multi-user support</p>
+                  <p>🔍 Smart podcast discovery</p>
+                  <p>🔄 Nextcloud & gpodder sync</p>
+                  <p>🎨 Multiple themes</p>
+                  <p>🔐 Privacy-focused</p>
+                </div>
+              </div>
+              <div className="col col--6">
+                <h3>Technical Stack</h3>
+                <div className={styles.featureList}>
+                  <p>⚡️ Rust & Python powered</p>
+                  <p>🗄️ PostgreSQL/MySQL support</p>
+                  <p>🔧 Docker ready</p>
+                  <p>📱 PWA enabled</p>
+                  <p>🔌 Podcast Index & iTunes API</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.tryPinepods}>
+            <p>
+              Try it now at <a href="https://try.pinepods.online">try.pinepods.online</a> or set up your own server with our simple guide.
+            </p>
+          </div>
+        </div>
+
+        {/* Original Feature List */}
         <div className="row">
           {FeatureList.map((props, idx) => (
             <Feature key={idx} {...props} />

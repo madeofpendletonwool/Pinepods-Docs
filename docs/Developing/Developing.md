@@ -30,7 +30,7 @@ rustup target add wasm32-unknown-unknown
 
 1. Get Code: `git clone https://github.com/madeofpendletonwool/PinePods.git`
 2. Navigate into the directory: `cd web`
-4. Start dev server: `trunk serve --features server_build`
+4. Start dev server: `RUSTFLAGS="--cfg=web_sys_unstable_apis" trunk serve --features server_build --release`
 
 Pinepods should now be being served on <http://localhost:8080/>. Hot reload is enabled, so making changes to any of the files and saving will trigger them to be rebuilt and the page refreshed.
 

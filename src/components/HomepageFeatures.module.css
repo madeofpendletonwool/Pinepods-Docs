@@ -9,3 +9,38 @@
   height: 200px;
   width: 200px;
 }
+
+.featuresGrid {
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+.featureList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.featureList p {
+  margin: 0;
+  padding: 0;
+}
+
+.keyFeatures {
+  margin-bottom: 2rem;
+}
+
+.keyFeatures h2 {
+  margin-bottom: 1rem;
+}
+
+.keyFeatures p {
+  font-size: 1.2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.tryPinepods {
+  margin: 2rem 0;
+}

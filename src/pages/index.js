@@ -20,7 +20,6 @@ function HomepageHeader() {
             PinePods Tutorial - 5min ⏱️
           </Link>
         </div>
-        <p>PinePods is a Rust based app that can sync podcasts for individual accounts that relies on a central database with a web frontend and apps available on multiple platforms</p>
       </div>
     </header>
   );

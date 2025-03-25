@@ -90,3 +90,37 @@ https://api.github.com/user
 10. Logout and then authenticate with Github. You'll be asked to authorize the app the first time and then you'll be logged in assuming everything went right!
 
 ### Using Google As your OIDC Provider
+
+1. First Follow all the steps above until you get to the OIDC provider Settings page and setup some of the initial name information. 
+
+2. Using a chromium based browser (GCP makes firefox explode) Head over to [The Google Cloud Console](https://console.cloud.google.com/)
+
+3. Either Select an existing Project if you have one or make a new one
+
+4. Click the hamburger menu and then click "APIs and Services". From here, select 'Credentials' on the left
+
+5. Now at the top click 'Create Credentials' and then choose OAuth client ID
+
+6. For app type, choose Web Application, and then provide a name.
+
+7. Click add provider in the OIDC settings in Pinepods and then copy the OIDC redirect URL from Pinepods and paste it into the Authorized redirect URIs in Gsuite. Then click Create.
+
+8. You'll be provided an ID and secret right away. Paste those into Pinepods
+
+9. Now enter the urls for google:
+
+```
+Authorization URL: https://accounts.google.com/o/oauth2/v2/auth
+Token URL: https://oauth2.googleapis.com/token
+User Info URL: https://openidconnect.googleapis.com/v1/userinfo
+```
+
+9. Simply enter the rest based on what's written above about the customization. For svg there's plenty of options that can be sourced online. Otherwise, the one below is a basic black Google icon. Feel free to use this.
+
+```
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+  <path d="M12 2a9.96 9.96 0 0 1 6.29 2.226a1 1 0 0 1 .04 1.52l-1.51 1.362a1 1 0 0 1 -1.265 .06a6 6 0 1 0 2.103 6.836l.001 -.004h-3.66a1 1 0 0 1 -.992 -.883l-.007 -.117v-2a1 1 0 0 1 1 -1h6.945a1 1 0 0 1 .994 .89c.04 .367 .061 .737 .061 1.11c0 5.523 -4.477 10 -10 10s-10 -4.477 -10 -10s4.477 -10 10 -10z"/>
+</svg>
+```
+
+10. Logout and then authenticate with Google. You'll be asked to authorize the app the first time and then you'll be logged in assuming everything went right!

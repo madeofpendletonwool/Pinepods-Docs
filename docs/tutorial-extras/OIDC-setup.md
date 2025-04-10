@@ -69,9 +69,9 @@ This option is great is you already have a Nextcloud Server spun up.
 
 7. Enter these options info the user info, auth, and Token URL fields of Pinepods
 
-  - Authorization URL: https://<YOUR-NEXTCLOUD-SERVER-URL>/index.php/apps/oidc/authorize
-  - Token URL: https://<YOUR-NEXTCLOUD-SERVER-URL>/index.php/apps/oidc/token
-  - User Info URL: https://<YOUR-NEXTCLOUD-SERVER-URL>/index.php/apps/oidc/userinfo
+  - Authorization URL: https://YOUR-NEXTCLOUD-SERVER-URL/index.php/apps/oidc/authorize
+  - Token URL: https://YOUR-NEXTCLOUD-SERVER-URL/index.php/apps/oidc/token
+  - User Info URL: https://YOUR-NEXTCLOUD-SERVER-URL/index.php/apps/oidc/userinfo
 
 6. At this point you should be left with the Name field, the scopes, button text, text color, button color, and svg options. Put Something like Nextloud into the Provider name box.
 

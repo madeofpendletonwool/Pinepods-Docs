@@ -1,6 +1,6 @@
 ## OIDC Setup
 
-You can now setup OIDC logins in Pinepods to use either your own self-hosted OIDC provider or one of the other large cloud hosted providers such as Github, Google, or Azure. Anything that follows the OIDC standard (and also Github even though they don't follow the standard) will work just fine. Below is instructions for setting up different types of providers 
+You can now setup OIDC logins in Pinepods to use either your own self-hosted OIDC provider or one of the other large cloud hosted providers such as Github, Google, or Azure. Anything that follows the OIDC standard (and also Github even though they don't follow the standard) will work just fine. Below is instructions for setting up different types of providers
 
 (NOTE: Only admins can setup OIDC Settings)
 
@@ -18,9 +18,9 @@ Seriously, since you're already self-hosted Pinepods you might as well self-host
 
 ![OIDC Settings](../../static/img/oidcsettings.png)
 
-2. Now click Add Provider - On this page you'll need to fill out the options according to your provider. 
+2. Now click Add Provider - On this page you'll need to fill out the options according to your provider.
 
-3. Create a new OIDC client in your provider. Enter the callback URL that you can copy from Pinepods into the OIDC provider where it's required. Should be something like this. Do not check public client or PKCE. 
+3. Create a new OIDC client in your provider. Enter the callback URL that you can copy from Pinepods into the OIDC provider where it's required. Should be something like this. Do not check public client or PKCE.
 
 ![OIDC callback](../../static/img/oidccallback.png)
 
@@ -32,7 +32,7 @@ Seriously, since you're already self-hosted Pinepods you might as well self-host
 
 6. At this point you should be left with the Name field, the scopes, button text, text color, button color, and svg options. Put in your provider for the name. If you use PocketID then enter PocketID
 
-7. For the scopes, it'll be somewhat dependant on the provider. Some providers allow you to choose scopes. Pinepods by default will have openid, email, and profile enabled by default. If you use PocketID or a similar self-hosted provider this default will probably work. If you do need to change the scopes, select the dropdown and click the ones you need. 
+7. For the scopes, it'll be somewhat dependant on the provider. Some providers allow you to choose scopes. Pinepods by default will have openid, email, and profile enabled by default. If you use PocketID or a similar self-hosted provider this default will probably work. If you do need to change the scopes, select the dropdown and click the ones you need.
 
 8. For the button options that's all up to you. The button text field is what the button will say to login. So maybe something like - 'Login with PocketID'
 
@@ -40,20 +40,63 @@ Seriously, since you're already self-hosted Pinepods you might as well self-host
 
 10. For the SVG, it's entirely optional and you can click Submit at this point, but if you can either find an SVG for your given provider or use one of the many online converters to convert the favicon of your provider into an svg you can enter it below. This may take some trial and error to get it to show up right. Additionally, you must provide the full svg wrapped in proper svg tag. For example <svg>mysvgcontent</svg>
 
-11. Hit submit! Now go ahead and log out. From here you might need to refresh but you should now see the OIDC login button appear on the page for you. Go ahead and click it. It will route you outside Pinepods and then back in once you've authenticated where you'll setup your account. 
+11. Hit submit! Now go ahead and log out. From here you might need to refresh but you should now see the OIDC login button appear on the page for you. Go ahead and click it. It will route you outside Pinepods and then back in once you've authenticated where you'll setup your account.
+
+![OIDC Button](../../static/img/myoidcbutton.png)
+
+
+### Using a Nextcloud as your OIDC provider (Also works great)
+
+This option is great is you already have a Nextcloud Server spun up.
+
+1. First head over to the settings page of Pinepods and open up the OIDC settings area
+
+![OIDC Settings](../../static/img/oidcsettings.png)
+
+2. Now click Add Provider - On this page you'll need to fill out the options according to your provider.
+
+3. Install or ensure you have the Nextcloud OIDC Provider app. It's [this](https://github.com/H2CK/oidc). You should be able to search for and install this in Nextcloud
+
+![Nextcloud OIDC](../../static/img/nextcloud-oidc.png)
+
+3. Create a new OIDC client in Nextcloud. Go to Admin Settings -> Security -> OpenID Connect clients. Create a new client. Call it something like 'Pinepods Login', enter the redirect URL from the Pinepods OIDC page, leave RS256 selected, and leave Confidential.
+
+4. Copy the ID and secret and enter them into Pinepods in the respective fields.
+
+5. Select Code Authorization Flow in the Nextcloud Flows field.
+
+6. Limit the scope to a group you are part of.
+
+7. Enter these options info the user info, auth, and Token URL fields of Pinepods
+
+  - Authorization URL: https://<YOUR-NEXTCLOUD-SERVER-URL>/index.php/apps/oidc/authorize
+  - Token URL: https://<YOUR-NEXTCLOUD-SERVER-URL>/index.php/apps/oidc/token
+  - User Info URL: https://<YOUR-NEXTCLOUD-SERVER-URL>/index.php/apps/oidc/userinfo
+
+6. At this point you should be left with the Name field, the scopes, button text, text color, button color, and svg options. Put Something like Nextloud into the Provider name box.
+
+7. For the scopes, leave the default in Pinepods. Just don't change anything.
+
+8. For the button options that's all up to you. The button text field is what the button will say to login. So maybe something like - 'Login with Nextcloud'
+
+9. For the colors just choose options that are likely to look good together. Blue makes sense for Nextloud. You might consider using colors that match the colors of your OIDC provider. Just don't choose black text with black button or you won't be able to read it.
+
+10. For the SVG, it's entirely optional and you can click Submit at this point. An svg for nextcloud is pretty easy to find. You must provide the full svg wrapped in proper svg tag. For example <svg>mysvgcontent</svg>
+
+11. Hit submit! Now go ahead and log out. From here you might need to refresh but you should now see the OIDC login button appear on the page for you. Go ahead and click it. It will route you outside Pinepods and then back in once you've authenticated where you'll setup your account.
 
 ![OIDC Button](../../static/img/myoidcbutton.png)
 
 
 ### Using Github As your OIDC Provider
 
-1. First Follow all the steps above until you get to the OIDC provider Settings page and setup some of the initial name information. 
+1. First Follow all the steps above until you get to the OIDC provider Settings page and setup some of the initial name information.
 
 2. Login to Github and go to the settings under your profile. You can also just [Click here and skip to step 4](https://github.com/settings/profile)
 
-3. Then scroll to the bottom and click Developer settings. From here select 'OAuth Apps' Create a new OAuth App. 
+3. Then scroll to the bottom and click Developer settings. From here select 'OAuth Apps' Create a new OAuth App.
 
-4. Create a New OAuth App. Give it a name and enter your Pinepods homepage for the homepage url, enter a description, then copy the callback url from the OIDC settings area in Pinepods and paste it into the Authorization Callback URL text box in github. 
+4. Create a New OAuth App. Give it a name and enter your Pinepods homepage for the homepage url, enter a description, then copy the callback url from the OIDC settings area in Pinepods and paste it into the Authorization Callback URL text box in github.
 
 So to clarify, if your Pinepods instance lives at https://try.pinepods.online. You would enter
 
@@ -91,7 +134,7 @@ https://api.github.com/user
 
 ### Using Google As your OIDC Provider
 
-1. First Follow all the steps above until you get to the OIDC provider Settings page and setup some of the initial name information. 
+1. First Follow all the steps above until you get to the OIDC provider Settings page and setup some of the initial name information.
 
 2. Using a chromium based browser (GCP makes firefox explode) Head over to [The Google Cloud Console](https://console.cloud.google.com/)
 

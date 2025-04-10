@@ -38,7 +38,11 @@ Seriously, since you're already self-hosted Pinepods you might as well self-host
 
 9. For the colors just choose options that are likely to look good together. You might consider using colors that match the colors of your OIDC provider. Just don't choose black text with black button or you won't be able to read it.
 
-10. For the SVG, it's entirely optional and you can click Submit at this point, but if you can either find an SVG for your given provider or use one of the many online converters to convert the favicon of your provider into an svg you can enter it below. This may take some trial and error to get it to show up right. Additionally, you must provide the full svg wrapped in proper svg tag. For example <svg>mysvgcontent</svg>
+10. For the SVG, it's entirely optional and you can click Submit at this point, but if you can either find an SVG for your given provider or use one of the many online converters to convert the favicon of your provider into an svg you can enter it below. This may take some trial and error to get it to show up right. Additionally, you must provide the full svg wrapped in proper svg tag. For example
+
+```
+<svg>mysvgcontent</svg>
+```
 
 11. Hit submit! Now go ahead and log out. From here you might need to refresh but you should now see the OIDC login button appear on the page for you. Go ahead and click it. It will route you outside Pinepods and then back in once you've authenticated where you'll setup your account.
 
@@ -81,7 +85,11 @@ This option is great is you already have a Nextcloud Server spun up.
 
 9. For the colors just choose options that are likely to look good together. Blue makes sense for Nextloud. You might consider using colors that match the colors of your OIDC provider. Just don't choose black text with black button or you won't be able to read it.
 
-10. For the SVG, it's entirely optional and you can click Submit at this point. An svg for nextcloud is pretty easy to find. You must provide the full svg wrapped in proper svg tag. For example <svg>mysvgcontent</svg>
+10. For the SVG, it's entirely optional and you can click Submit at this point. An svg for nextcloud is pretty easy to find. You must provide the full svg wrapped in proper svg tag. For example
+
+```
+<svg>mysvgcontent</svg>
+```
 
 11. Hit submit! Now go ahead and log out. From here you might need to refresh but you should now see the OIDC login button appear on the page for you. Go ahead and click it. It will route you outside Pinepods and then back in once you've authenticated where you'll setup your account.
 

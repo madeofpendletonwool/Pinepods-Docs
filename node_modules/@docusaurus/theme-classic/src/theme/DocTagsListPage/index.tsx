@@ -5,37 +5,53 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
-
-import Layout from '@theme/Layout';
+import React, {type ReactNode} from 'react';
+import clsx from 'clsx';
 import {
+  PageMetadata,
+  HtmlClassNameProvider,
   ThemeClassNames,
   translateTagsPageTitle,
 } from '@docusaurus/theme-common';
 import TagsListByLetter from '@theme/TagsListByLetter';
+import SearchMetadata from '@theme/SearchMetadata';
 import type {Props} from '@theme/DocTagsListPage';
+import Heading from '@theme/Heading';
 
-function DocTagsListPage({tags}: Props): JSX.Element {
-  const title = translateTagsPageTitle();
+function DocTagsListPageMetadata({title}: Props & {title: string}): ReactNode {
   return (
-    <Layout
-      title={title}
-      wrapperClassName={ThemeClassNames.wrapper.docsPages}
-      pageClassName={ThemeClassNames.page.docsTagsListPage}
-      searchMetadatas={{
-        // assign unique search tag to exclude this page from search results!
-        tag: 'doc_tags_list',
-      }}>
+    <>
+      <PageMetadata title={title} />
+      <SearchMetadata tag="doc_tags_list" />
+    </>
+  );
+}
+
+function DocTagsListPageContent({
+  tags,
+  title,
+}: Props & {title: string}): ReactNode {
+  return (
+    <HtmlClassNameProvider
+      className={clsx(ThemeClassNames.page.docsTagsListPage)}>
       <div className="container margin-vert--lg">
         <div className="row">
           <main className="col col--8 col--offset-2">
-            <h1>{title}</h1>
+            <Heading as="h1">{title}</Heading>
             <TagsListByLetter tags={tags} />
           </main>
         </div>
       </div>
-    </Layout>
+    </HtmlClassNameProvider>
   );
 }
 
-export default DocTagsListPage;
+export default function DocTagsListPage(props: Props): ReactNode {
+  const title = translateTagsPageTitle();
+  return (
+    <>
+      <DocTagsListPageMetadata {...props} title={title} />
+      <DocTagsListPageContent {...props} title={title} />
+    </>
+  );
+}

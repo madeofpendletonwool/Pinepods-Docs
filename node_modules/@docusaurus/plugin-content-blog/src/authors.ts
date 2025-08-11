@@ -5,153 +5,119 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs-extra';
-import chalk from 'chalk';
-import path from 'path';
-import {Author, BlogContentPaths} from './types';
-import {findFolderContainingFile} from '@docusaurus/utils';
-import {Joi, URISchema} from '@docusaurus/utils-validation';
-import {
+import _ from 'lodash';
+import {normalizeUrl} from '@docusaurus/utils';
+import {normalizeSocials} from './authorsSocials';
+import type {
+  Author,
+  AuthorsMap,
+  BlogPost,
   BlogPostFrontMatter,
   BlogPostFrontMatterAuthor,
-  BlogPostFrontMatterAuthors,
-} from './blogFrontMatter';
-import {getContentPathList} from './blogUtils';
-import Yaml from 'js-yaml';
-
-export type AuthorsMap = Record<string, Author>;
-
-const AuthorsMapSchema = Joi.object<AuthorsMap>().pattern(
-  Joi.string(),
-  Joi.object({
-    name: Joi.string().required(),
-    url: URISchema,
-    imageURL: URISchema,
-    title: Joi.string(),
-  })
-    .rename('image_url', 'imageURL')
-    .unknown()
-    .required(),
-);
-
-export function validateAuthorsMapFile(content: unknown): AuthorsMap {
-  return Joi.attempt(content, AuthorsMapSchema);
-}
-
-export async function readAuthorsMapFile(
-  filePath: string,
-): Promise<AuthorsMap | undefined> {
-  if (await fs.pathExists(filePath)) {
-    const contentString = await fs.readFile(filePath, {encoding: 'utf8'});
-    const parse =
-      filePath.endsWith('.yml') || filePath.endsWith('.yaml')
-        ? Yaml.load
-        : JSON.parse;
-    try {
-      const unsafeContent = parse(contentString);
-      return validateAuthorsMapFile(unsafeContent);
-    } catch (e) {
-      // TODO replace later by error cause: see https://v8.dev/features/error-cause
-      console.error(chalk.red('The author list file looks invalid!'));
-      throw e;
-    }
-  }
-  return undefined;
-}
-
-type AuthorsMapParams = {
-  authorsMapPath: string;
-  contentPaths: BlogContentPaths;
-};
-
-export async function getAuthorsMapFilePath({
-  authorsMapPath,
-  contentPaths,
-}: AuthorsMapParams): Promise<string | undefined> {
-  // Useful to load an eventually localize authors map
-  const contentPath = await findFolderContainingFile(
-    getContentPathList(contentPaths),
-    authorsMapPath,
-  );
-
-  if (contentPath) {
-    return path.join(contentPath, authorsMapPath);
-  }
-
-  return undefined;
-}
-
-export async function getAuthorsMap(
-  params: AuthorsMapParams,
-): Promise<AuthorsMap | undefined> {
-  const filePath = await getAuthorsMapFilePath(params);
-  if (!filePath) {
-    return undefined;
-  }
-  try {
-    return await readAuthorsMapFile(filePath);
-  } catch (e) {
-    // TODO replace later by error cause, see https://v8.dev/features/error-cause
-    console.error(
-      chalk.red(`Couldn't read blog authors map at path ${filePath}`),
-    );
-    throw e;
-  }
-}
+} from '@docusaurus/plugin-content-blog';
 
 type AuthorsParam = {
   frontMatter: BlogPostFrontMatter;
   authorsMap: AuthorsMap | undefined;
+  baseUrl: string;
 };
 
-// Legacy v1/early-v2 frontmatter fields
+export function normalizeImageUrl({
+  imageURL,
+  baseUrl,
+}: {
+  imageURL: string | undefined;
+  baseUrl: string;
+}): string | undefined {
+  return imageURL?.startsWith('/')
+    ? normalizeUrl([baseUrl, imageURL])
+    : imageURL;
+}
+
+function normalizeAuthorUrl({
+  author,
+  baseUrl,
+}: {
+  author: Author;
+  baseUrl: string;
+}): string | undefined {
+  if (author.key) {
+    // Ensures invariant: global authors should have already been normalized
+    if (
+      author.imageURL?.startsWith('/') &&
+      !author.imageURL.startsWith(baseUrl)
+    ) {
+      throw new Error(
+        `Docusaurus internal bug: global authors image ${author.imageURL} should start with the expected baseUrl=${baseUrl}`,
+      );
+    }
+
+    return author.imageURL;
+  }
+  return normalizeImageUrl({imageURL: author.imageURL, baseUrl});
+}
+
+// Legacy v1/early-v2 front matter fields
 // We may want to deprecate those in favor of using only frontMatter.authors
-function getFrontMatterAuthorLegacy(
-  frontMatter: BlogPostFrontMatter,
-): BlogPostFrontMatterAuthor | undefined {
+// TODO Docusaurus v4: remove this legacy front matter
+function getFrontMatterAuthorLegacy({
+  baseUrl,
+  frontMatter,
+}: {
+  baseUrl: string;
+  frontMatter: BlogPostFrontMatter;
+}): Author | undefined {
   const name = frontMatter.author;
   const title = frontMatter.author_title ?? frontMatter.authorTitle;
   const url = frontMatter.author_url ?? frontMatter.authorURL;
-  const imageURL = frontMatter.author_image_url ?? frontMatter.authorImageURL;
+  const imageURL = normalizeImageUrl({
+    imageURL: frontMatter.author_image_url ?? frontMatter.authorImageURL,
+    baseUrl,
+  });
 
-  // Shouldn't we require at least an author name?
   if (name || title || url || imageURL) {
     return {
       name,
       title,
       url,
       imageURL,
+      // legacy front matter authors do not have an author key/page
+      key: null,
+      page: null,
     };
   }
 
   return undefined;
 }
 
-function normalizeFrontMatterAuthors(
-  frontMatterAuthors: BlogPostFrontMatterAuthors = [],
-): BlogPostFrontMatterAuthor[] {
-  function normalizeAuthor(
-    authorInput: string | BlogPostFrontMatterAuthor,
-  ): BlogPostFrontMatterAuthor {
-    if (typeof authorInput === 'string') {
-      // Technically, we could allow users to provide an author's name here
-      // IMHO it's better to only support keys here
-      // Reason: a typo in a key would fallback to becoming a name and may end-up un-noticed
-      return {key: authorInput};
-    }
-    return authorInput;
-  }
-
-  return Array.isArray(frontMatterAuthors)
-    ? frontMatterAuthors.map(normalizeAuthor)
-    : [normalizeAuthor(frontMatterAuthors)];
-}
-
 function getFrontMatterAuthors(params: AuthorsParam): Author[] {
-  const {authorsMap} = params;
-  const frontMatterAuthors = normalizeFrontMatterAuthors(
-    params.frontMatter.authors,
-  );
+  const {authorsMap, frontMatter, baseUrl} = params;
+  return normalizeFrontMatterAuthors().map(toAuthor);
+
+  function normalizeFrontMatterAuthors(): BlogPostFrontMatterAuthor[] {
+    if (frontMatter.authors === undefined) {
+      return [];
+    }
+
+    function normalizeAuthor(
+      authorInput: string | BlogPostFrontMatterAuthor,
+    ): BlogPostFrontMatterAuthor {
+      if (typeof authorInput === 'string') {
+        // We could allow users to provide an author's name here, but we only
+        // support keys, otherwise, a typo in a key would fall back to
+        // becoming a name and may end up unnoticed
+        return {key: authorInput};
+      }
+      return {
+        ...authorInput,
+        socials: normalizeSocials(authorInput.socials ?? {}),
+      };
+    }
+
+    return Array.isArray(frontMatter.authors)
+      ? frontMatter.authors.map(normalizeAuthor)
+      : [normalizeAuthor(frontMatter.authors)];
+  }
 
   function getAuthorsMapAuthor(key: string | undefined): Author | undefined {
     if (key) {
@@ -173,30 +139,53 @@ ${Object.keys(authorsMap)
   }
 
   function toAuthor(frontMatterAuthor: BlogPostFrontMatterAuthor): Author {
-    return {
-      // Author def from authorsMap can be locally overridden by frontmatter
+    const author = {
+      // Author def from authorsMap can be locally overridden by front matter
       ...getAuthorsMapAuthor(frontMatterAuthor.key),
       ...frontMatterAuthor,
+    } as Author;
+
+    return {
+      ...author,
+      key: author.key ?? null,
+      page: author.page ?? null,
+      // global author images have already been normalized
+      imageURL: normalizeAuthorUrl({author, baseUrl}),
     };
   }
-
-  return frontMatterAuthors.map(toAuthor);
 }
 
 export function getBlogPostAuthors(params: AuthorsParam): Author[] {
-  const authorLegacy = getFrontMatterAuthorLegacy(params.frontMatter);
+  const authorLegacy = getFrontMatterAuthorLegacy(params);
   const authors = getFrontMatterAuthors(params);
 
   if (authorLegacy) {
-    // Technically, we could allow mixing legacy/authors frontmatter, but do we really want to?
+    // Technically, we could allow mixing legacy/authors front matter, but do we
+    // really want to?
     if (authors.length > 0) {
       throw new Error(
-        `To declare blog post authors, use the 'authors' FrontMatter in priority.
-Don't mix 'authors' with other existing 'author_*' FrontMatter. Choose one or the other, not both at the same time.`,
+        `To declare blog post authors, use the 'authors' front matter in priority.
+Don't mix 'authors' with other existing 'author_*' front matter. Choose one or the other, not both at the same time.`,
       );
     }
     return [authorLegacy];
   }
 
   return authors;
+}
+
+/**
+ * Group blog posts by author key
+ * Blog posts with only inline authors are ignored
+ */
+export function groupBlogPostsByAuthorKey({
+  blogPosts,
+  authorsMap,
+}: {
+  blogPosts: BlogPost[];
+  authorsMap: AuthorsMap | undefined;
+}): Record<string, BlogPost[]> {
+  return _.mapValues(authorsMap, (author, key) =>
+    blogPosts.filter((p) => p.metadata.authors.some((a) => a.key === key)),
+  );
 }

@@ -6,10 +6,3 @@
  */
 
 export const DEFAULT_SEARCH_TAG = 'default';
-
-export function docVersionSearchTag(
-  pluginId: string,
-  versionName: string,
-): string {
-  return `docs-${pluginId}-${versionName}`;
-}

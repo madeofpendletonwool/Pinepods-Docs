@@ -5,48 +5,58 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React, {type ReactNode} from 'react';
+import clsx from 'clsx';
 
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import {
+  PageMetadata,
+  HtmlClassNameProvider,
+  ThemeClassNames,
+} from '@docusaurus/theme-common';
 import BlogLayout from '@theme/BlogLayout';
-import BlogPostItem from '@theme/BlogPostItem';
 import BlogListPaginator from '@theme/BlogListPaginator';
+import SearchMetadata from '@theme/SearchMetadata';
 import type {Props} from '@theme/BlogListPage';
-import {ThemeClassNames} from '@docusaurus/theme-common';
+import BlogPostItems from '@theme/BlogPostItems';
+import BlogListPageStructuredData from '@theme/BlogListPage/StructuredData';
 
-function BlogListPage(props: Props): JSX.Element {
-  const {metadata, items, sidebar} = props;
+function BlogListPageMetadata(props: Props): ReactNode {
+  const {metadata} = props;
   const {
     siteConfig: {title: siteTitle},
   } = useDocusaurusContext();
   const {blogDescription, blogTitle, permalink} = metadata;
   const isBlogOnlyMode = permalink === '/';
   const title = isBlogOnlyMode ? siteTitle : blogTitle;
-
   return (
-    <BlogLayout
-      title={title}
-      description={blogDescription}
-      wrapperClassName={ThemeClassNames.wrapper.blogPages}
-      pageClassName={ThemeClassNames.page.blogListPage}
-      searchMetadatas={{
-        // assign unique search tag to exclude this page from search results!
-        tag: 'blog_posts_list',
-      }}
-      sidebar={sidebar}>
-      {items.map(({content: BlogPostContent}) => (
-        <BlogPostItem
-          key={BlogPostContent.metadata.permalink}
-          frontMatter={BlogPostContent.frontMatter}
-          assets={BlogPostContent.assets}
-          metadata={BlogPostContent.metadata}
-          truncated={BlogPostContent.metadata.truncated}>
-          <BlogPostContent />
-        </BlogPostItem>
-      ))}
+    <>
+      <PageMetadata title={title} description={blogDescription} />
+      <SearchMetadata tag="blog_posts_list" />
+    </>
+  );
+}
+
+function BlogListPageContent(props: Props): ReactNode {
+  const {metadata, items, sidebar} = props;
+  return (
+    <BlogLayout sidebar={sidebar}>
+      <BlogPostItems items={items} />
       <BlogListPaginator metadata={metadata} />
     </BlogLayout>
   );
 }
 
-export default BlogListPage;
+export default function BlogListPage(props: Props): ReactNode {
+  return (
+    <HtmlClassNameProvider
+      className={clsx(
+        ThemeClassNames.wrapper.blogPages,
+        ThemeClassNames.page.blogListPage,
+      )}>
+      <BlogListPageMetadata {...props} />
+      <BlogListPageStructuredData {...props} />
+      <BlogListPageContent {...props} />
+    </HtmlClassNameProvider>
+  );
+}

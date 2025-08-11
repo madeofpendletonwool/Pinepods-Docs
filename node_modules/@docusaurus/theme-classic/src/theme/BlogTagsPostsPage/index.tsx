@@ -5,60 +5,48 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
-
+import React, {type ReactNode} from 'react';
+import clsx from 'clsx';
+import Translate from '@docusaurus/Translate';
+import {
+  PageMetadata,
+  HtmlClassNameProvider,
+  ThemeClassNames,
+} from '@docusaurus/theme-common';
+import {useBlogTagsPostsPageTitle} from '@docusaurus/theme-common/internal';
 import Link from '@docusaurus/Link';
 import BlogLayout from '@theme/BlogLayout';
-import BlogPostItem from '@theme/BlogPostItem';
+import BlogListPaginator from '@theme/BlogListPaginator';
+import SearchMetadata from '@theme/SearchMetadata';
 import type {Props} from '@theme/BlogTagsPostsPage';
-import Translate, {translate} from '@docusaurus/Translate';
-import {ThemeClassNames, usePluralForm} from '@docusaurus/theme-common';
+import BlogPostItems from '@theme/BlogPostItems';
+import Unlisted from '@theme/ContentVisibility/Unlisted';
+import Heading from '@theme/Heading';
 
-// Very simple pluralization: probably good enough for now
-function useBlogPostsPlural() {
-  const {selectMessage} = usePluralForm();
-  return (count: number) =>
-    selectMessage(
-      count,
-      translate(
-        {
-          id: 'theme.blog.post.plurals',
-          description:
-            'Pluralized label for "{count} posts". Use as much plural forms (separated by "|") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)',
-          message: 'One post|{count} posts',
-        },
-        {count},
-      ),
-    );
+function BlogTagsPostsPageMetadata({tag}: Props): ReactNode {
+  const title = useBlogTagsPostsPageTitle(tag);
+  return (
+    <>
+      <PageMetadata title={title} description={tag.description} />
+      <SearchMetadata tag="blog_tags_posts" />
+    </>
+  );
 }
 
-export default function BlogTagsPostsPage(props: Props): JSX.Element {
-  const {metadata, items, sidebar} = props;
-  const {allTagsPath, name: tagName, count} = metadata;
-  const blogPostsPlural = useBlogPostsPlural();
-  const title = translate(
-    {
-      id: 'theme.blog.tagTitle',
-      description: 'The title of the page for a blog tag',
-      message: '{nPosts} tagged with "{tagName}"',
-    },
-    {nPosts: blogPostsPlural(count), tagName},
-  );
-
+function BlogTagsPostsPageContent({
+  tag,
+  items,
+  sidebar,
+  listMetadata,
+}: Props): ReactNode {
+  const title = useBlogTagsPostsPageTitle(tag);
   return (
-    <BlogLayout
-      title={title}
-      wrapperClassName={ThemeClassNames.wrapper.blogPages}
-      pageClassName={ThemeClassNames.page.blogTagPostListPage}
-      searchMetadatas={{
-        // assign unique search tag to exclude this page from search results!
-        tag: 'blog_tags_posts',
-      }}
-      sidebar={sidebar}>
+    <BlogLayout sidebar={sidebar}>
+      {tag.unlisted && <Unlisted />}
       <header className="margin-bottom--xl">
-        <h1>{title}</h1>
-
-        <Link href={allTagsPath}>
+        <Heading as="h1">{title}</Heading>
+        {tag.description && <p>{tag.description}</p>}
+        <Link href={tag.allTagsPath}>
           <Translate
             id="theme.tags.tagsPageLink"
             description="The label of the link targeting the tag list page">
@@ -66,17 +54,20 @@ export default function BlogTagsPostsPage(props: Props): JSX.Element {
           </Translate>
         </Link>
       </header>
-
-      {items.map(({content: BlogPostContent}) => (
-        <BlogPostItem
-          key={BlogPostContent.metadata.permalink}
-          frontMatter={BlogPostContent.frontMatter}
-          assets={BlogPostContent.assets}
-          metadata={BlogPostContent.metadata}
-          truncated>
-          <BlogPostContent />
-        </BlogPostItem>
-      ))}
+      <BlogPostItems items={items} />
+      <BlogListPaginator metadata={listMetadata} />
     </BlogLayout>
+  );
+}
+export default function BlogTagsPostsPage(props: Props): ReactNode {
+  return (
+    <HtmlClassNameProvider
+      className={clsx(
+        ThemeClassNames.wrapper.blogPages,
+        ThemeClassNames.page.blogTagPostListPage,
+      )}>
+      <BlogTagsPostsPageMetadata {...props} />
+      <BlogTagsPostsPageContent {...props} />
+    </HtmlClassNameProvider>
   );
 }

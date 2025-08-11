@@ -5,36 +5,23 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {LoadContext, Plugin} from '@docusaurus/types';
-import {docuHash, normalizeUrl, posixPath} from '@docusaurus/utils';
-import path from 'path';
+import {normalizeUrl} from '@docusaurus/utils';
+import type {LoadContext, Plugin} from '@docusaurus/types';
 
 export default function pluginDebug({
   siteConfig: {baseUrl},
-  generatedFilesDir,
-}: LoadContext): Plugin<void> {
-  const pluginDataDirRoot = path.join(
-    generatedFilesDir,
-    'docusaurus-plugin-debug',
-  );
-  const aliasedSource = (source: string) =>
-    `~debug/${posixPath(path.relative(pluginDataDirRoot, source))}`;
-
+}: LoadContext): Plugin<undefined> {
   return {
     name: 'docusaurus-plugin-debug',
 
     getThemePath() {
-      return path.resolve(__dirname, '../lib/theme');
+      return '../lib/theme';
+    },
+    getTypeScriptThemePath() {
+      return '../src/theme';
     },
 
-    async contentLoaded({actions: {createData, addRoute}, allContent}) {
-      const allContentPath = await createData(
-        // Note that this created data path must be in sync with
-        // metadataPath provided to mdx-loader.
-        `${docuHash('docusaurus-debug-allContent')}.json`,
-        JSON.stringify(allContent, null, 2),
-      );
-
+    async allContentLoaded({actions: {addRoute}, allContent}) {
       // Home is config (duplicate for now)
       addRoute({
         path: normalizeUrl([baseUrl, '__docusaurus/debug']),
@@ -70,8 +57,8 @@ export default function pluginDebug({
         path: normalizeUrl([baseUrl, '__docusaurus/debug/content']),
         component: '@theme/DebugContent',
         exact: true,
-        modules: {
-          allContent: aliasedSource(allContentPath),
+        props: {
+          allContent,
         },
       });
 
@@ -80,16 +67,6 @@ export default function pluginDebug({
         component: '@theme/DebugGlobalData',
         exact: true,
       });
-    },
-
-    configureWebpack() {
-      return {
-        resolve: {
-          alias: {
-            '~debug': pluginDataDirRoot,
-          },
-        },
-      };
     },
   };
 }

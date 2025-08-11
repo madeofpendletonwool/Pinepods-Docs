@@ -7,47 +7,53 @@
 
 import fs from 'fs-extra';
 import path from 'path';
-import {PluginOptions} from './types';
+import logger from '@docusaurus/logger';
 import createSitemap from './createSitemap';
-import {
-  LoadContext,
-  Props,
-  OptionValidationContext,
-  ValidationResult,
-  Plugin,
-} from '@docusaurus/types';
-import {PluginOptionSchema} from './pluginOptionSchema';
+import type {PluginOptions, Options} from './options';
+import type {LoadContext, Plugin} from '@docusaurus/types';
+
+const PluginName = 'docusaurus-plugin-sitemap';
 
 export default function pluginSitemap(
-  _context: LoadContext,
+  context: LoadContext,
   options: PluginOptions,
-): Plugin<void> {
-  return {
-    name: 'docusaurus-plugin-sitemap',
+): Plugin<void> | null {
+  if (context.siteConfig.future.experimental_router === 'hash') {
+    logger.warn(
+      `${PluginName} does not support the Hash Router and will be disabled.`,
+    );
+    return null;
+  }
 
-    async postBuild({siteConfig, routesPaths, outDir}: Props) {
+  return {
+    name: PluginName,
+
+    async postBuild({siteConfig, routes, outDir, routesBuildMetadata}) {
+      if (siteConfig.noIndex) {
+        return;
+      }
       // Generate sitemap.
-      const generatedSitemap = await createSitemap(
+      const generatedSitemap = await createSitemap({
         siteConfig,
-        routesPaths,
+        routes,
+        routesBuildMetadata,
         options,
-      );
+      });
+      if (!generatedSitemap) {
+        return;
+      }
 
       // Write sitemap file.
-      const sitemapPath = path.join(outDir, 'sitemap.xml');
+      const sitemapPath = path.join(outDir, options.filename);
       try {
         await fs.outputFile(sitemapPath, generatedSitemap);
       } catch (err) {
-        throw new Error(`Writing sitemap failed: ${err}`);
+        logger.error('Writing sitemap failed.');
+        throw err;
       }
     },
   };
 }
 
-export function validateOptions({
-  validate,
-  options,
-}: OptionValidationContext<PluginOptions>): ValidationResult<PluginOptions> {
-  const validatedOptions = validate(PluginOptionSchema, options);
-  return validatedOptions;
-}
+export {validateOptions} from './options';
+export type {PluginOptions, Options};

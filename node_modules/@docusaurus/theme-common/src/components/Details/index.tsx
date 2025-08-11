@@ -5,9 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React, {ComponentProps, ReactElement, useRef, useState} from 'react';
-import useIsBrowser from '@docusaurus/useIsBrowser';
+import React, {
+  useRef,
+  useState,
+  type ComponentProps,
+  type ReactElement,
+  type ReactNode,
+} from 'react';
 import clsx from 'clsx';
+import useBrokenLinks from '@docusaurus/useBrokenLinks';
+import useIsBrowser from '@docusaurus/useIsBrowser';
 import {useCollapsible, Collapsible} from '../Collapsible';
 import styles from './styles.module.css';
 
@@ -26,21 +33,42 @@ function hasParent(node: HTMLElement | null, parent: HTMLElement): boolean {
 }
 
 export type DetailsProps = {
-  summary?: ReactElement;
+  /**
+   * Summary is provided as props, optionally including the wrapping
+   * `<summary>` tag
+   */
+  summary?: ReactElement | string;
 } & ComponentProps<'details'>;
 
-const Details = ({summary, children, ...props}: DetailsProps): JSX.Element => {
+/**
+ * A mostly un-styled `<details>` element with smooth collapsing. Provides some
+ * very lightweight styles, but you should bring your UI.
+ */
+export function Details({
+  summary,
+  children,
+  ...props
+}: DetailsProps): ReactNode {
+  useBrokenLinks().collectAnchor(props.id);
+
   const isBrowser = useIsBrowser();
   const detailsRef = useRef<HTMLDetailsElement>(null);
 
   const {collapsed, setCollapsed} = useCollapsible({
     initialState: !props.open,
   });
-  // We use a separate prop because it must be set only after animation completes
-  // Otherwise close anim won't work
+  // Use a separate state for the actual details prop, because it must be set
+  // only after animation completes, otherwise close animations won't work
   const [open, setOpen] = useState(props.open);
 
+  const summaryElement = React.isValidElement(summary) ? (
+    summary
+  ) : (
+    <summary>{summary ?? 'Details'}</summary>
+  );
+
   return (
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions
     <details
       {...props}
       ref={detailsRef}
@@ -48,7 +76,7 @@ const Details = ({summary, children, ...props}: DetailsProps): JSX.Element => {
       data-collapsed={collapsed}
       className={clsx(
         styles.details,
-        {[styles.isBrowser]: isBrowser},
+        isBrowser && styles.isBrowser,
         props.className,
       )}
       onMouseDown={(e) => {
@@ -72,15 +100,15 @@ const Details = ({summary, children, ...props}: DetailsProps): JSX.Element => {
           setOpen(true);
         } else {
           setCollapsed(true);
-          // setOpen(false); // Don't do this, it breaks close animation!
+          // Don't do this, it breaks close animation!
+          // setOpen(false);
         }
       }}>
-      {summary}
+      {summaryElement}
 
       <Collapsible
         lazy={false} // Content might matter for SEO in this case
         collapsed={collapsed}
-        disableSSRStyle // Allows component to work fine even with JS disabled!
         onCollapseTransitionEnd={(newCollapsed) => {
           setCollapsed(newCollapsed);
           setOpen(!newCollapsed);
@@ -89,6 +117,4 @@ const Details = ({summary, children, ...props}: DetailsProps): JSX.Element => {
       </Collapsible>
     </details>
   );
-};
-
-export default Details;
+}

@@ -207,7 +207,7 @@ helm install pinepods pinepods/pinepods -f my-values.yaml --namespace pinepods-n
 ```
 #### Customizing Values
 
-Create a my-values.yaml file to override default values - Any value with {{  }} are things you need to set yourself.:
+Create a my-values.yaml file to override default values - Any value with `{{  }}` are things you need to set yourself.:
 
 ```
 ## Container image configuration

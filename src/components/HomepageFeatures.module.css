@@ -95,12 +95,33 @@
   transform: translateY(0);
 }
 
+/* Section Dividers */
+.performanceSection::before,
+.whatIsSection::before,
+.syncSection::before,
+.deploymentSection::before,
+.appsSection::before,
+.featuresGrid::before,
+.screenshotsSection::before,
+.ctaSection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  z-index: 10;
+}
+
 /* Performance Section */
 .performanceSection {
   padding: 6rem 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #9b59b6 100%);
   color: white;
   text-align: center;
+  position: relative;
 }
 
 .performanceContent {
@@ -156,9 +177,10 @@
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
-.statValue {
+.statIcon {
   font-size: 3rem;
   margin-bottom: 1rem;
+  color: #ffd700;
 }
 
 .statLabel {
@@ -172,12 +194,114 @@
   opacity: 0.8;
 }
 
+/* What Is Section */
+.whatIsSection {
+  padding: 6rem 0;
+  background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+  color: white;
+  text-align: center;
+  position: relative;
+}
+
+.whatIsContent {
+  animation: fadeInUp 0.8s ease-out 0.5s both;
+}
+
+.whatIsSection .sectionTitle {
+  color: white;
+  margin-bottom: 3rem;
+}
+
+.categoryNav {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+
+.categoryButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.categoryButton:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.categoryButton.active {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #3498db;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.categoryIcon {
+  font-size: 1.2rem;
+}
+
+.categoryContent {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 3rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.categoryDescription h3 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #3498db;
+}
+
+.categoryDescription p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.categoryFeatures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+.feature i {
+  color: #2ecc71;
+  font-size: 1.1rem;
+}
+
 /* Sync Section */
 .syncSection {
   padding: 6rem 0;
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, #9b59b6 0%, #e74c3c 50%, #f39c12 100%);
   color: white;
   text-align: center;
+  position: relative;
 }
 
 .syncContent {
@@ -223,6 +347,7 @@
   font-size: 3rem;
   margin-bottom: 1.5rem;
   display: block;
+  color: #ffd700;
 }
 
 .syncFeature h3 {
@@ -239,9 +364,10 @@
 /* Deployment Section */
 .deploymentSection {
   padding: 6rem 0;
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  background: linear-gradient(135deg, #f39c12 0%, #27ae60 50%, #1abc9c 100%);
   color: white;
   text-align: center;
+  position: relative;
 }
 
 .deploymentContent {
@@ -285,6 +411,7 @@
   font-size: 3.5rem;
   margin-bottom: 1.5rem;
   display: block;
+  color: #38ef7d;
 }
 
 .deploymentCard h3 {
@@ -301,9 +428,10 @@
 /* Apps Section */
 .appsSection {
   padding: 6rem 0;
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: linear-gradient(135deg, #1abc9c 0%, #3498db 50%, #9b59b6 100%);
   color: white;
   text-align: center;
+  position: relative;
 }
 
 .appsContent {
@@ -365,6 +493,38 @@
   font-size: 3.5rem;
   margin-bottom: 1.5rem;
   display: block;
+  color: #00f2fe;
+}
+
+.anyDeviceSection {
+  margin-top: 3rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+}
+
+.anyDeviceSection h3 {
+  color: white;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.anyDeviceSection p {
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+}
+
+.anyDeviceSection a {
+  color: #00f2fe;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.anyDeviceSection a:hover {
+  text-decoration: underline;
 }
 
 .appCard h3 {
@@ -392,6 +552,7 @@
   padding: 6rem 0;
   background: #f8f9fa;
   text-align: center;
+  position: relative;
 }
 
 .featuresGrid .sectionTitle {
@@ -441,6 +602,7 @@
   font-size: 3rem;
   margin-bottom: 1.5rem;
   display: block;
+  color: var(--ifm-color-primary);
 }
 
 .featureCard h3 {
@@ -459,6 +621,7 @@
   padding: 6rem 0;
   background: #f8f9fa;
   text-align: center;
+  position: relative;
 }
 
 .screenshotsContent {
@@ -476,24 +639,38 @@
 }
 
 .screenshotGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
   margin-top: 4rem;
 }
 
 .screenshotCard {
+  display: flex;
+  align-items: center;
   background: white;
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   opacity: 0;
-  transform: scale(0.9);
+  transform: translateX(-50px);
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.screenshotCard:nth-child(even) {
+  flex-direction: row-reverse;
+  transform: translateX(50px);
 }
 
 .screenshotsSection.animate .screenshotCard {
-  animation: scaleIn 0.6s ease-out forwards;
+  animation: slideInFromLeft 0.6s ease-out forwards;
+}
+
+.screenshotsSection.animate .screenshotCard:nth-child(even) {
+  animation: slideInFromRight 0.6s ease-out forwards;
 }
 
 .screenshotsSection.animate .screenshotCard:nth-child(1) { animation-delay: 0.1s; }
@@ -503,19 +680,20 @@
 .screenshotsSection.animate .screenshotCard:nth-child(5) { animation-delay: 0.5s; }
 
 .screenshotCard:hover {
-  transform: translateY(-10px) scale(1.02);
+  transform: translateY(-5px);
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
 }
 
 .screenshotImage {
-  width: 100%;
-  height: 250px;
+  width: 50%;
+  height: 300px;
   object-fit: cover;
-  border-bottom: 1px solid #e9ecef;
+  flex-shrink: 0;
 }
 
 .screenshotInfo {
-  padding: 2rem;
+  padding: 3rem;
+  flex: 1;
   text-align: left;
 }
 
@@ -534,9 +712,10 @@
 /* CTA Section */
 .ctaSection {
   padding: 6rem 0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #2c3e50 0%, #3498db 50%, #9b59b6 100%);
   color: white;
   text-align: center;
+  position: relative;
 }
 
 .ctaContent h2 {
@@ -657,5 +836,23 @@
   
   .ctaContent h2 {
     font-size: 2.5rem;
+  }
+  
+  .categoryNav {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .categoryButton {
+    width: 200px;
+    justify-content: center;
+  }
+  
+  .categoryContent {
+    padding: 2rem;
+  }
+  
+  .categoryFeatures {
+    grid-template-columns: 1fr;
   }
 }

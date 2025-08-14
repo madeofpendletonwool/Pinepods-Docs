@@ -15,6 +15,21 @@ module.exports = {
   organizationName: "madeofpendletonwool", // Usually your GitHub org/user name.
   projectName: "Pinepods-Docs", // Usually your repo name.
 
+  stylesheets: [
+    {
+      href: 'https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css',
+      type: 'text/css',
+    },
+    {
+      href: 'https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css', 
+      type: 'text/css',
+    },
+    {
+      href: 'https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css',
+      type: 'text/css', 
+    },
+  ],
+
   presets: [
     [
       "@docusaurus/preset-classic",
@@ -46,6 +61,7 @@ module.exports = {
           alt: "PinePods Logo",
           src: "img/pinepods-appicon.png",
         },
+        style: "primary",
         items: [
           { type: "doc", docId: "intro", position: "left", label: "Tutorial" },
           { to: "/blog", label: "Blog", position: "left" },
@@ -55,9 +71,15 @@ module.exports = {
             position: "left",
             label: "API",
           },
+          { to: "/contact", label: "Contact", position: "left" },
+          {
+            href: "https://discord.com/invite/bKzHRa4GNc",
+            label: "Discord",
+            position: "right",
+          },
           {
             href: "https://github.com/madeofpendletonwool/PinePods",
-            label: "GitHub",
+            label: "GitHub", 
             position: "right",
           },
         ],

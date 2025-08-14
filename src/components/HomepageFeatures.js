@@ -93,8 +93,13 @@ const SyncSection = () => {
             </div>
             <div className={styles.syncFeature}>
               <div className={styles.syncIcon}>🔗</div>
-              <h3>gpodder Compatible</h3>
-              <p>Built-in gpodder sync server keeps everything in perfect harmony.</p>
+              <h3>Triple gpodder Support</h3>
+              <p>Internal server, external gpodder, and Nextcloud gpodder - your choice.</p>
+            </div>
+            <div className={styles.syncFeature}>
+              <div className={styles.syncIcon}>📺</div>
+              <h3>YouTube Channels</h3>
+              <p>Subscribe to YouTube channels and get audio-only downloads as podcasts.</p>
             </div>
           </div>
         </div>
@@ -245,6 +250,80 @@ const FeaturesGrid = () => {
   );
 };
 
+const ScreenshotsSection = () => {
+  const animRef = useScrollAnimation();
+  
+  return (
+    <section className={styles.screenshotsSection} ref={animRef}>
+      <div className="container">
+        <div className={styles.screenshotsContent}>
+          <h2 className={styles.sectionTitle}>Don't Take My Word For It</h2>
+          <p className={styles.sectionSubtitle}>
+            See PinePods in action across all platforms. Beautiful, consistent, and powerful everywhere.
+          </p>
+          <div className={styles.screenshotGrid}>
+            <div className={styles.screenshotCard}>
+              <img 
+                src="/img/screenshots/web-interface.png" 
+                alt="PinePods Web Interface" 
+                className={styles.screenshotImage}
+              />
+              <div className={styles.screenshotInfo}>
+                <h3>Web Interface (WASM)</h3>
+                <p>Lightning-fast Rust WebAssembly frontend</p>
+              </div>
+            </div>
+            <div className={styles.screenshotCard}>
+              <img 
+                src="/img/screenshots/android-app.png" 
+                alt="PinePods Android App" 
+                className={styles.screenshotImage}
+              />
+              <div className={styles.screenshotInfo}>
+                <h3>Android App</h3>
+                <p>Native Android experience with offline support</p>
+              </div>
+            </div>
+            <div className={styles.screenshotCard}>
+              <img 
+                src="/img/screenshots/ios-app.png" 
+                alt="PinePods iOS App" 
+                className={styles.screenshotImage}
+              />
+              <div className={styles.screenshotInfo}>
+                <h3>iOS App</h3>
+                <p>Beautiful native iOS interface</p>
+              </div>
+            </div>
+            <div className={styles.screenshotCard}>
+              <img 
+                src="/img/screenshots/desktop-app.png" 
+                alt="PinePods Desktop App" 
+                className={styles.screenshotImage}
+              />
+              <div className={styles.screenshotInfo}>
+                <h3>Desktop App</h3>
+                <p>Cross-platform desktop application</p>
+              </div>
+            </div>
+            <div className={styles.screenshotCard}>
+              <img 
+                src="/img/screenshots/cli-tui.png" 
+                alt="PinePods CLI TUI - Firewood" 
+                className={styles.screenshotImage}
+              />
+              <div className={styles.screenshotInfo}>
+                <h3>CLI TUI (Firewood)</h3>
+                <p>Beautiful terminal interface for power users</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const CTASection = () => {
   const animRef = useScrollAnimation();
   
@@ -276,6 +355,7 @@ export default function HomepageFeatures() {
       <DeploymentSection />
       <AppsSection />
       <FeaturesGrid />
+      <ScreenshotsSection />
       <CTASection />
     </>
   );

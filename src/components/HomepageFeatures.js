@@ -2,105 +2,177 @@ import React from 'react';
 import clsx from 'clsx';
 import styles from './HomepageFeatures.module.css';
 
-const FeatureList = [
-  {
-    title: 'Own Everything, Run Everywhere',
-    Svg: require('../../static/img/os.svg').default,
-    description: (
-      <>
-        Every aspect of PinePods is fully open source and the code is available on Github. There's zero data collection and you can self-host every aspect of the application. Run anywhere you can run a browser. There's a client on linux, mac, windows and android. An ios client is in the works.
-      </>
-    ),
-  },
-  {
-    title: 'Zero Cost, Full Functionality',
-    Svg: require('../../static/img/opensource.svg').default,
-    description: (
-      <>
-        Get all the features of the paid podcast apps. PinePods will never cost a dime and survives solely on donations. Rest easy knowing you'll always be able to sync your saved podcasts and user settings between devices.
-      </>
-    ),
-  },
-  {
-    title: 'Powered by Python and Rust',
-    imageSrc: require('../../static/img/pythonlogo.png').default,
-    description: (
-      <>
-        Created with a Python Backend and a Rust frontend for speed and performance where it counts. The UI is made with the Yew web framework, the API is FastAPI.
-      </>
-    ),
-  },
-];
-
-function Feature({ Svg, title, description, imageSrc }) {
-  return (
-    <div className={clsx('col col--4')}>
-      <div className="text--center">
-        {Svg && <Svg className={styles.featureSvg} alt={title} />}
-        {imageSrc && <img src={imageSrc} className={styles.featureSvg} alt={title} />}
-      </div>
-      <div className="text--center padding-horiz--md">
-        <h3>{title}</h3>
-        <p>{description}</p>
+const PerformanceSection = () => (
+  <section className={styles.performanceSection}>
+    <div className="container">
+      <div className={styles.performanceContent}>
+        <h2 className={styles.sectionTitle}>⚡ Blazing Fast Performance</h2>
+        <p className={styles.sectionSubtitle}>
+          Built with Rust for uncompromising speed and efficiency. Your podcast server that never slows down.
+        </p>
+        <div className={styles.performanceStats}>
+          <div className={styles.performanceStat}>
+            <span className={styles.statValue}>🚀</span>
+            <span className={styles.statLabel}>Rust Backend</span>
+            <span className={styles.statDescription}>Lightning-fast processing</span>
+          </div>
+          <div className={styles.performanceStat}>
+            <span className={styles.statValue}>⚡</span>
+            <span className={styles.statLabel}>Zero Latency</span>
+            <span className={styles.statDescription}>Instant sync across devices</span>
+          </div>
+          <div className={styles.performanceStat}>
+            <span className={styles.statValue}>🔄</span>
+            <span className={styles.statLabel}>Real-time</span>
+            <span className={styles.statDescription}>Live updates everywhere</span>
+          </div>
+        </div>
       </div>
     </div>
-  );
-}
+  </section>
+);
 
+const SyncSection = () => (
+  <section className={styles.syncSection}>
+    <div className="container">
+      <div className={styles.syncContent}>
+        <h2 className={styles.sectionTitle}>🔄 Universal Synchronization</h2>
+        <p className={styles.sectionSubtitle}>
+          Everything syncs. Everywhere. Instantly. Your listening position, settings, themes, subscriptions - it all follows you.
+        </p>
+        <div className={styles.syncFeatures}>
+          <div className={styles.syncFeature}>
+            <div className={styles.syncIcon}>🎯</div>
+            <h3>Timestamp Sync</h3>
+            <p>Pick up exactly where you left off on any device. Down to the second.</p>
+          </div>
+          <div className={styles.syncFeature}>
+            <div className={styles.syncIcon}>🎨</div>
+            <h3>Settings & Themes</h3>
+            <p>Your preferences, themes, and settings sync seamlessly across all apps.</p>
+          </div>
+          <div className={styles.syncFeature}>
+            <div className={styles.syncIcon}>📚</div>
+            <h3>Complete Library</h3>
+            <p>Subscriptions, playlists, and episode progress - all synchronized instantly.</p>
+          </div>
+          <div className={styles.syncFeature}>
+            <div className={styles.syncIcon}>🔗</div>
+            <h3>gpodder Compatible</h3>
+            <p>Built-in gpodder sync server keeps everything in perfect harmony.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
+const AppsSection = () => (
+  <section className={styles.appsSection}>
+    <div className="container">
+      <div className={styles.appsContent}>
+        <h2 className={styles.sectionTitle}>📱 Native Apps Everywhere</h2>
+        <p className={styles.sectionSubtitle}>
+          Native iOS and Android apps that connect directly to your server. The complete podcast ecosystem.
+        </p>
+        <div className={styles.appsList}>
+          <div className={styles.appCard}>
+            <div className={styles.appIcon}>📱</div>
+            <h3>iOS App</h3>
+            <p>Native iOS application with full feature parity</p>
+            <div className={styles.appStatus}>Available</div>
+          </div>
+          <div className={styles.appCard}>
+            <div className={styles.appIcon}>🤖</div>
+            <h3>Android App</h3>
+            <p>Native Android client with offline capabilities</p>
+            <div className={styles.appStatus}>Available</div>
+          </div>
+          <div className={styles.appCard}>
+            <div className={styles.appIcon}>🌐</div>
+            <h3>Web App</h3>
+            <p>PWA that works on any device with a browser</p>
+            <div className={styles.appStatus}>Available</div>
+          </div>
+          <div className={styles.appCard}>
+            <div className={styles.appIcon}>🖥️</div>
+            <h3>Desktop</h3>
+            <p>Desktop applications for Windows, Mac, and Linux</p>
+            <div className={styles.appStatus}>Available</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
+const FeaturesGrid = () => (
+  <section className={styles.featuresGrid}>
+    <div className="container">
+      <h2 className={styles.sectionTitle}>Everything You Need</h2>
+      <div className={styles.gridContainer}>
+        <div className={styles.featureCard}>
+          <div className={styles.featureIcon}>🏠</div>
+          <h3>Self-Hosted</h3>
+          <p>Complete control over your data. No third-party dependencies.</p>
+        </div>
+        <div className={styles.featureCard}>
+          <div className={styles.featureIcon}>🔐</div>
+          <h3>Privacy First</h3>
+          <p>Zero data collection. Your podcasts stay yours.</p>
+        </div>
+        <div className={styles.featureCard}>
+          <div className={styles.featureIcon}>🐳</div>
+          <h3>Docker Ready</h3>
+          <p>One-command deployment with Docker Compose.</p>
+        </div>
+        <div className={styles.featureCard}>
+          <div className={styles.featureIcon}>👥</div>
+          <h3>Multi-User</h3>
+          <p>Family-friendly with separate libraries for each user.</p>
+        </div>
+        <div className={styles.featureCard}>
+          <div className={styles.featureIcon}>🔍</div>
+          <h3>Smart Discovery</h3>
+          <p>Podcast Index & iTunes integration for finding new content.</p>
+        </div>
+        <div className={styles.featureCard}>
+          <div className={styles.featureIcon}>💎</div>
+          <h3>Premium Features</h3>
+          <p>All the features of paid apps, completely free.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
+const CTASection = () => (
+  <section className={styles.ctaSection}>
+    <div className="container">
+      <div className={styles.ctaContent}>
+        <h2>Ready to Own Your Podcast Experience?</h2>
+        <p>Join thousands of users who've taken control of their podcast ecosystem</p>
+        <div className={styles.ctaButtons}>
+          <a href="/docs/intro" className={styles.ctaButton}>
+            Start Self-Hosting
+          </a>
+          <a href="https://try.pinepods.online" className={styles.ctaButtonSecondary}>
+            Try Demo
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+);
 
 export default function HomepageFeatures() {
   return (
-    <section className={styles.features}>
-      <div className="container">
-        {/* Detailed Introduction Section */}
-        <div className="text--center padding-horiz--md">
-          <div className={styles.keyFeatures}>
-            <h2>Self-Hosted Podcast Management</h2>
-            <p>
-              Pinepods is a powerful, self-hosted podcast management system that puts you in control. Built with Rust for performance and reliability, it's designed to be your personal podcast server that follows you across all your devices because of it's centralized server hosted in your own homelab. You own all your data, and it can be accessed anywhere that runs a web browser with changes available between devices almost instantly! There's also client editions available as desktop and android apps that connect right up to your server!
-            </p>
-          </div>
-
-          <div className={styles.featuresGrid}>
-            <div className="row">
-              <div className="col col--6">
-                <h3>Core Features</h3>
-                <div className={styles.featureList}>
-                  <p>🌐 Access your podcasts everywhere</p>
-                  <p>👥 Multi-user support</p>
-                  <p>🔍 Smart podcast discovery</p>
-                  <p>🔄 Nextcloud & gpodder sync</p>
-                  <p>🎨 Multiple themes</p>
-                  <p>🔐 Privacy-focused</p>
-                </div>
-              </div>
-              <div className="col col--6">
-                <h3>Technical Stack</h3>
-                <div className={styles.featureList}>
-                  <p>⚡️ Rust & Python powered</p>
-                  <p>🗄️ PostgreSQL/MySQL support</p>
-                  <p>🔧 Docker ready</p>
-                  <p>📱 PWA enabled</p>
-                  <p>🔌 Podcast Index & iTunes API</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.tryPinepods}>
-            <p>
-              Try it now at <a href="https://try.pinepods.online">try.pinepods.online</a> or set up your own server with our simple guide.
-            </p>
-          </div>
-        </div>
-
-        {/* Original Feature List */}
-        <div className="row">
-          {FeatureList.map((props, idx) => (
-            <Feature key={idx} {...props} />
-          ))}
-        </div>
-      </div>
-    </section>
+    <>
+      <PerformanceSection />
+      <SyncSection />
+      <AppsSection />
+      <FeaturesGrid />
+      <CTASection />
+    </>
   );
 }

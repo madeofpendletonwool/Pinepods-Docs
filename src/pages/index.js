@@ -9,16 +9,47 @@ import HomepageFeatures from '../components/HomepageFeatures';
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
   return (
-    <header className={clsx('hero hero--primary', styles.heroBanner)}>
+    <header className={clsx('hero', styles.heroBanner)}>
+      <div className={styles.heroBackground}></div>
       <div className="container">
-        <h1 className="hero__title">{siteConfig.title}</h1>
-        <p className="hero__subtitle">{siteConfig.tagline}</p>
-        <div className={styles.buttons}>
-          <Link
-            className="button button--secondary button--lg"
-            to="/docs/intro">
-            PinePods Tutorial - 5min ⏱️
-          </Link>
+        <div className={styles.heroContent}>
+          <div className={styles.heroLogo}>
+            <img src="/img/pinepods-appicon.png" alt="PinePods" className={styles.logoImage} />
+          </div>
+          <h1 className={styles.heroTitle}>
+            <span className={styles.brandName}>PinePods</span>
+            <span className={styles.taglinePart}>Your Complete Podcast Ecosystem</span>
+          </h1>
+          <p className={styles.heroSubtitle}>
+            Lightning-fast Rust-powered server with seamless sync across all your devices. 
+            Everything you need for podcasts, nothing you don't.
+          </p>
+          <div className={styles.heroStats}>
+            <div className={styles.stat}>
+              <span className={styles.statNumber}>⚡</span>
+              <span className={styles.statLabel}>Rust Performance</span>
+            </div>
+            <div className={styles.stat}>
+              <span className={styles.statNumber}>🔄</span>
+              <span className={styles.statLabel}>Universal Sync</span>
+            </div>
+            <div className={styles.stat}>
+              <span className={styles.statNumber}>📱</span>
+              <span className={styles.statLabel}>Native Apps</span>
+            </div>
+          </div>
+          <div className={styles.heroButtons}>
+            <Link
+              className={clsx('button button--primary button--lg', styles.primaryButton)}
+              to="/docs/intro">
+              Get Started
+            </Link>
+            <Link
+              className={clsx('button button--outline button--lg', styles.secondaryButton)}
+              href="https://try.pinepods.online">
+              Try Demo
+            </Link>
+          </div>
         </div>
       </div>
     </header>
@@ -29,8 +60,8 @@ export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="A Forest of Podcasts, Rooted in the Spirit of Self-Hosting <head />">
+      title="PinePods - Your Complete Podcast Ecosystem"
+      description="Lightning-fast Rust-powered podcast server with seamless sync across all devices. Self-hosted, open source, and built for performance.">
       <HomepageHeader />
       <main>
         <HomepageFeatures />

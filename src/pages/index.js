@@ -21,7 +21,7 @@ function HomepageHeader() {
             <span className={styles.taglinePart}>Your Complete Podcast Ecosystem</span>
           </h1>
           <p className={styles.heroSubtitle}>
-            Lightning-fast Rust-powered server with seamless sync across all your devices. 
+            Lightning-fast Rust-powered podcast server with seamless sync across all you and your family's devices. 
             Everything you need for podcasts, nothing you don't.
           </p>
           <div className={styles.heroStats}>

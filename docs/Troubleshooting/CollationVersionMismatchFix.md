@@ -47,6 +47,17 @@ This occurs when:
    ALTER DATABASE
    ```
 
+4. **Check for additional database warnings:**
+   After fixing the main PinePods database, you may see similar warnings for the default `postgres` database:
+   ```
+   WARNING: database "postgres" has a collation version mismatch
+   ```
+   
+   If this occurs, run the same fix for the postgres database:
+   ```bash
+   docker exec -it <postgres-container-name> psql -U postgres -d postgres -c "ALTER DATABASE postgres REFRESH COLLATION VERSION;"
+   ```
+
 ### For External PostgreSQL Database
 
 1. **Connect to your external PostgreSQL server** using your preferred method:
@@ -59,7 +70,13 @@ This occurs when:
    ALTER DATABASE pinepods_database REFRESH COLLATION VERSION;
    ```
 
-3. **If you have multiple PinePods databases** (unlikely but possible), repeat for each:
+3. **Check for additional database warnings:**
+   You may also need to fix the default `postgres` database if you see warnings for it:
+   ```sql
+   ALTER DATABASE postgres REFRESH COLLATION VERSION;
+   ```
+
+4. **If you have multiple PinePods databases** (unlikely but possible), repeat for each:
    ```sql
    ALTER DATABASE your_other_pinepods_db REFRESH COLLATION VERSION;
    ```
@@ -69,7 +86,11 @@ This occurs when:
 If you're using Docker Compose, you can run:
 
 ```bash
+# Fix the main PinePods database
 docker compose exec db psql -U postgres -d pinepods_database -c "ALTER DATABASE pinepods_database REFRESH COLLATION VERSION;"
+
+# Fix the postgres database if needed
+docker compose exec db psql -U postgres -d postgres -c "ALTER DATABASE postgres REFRESH COLLATION VERSION;"
 ```
 
 Replace `db` with your PostgreSQL service name from your `docker-compose.yml` file.

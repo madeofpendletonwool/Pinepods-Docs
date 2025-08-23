@@ -24,14 +24,14 @@ export default function InternalTesting() {
     setStatus({ type: '', message: '' });
 
     try {
-      // Replace with your middleware API endpoint
-      const response = await fetch(process.env.REACT_APP_FORM_API_URL || 'http://localhost:8080/api/forms/submit', {
+      // Submit to pinepods-admin form service
+      const response = await fetch(process.env.REACT_APP_FORM_API_URL || 'https://forms.collinpendleton.com/api/forms/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          formId: 'internal-testing-signup',
+          form_id: 'internal-testing-signup',
           data: formData
         }),
       });

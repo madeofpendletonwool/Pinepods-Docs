@@ -25,7 +25,11 @@ export default function InternalTesting() {
 
     try {
       // Submit to pinepods-admin form service
-      const response = await fetch(process.env.REACT_APP_FORM_API_URL || 'https://forms.collinpendleton.com/api/forms/submit', {
+      const apiUrl = 'https://forms.pinepods.online/api/forms/submit';
+      console.log('Submitting to:', apiUrl);
+      console.log('Form data:', formData);
+      
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

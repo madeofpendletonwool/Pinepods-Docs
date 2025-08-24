@@ -241,4 +241,4 @@ The web app works great for phones and can be added to your home screen for a na
 
 ### Firewood (CLI TUI player)
 
-See [Pinepods Firewood Instructions](../Firewood%20(CLI)/UsingPinepodsFirewood)
+Pinepods also includes a terminal-based client called Firewood. See the **Firewood** section in the documentation sidebar for detailed installation and usage instructions.

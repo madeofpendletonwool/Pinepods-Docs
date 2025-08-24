@@ -17,7 +17,7 @@ function HomepageHeader() {
             <img src="/img/pinepods-appicon.png" alt="PinePods" className={styles.logoImage} />
           </div>
           <h1 className={styles.heroTitle}>
-            <span className={styles.brandName}>PinePods</span>
+            <span className={styles.brandName}>Pinepods</span>
             <span className={styles.taglinePart}>Your Complete Podcast Ecosystem</span>
           </h1>
           <p className={styles.heroSubtitle}>

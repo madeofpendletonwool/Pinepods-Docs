@@ -1,5 +1,7 @@
 # Using Clients in Pinepods
 
+*Client* in Pinepods refers to an external app that connects to your Pinepods server. The server being hosted via Docker and the client installed generally as an app on your device locally. In fact when you setup Pinepods via docker it technically comes pre-setup with a client. Which is the web version. This page is details on installing clients besides the web version should you choose to. (The mobile apps are HIGHLY recommended if you listen to podcasts on the go)
+
 There's client versions of Pinepods for Linux (Deb, Appimage, Flatpak, AUR, and RPM), Mac, Windows, Android, and iOS. Scroll down for install instructions. 
 
 ### Linux Client Install :computer:
@@ -236,3 +238,7 @@ The iOS client is currently in **internal testing**!
 🍎 [Join the Beta Testing Program](/internal-testing) to get early access to the native iOS app via TestFlight.
 
 The web app works great for phones and can be added to your home screen for a native-like experience.
+
+### Firewood (CLI TUI player)
+
+See [Pinepods Firewood Instructions](/docs/Firewood%20(CLI)/UsingPinepodsFirewood)

@@ -63,7 +63,7 @@ module.exports = {
         },
         style: "primary",
         items: [
-          { type: "doc", docId: "intro", position: "left", label: "Tutorial" },
+          { type: "doc", docId: "intro", position: "left", label: "Docs" },
           { to: "/blog", label: "Blog", position: "left" },
           {
             type: "doc",
@@ -91,7 +91,7 @@ module.exports = {
           {
             title: "Docs",
             items: [
-              { label: "Tutorial", to: "/docs/intro" },
+              { label: "Docs", to: "/docs/intro" },
               { label: "Beta Testing", to: "/internal-testing" },
             ],
           },

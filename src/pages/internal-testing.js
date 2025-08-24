@@ -89,12 +89,12 @@ export default function InternalTesting() {
               </p>
               
               <div style={{ 
-                backgroundColor: 'var(--ifm-color-secondary-lightest)', 
-                border: '1px solid var(--ifm-color-emphasis-300)', 
+                backgroundColor: 'var(--ifm-background-surface-color)', 
+                border: '1px solid var(--ifm-color-emphasis-200)', 
                 borderRadius: '6px', 
                 padding: '12px', 
                 marginBottom: '20px',
-                color: 'var(--ifm-color-content-secondary)'
+                color: 'var(--ifm-color-content)'
               }}>
                 <strong>📧 Email Requirements:</strong>
                 <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px' }}>
@@ -252,7 +252,7 @@ export default function InternalTesting() {
                 </button>
               </form>
 
-              <div style={{ marginTop: '24px', padding: '16px', backgroundColor: 'var(--ifm-color-secondary-lightest)', border: '1px solid var(--ifm-color-emphasis-300)', borderRadius: '6px', color: 'var(--ifm-color-content-secondary)' }}>
+              <div style={{ marginTop: '24px', padding: '16px', backgroundColor: 'var(--ifm-background-surface-color)', border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '6px', color: 'var(--ifm-color-content)' }}>
                 <h4>What to expect:</h4>
                 <ul style={{ textAlign: 'left', marginBottom: 0 }}>
                   <li>You'll receive a Google Play Console invitation within 24 hours</li>
@@ -261,7 +261,7 @@ export default function InternalTesting() {
                   <li>Early access to new features and improvements</li>
                 </ul>
               </div>
-              <div style={{ marginTop: '24px', padding: '16px', backgroundColor: 'var(--ifm-color-secondary-lightest)', border: '1px solid var(--ifm-color-emphasis-300)', borderRadius: '6px', color: 'var(--ifm-color-content-secondary)' }}>
+              <div style={{ marginTop: '24px', padding: '16px', backgroundColor: 'var(--ifm-background-surface-color)', border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '6px', color: 'var(--ifm-color-content)' }}>
                 <h4>What NOT to expect:</h4>
                 <ul style={{ textAlign: 'left', marginBottom: 0 }}>
                   <li>Spam</li>

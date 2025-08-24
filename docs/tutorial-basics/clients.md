@@ -189,7 +189,7 @@ Once installed through any method:
 - **Flatpak issues**: Ensure Flathub is added as a remote repository
 
 **Getting Help:**
-- 📚 Check our [Troubleshooting](/docs/Troubleshooting) section
+- 📚 Check our **Troubleshooting** section in the docs sidebar
 - 💬 Join our [Discord community](https://discord.com/invite/bKzHRa4GNc)
 - 🐛 Report issues on [GitHub](https://github.com/madeofpendletonwool/PinePods/issues)
 

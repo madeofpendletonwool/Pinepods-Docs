@@ -72,6 +72,7 @@ module.exports = {
             label: "API",
           },
           { to: "/contact", label: "Contact", position: "left" },
+          { to: "/internal-testing", label: "Beta Testing", position: "left" },
           {
             href: "https://discord.com/invite/bKzHRa4GNc",
             label: "Discord",
@@ -89,7 +90,10 @@ module.exports = {
         links: [
           {
             title: "Docs",
-            items: [{ label: "Tutorial", to: "/docs/intro" }],
+            items: [
+              { label: "Tutorial", to: "/docs/intro" },
+              { label: "Beta Testing", to: "/internal-testing" },
+            ],
           },
           {
             title: "Community",

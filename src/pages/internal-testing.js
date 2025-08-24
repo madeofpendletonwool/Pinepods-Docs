@@ -5,16 +5,19 @@ import styles from './contact.module.css';
 export default function InternalTesting() {
   const [formData, setFormData] = useState({
     name: '',
-    email: ''
+    email: '',
+    platform: 'android',
+    wantsNews: false,
+    newsEmail: ''
   });
   const [status, setStatus] = useState({ type: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     }));
   };
 
@@ -45,7 +48,7 @@ export default function InternalTesting() {
           type: 'success',
           message: 'Successfully signed up for internal testing! You\'ll receive an invitation email from Google Play Console within 24 hours.'
         });
-        setFormData({ name: '', email: '' });
+        setFormData({ name: '', email: '', platform: 'android', wantsNews: false, newsEmail: '' });
       } else {
         const errorData = await response.json();
         setStatus({
@@ -82,8 +85,22 @@ export default function InternalTesting() {
               <h3>Internal Testing Program</h3>
               <p>
                 Join our internal testing program to get early access to new PinePods features. 
-                You'll receive test builds through Google Play Console and can provide feedback directly to our development team.
+                You'll receive test builds and can provide feedback directly to our development team.
               </p>
+              
+              <div style={{ 
+                backgroundColor: 'var(--ifm-color-info-lightest)', 
+                border: '1px solid var(--ifm-color-info-light)', 
+                borderRadius: '6px', 
+                padding: '12px', 
+                marginBottom: '20px' 
+              }}>
+                <strong>📧 Email Requirements:</strong>
+                <ul style={{ margin: '8px 0 0 0', paddingLeft: '20px' }}>
+                  <li><strong>Android:</strong> Use your Gmail address</li>
+                  <li><strong>iOS:</strong> Use your Apple ID email address</li>
+                </ul>
+              </div>
               
               {status.message && (
                 <div style={{
@@ -144,9 +161,79 @@ export default function InternalTesting() {
                     placeholder="Enter your email address"
                   />
                   <small style={{ color: '#666', marginTop: '4px', display: 'block' }}>
-                    This email will be used to send you the Google Play Console testing invitation.
+                    This email will be used to send you the testing invitation.
                   </small>
                 </div>
+
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                    Platform *
+                  </label>
+                  <div style={{ display: 'flex', gap: '20px' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', fontWeight: 'normal' }}>
+                      <input
+                        type="radio"
+                        name="platform"
+                        value="android"
+                        checked={formData.platform === 'android'}
+                        onChange={handleInputChange}
+                        style={{ marginRight: '8px' }}
+                      />
+                      Android (Google Play)
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', fontWeight: 'normal' }}>
+                      <input
+                        type="radio"
+                        name="platform"
+                        value="ios"
+                        checked={formData.platform === 'ios'}
+                        onChange={handleInputChange}
+                        style={{ marginRight: '8px' }}
+                      />
+                      iOS (TestFlight)
+                    </label>
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', fontWeight: 'bold' }}>
+                    <input
+                      type="checkbox"
+                      name="wantsNews"
+                      checked={formData.wantsNews}
+                      onChange={handleInputChange}
+                      style={{ marginRight: '8px' }}
+                    />
+                    I'd like to receive very infrequent news and updates about PinePods
+                  </label>
+                </div>
+
+                {formData.wantsNews && (
+                  <div style={{ marginBottom: '20px' }}>
+                    <label htmlFor="newsEmail" style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+                      News Email Address (Optional)
+                    </label>
+                    <input
+                      type="email"
+                      id="newsEmail"
+                      name="newsEmail"
+                      value={formData.newsEmail}
+                      onChange={handleInputChange}
+                      style={{
+                        width: '100%',
+                        padding: '12px',
+                        border: '1px solid #ddd',
+                        borderRadius: '6px',
+                        fontSize: '16px',
+                        backgroundColor: 'var(--ifm-background-color)'
+                      }}
+                      placeholder="Enter email for news (leave blank to use main email)"
+                    />
+                    <small style={{ color: '#666', marginTop: '4px', display: 'block' }}>
+                      If left blank, we'll use your main email address above.
+                    </small>
+                  </div>
+                )}
 
                 <button
                   type="submit"

@@ -260,6 +260,14 @@ export default function InternalTesting() {
                   <li>Early access to new features and improvements</li>
                 </ul>
               </div>
+              <div style={{ marginTop: '24px', padding: '16px', backgroundColor: 'var(--ifm-color-secondary-lightest)', borderRadius: '6px' }}>
+                <h4>What NOT to expect:</h4>
+                <ul style={{ textAlign: 'left', marginBottom: 0 }}>
+                  <li>Spam</li>
+                  <li>Your email used for anything other than invitations and if you select it, very infrequent news updates</li>
+                  <li>Ads or Marketing in any way</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>

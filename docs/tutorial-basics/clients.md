@@ -241,4 +241,4 @@ The web app works great for phones and can be added to your home screen for a na
 
 ### Firewood (CLI TUI player)
 
-See [Pinepods Firewood Instructions](/docs/Firewood%20(CLI)/UsingPinepodsFirewood)
+See [Pinepods Firewood Instructions](../Firewood%20(CLI)/UsingPinepodsFirewood)

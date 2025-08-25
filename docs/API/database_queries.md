@@ -6374,1382 +6374,6 @@ curl -X POST -H "Api-Key: YOUR_API_KEY" \
 - **Validation**: Should validate against known page names in production
 - **Python Compatibility**: Matches Python startpage POST function exactly
 
----
-
-## 👑 Admin User Management
-
-Administrative endpoints for comprehensive user account management including creation, deletion, permissions, and system-wide user oversight. All endpoints require admin privileges.
-
-### GET /api/data/get_user_info
-
-**Description:** Get comprehensive information for all users in the system
-
-**Authentication:** 👑 Admin API Key
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_ADMIN_API_KEY"
-```
-
-**Request Example:**
-```bash
-curl -X GET -H "Api-Key: YOUR_ADMIN_API_KEY" \
-     http://localhost:8000/api/data/get_user_info
-```
-
-**Response Example:**
-```json
-[
-  {
-    "userid": 1,
-    "fullname": "Admin User",
-    "username": "admin",
-    "email": "admin@example.com",
-    "isadmin": 1
-  },
-  {
-    "userid": 2,
-    "fullname": "John Smith",
-    "username": "jsmith",
-    "email": "john@example.com",
-    "isadmin": 0
-  },
-  {
-    "userid": 3,
-    "fullname": "Jane Doe",
-    "username": "jdoe",
-    "email": "jane@example.com",
-    "isadmin": 0
-  }
-]
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - Admin access required
-- `500`: Internal Server Error - Database error
-
-**Implementation Notes:**
-- **Admin Only**: Requires admin privileges to access system-wide user information
-- **Complete Data**: Returns all user fields including sensitive admin status
-- **Boolean Conversion**: `isadmin` field serialized as integer (1/0) for Python compatibility
-- **No Pagination**: Returns all users in system (consider pagination for large deployments)
-- **Python Compatibility**: Matches Python `api_get_user_info` function exactly
-
----
-
-### POST /api/data/add_user
-
-**Description:** Create a new user account with admin privileges
-
-**Authentication:** 👑 Admin API Key
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_ADMIN_API_KEY"
--H "Content-Type: application/json"
-```
-
-**Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| fullname | string | Yes | User's full display name |
-| username | string | Yes | Unique username (will be converted to lowercase) |
-| email | string | Yes | Unique email address |
-| hash_pw | string | Yes | Pre-hashed password (bcrypt recommended) |
-
-**Request Example:**
-```bash
-curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
-     -H "Content-Type: application/json" \
-     -d '{"fullname":"New User","username":"newuser","email":"newuser@example.com","hash_pw":"$2b$12$hashed_password_here"}' \
-     http://localhost:8000/api/data/add_user
-```
-
-**Response Example (Success):**
-```json
-{
-  "detail": "Success",
-  "user_id": 4
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - Admin access required
-- `409`: Conflict - Username or email already exists
-  ```json
-  {
-    "error": "This username is already taken. Please choose a different username."
-  }
-  ```
-  ```json
-  {
-    "error": "This email is already in use. Please use a different email address."
-  }
-  ```
-- `500`: Internal Server Error - Failed to create user
-
-**Implementation Notes:**
-- **Admin Only**: Only administrators can create user accounts via this endpoint
-- **Username Normalization**: Username automatically converted to lowercase
-- **Password Security**: Expects pre-hashed password, does not hash plain text
-- **Unique Constraints**: Both username and email must be unique system-wide
-- **User ID Return**: Returns newly created user's ID for reference
-- **Python Compatibility**: Matches Python `api_add_user` function exactly
-
----
-
-### DELETE /api/data/user/delete/*user_id*
-
-**Description:** Permanently delete a user account and all associated data
-
-**Authentication:** 👑 Admin API Key
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_ADMIN_API_KEY"
-```
-
-**Path Parameters:**
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| user_id | integer | Yes | ID of user to delete |
-
-**Request Example:**
-```bash
-curl -X DELETE -H "Api-Key: YOUR_ADMIN_API_KEY" \
-     http://localhost:8000/api/data/user/delete/123
-```
-
-**Response Example:**
-```json
-{
-  "status": "User deleted"
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - Admin access required
-- `404`: Not Found - User ID does not exist
-- `500`: Internal Server Error - Deletion failed
-
-**Implementation Notes:**
-- **Admin Only**: Requires administrator privileges for user deletion
-- **Permanent Action**: User deletion is irreversible and removes all associated data
-- **Cascade Delete**: Removes user's podcasts, episodes, history, and all related records
-- **Safety Considerations**: No confirmation prompt - ensure proper UI warnings
-- **Final Admin Protection**: System should prevent deletion of final admin user
-- **Python Compatibility**: Matches Python `api_delete_user` function exactly
-
----
-
-### PUT /api/data/user/set_isadmin
-
-**Description:** Grant or revoke administrative privileges for a user
-
-**Authentication:** 👑 Admin API Key
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_ADMIN_API_KEY"
--H "Content-Type: application/json"
-```
-
-**Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| user_id | integer | Yes | ID of user to modify |
-| isadmin | boolean | Yes | Whether user should have admin privileges |
-
-**Request Example (Grant Admin):**
-```bash
-curl -X PUT -H "Api-Key: YOUR_ADMIN_API_KEY" \
-     -H "Content-Type: application/json" \
-     -d '{"user_id":123,"isadmin":true}' \
-     http://localhost:8000/api/data/user/set_isadmin
-```
-
-**Request Example (Revoke Admin):**
-```bash
-curl -X PUT -H "Api-Key: YOUR_ADMIN_API_KEY" \
-     -H "Content-Type: application/json" \
-     -d '{"user_id":123,"isadmin":false}' \
-     http://localhost:8000/api/data/user/set_isadmin
-```
-
-**Response Example:**
-```json
-{
-  "detail": "IsAdmin status updated."
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - Admin access required
-- `404`: Not Found - User ID does not exist
-- `500`: Internal Server Error - Update failed
-
-**Implementation Notes:**
-- **Admin Only**: Only administrators can modify admin privileges
-- **Permission Management**: Controls access to all admin-only endpoints and features
-- **Final Admin Check**: Should prevent removal of admin status from final admin
-- **Immediate Effect**: Changes take effect immediately for active sessions
-- **Security Critical**: Grants access to all administrative functions
-- **Python Compatibility**: Matches Python `api_set_isadmin` function exactly
-
----
-
-### GET /api/data/user/final_admin/*user_id*
-
-**Description:** Check if a user is the final (last remaining) administrator in the system
-
-**Authentication:** 👑 Admin API Key
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_ADMIN_API_KEY"
-```
-
-**Path Parameters:**
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| user_id | integer | Yes | User ID to check final admin status |
-
-**Request Example:**
-```bash
-curl -X GET -H "Api-Key: YOUR_ADMIN_API_KEY" \
-     http://localhost:8000/api/data/user/final_admin/1
-```
-
-**Response Example (Is Final Admin):**
-```json
-{
-  "final_admin": true
-}
-```
-
-**Response Example (Not Final Admin):**
-```json
-{
-  "final_admin": false
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - Admin access required
-- `404`: Not Found - User ID does not exist
-- `500`: Internal Server Error - Database error
-
-**Implementation Notes:**
-- **Admin Only**: Requires administrator privileges to check final admin status
-- **System Protection**: Used to prevent deletion or demotion of final admin
-- **UI Integration**: Frontend should disable delete/demote buttons for final admin
-- **Business Logic**: System must always maintain at least one administrator
-- **Safety Check**: Critical for preventing system lockout scenarios
-- **Python Compatibility**: Matches Python `api_final_admin` function exactly
-
----
-
-### GET /api/data/user_admin_check/*user_id*
-
-**Description:** Check if a specific user has administrative privileges
-
-**Authentication:** 🔐 User API Key (Self-check only)
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_API_KEY"
-```
-
-**Path Parameters:**
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| user_id | integer | Yes | User ID to check (must match API key owner) |
-
-**Request Example:**
-```bash
-curl -X GET -H "Api-Key: YOUR_API_KEY" \
-     http://localhost:8000/api/data/user_admin_check/123
-```
-
-**Response Example (Is Admin):**
-```json
-{
-  "is_admin": true
-}
-```
-
-**Response Example (Not Admin):**
-```json
-{
-  "is_admin": false
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - Can only check your own admin status
-- `404`: Not Found - User ID does not exist
-- `500`: Internal Server Error - Database error
-
-**Implementation Notes:**
-- **Self-Check Only**: Users can only check their own admin status for security
-- **Authorization Restriction**: API key must belong to the user being checked
-- **UI Integration**: Used by frontend to show/hide admin features and menus
-- **Session Management**: Helps determine user capabilities and interface elements
-- **Security Model**: Prevents users from probing other users' privilege levels
-- **Python Compatibility**: Matches Python `api_user_admin_check_route` function exactly
-
----
-
-## System Configuration
-
-Administrative endpoints for managing system-wide settings including guest access, download permissions, self-service registration, and RSS feed features. All endpoints require admin privileges.
-
-### POST /api/data/enable_disable_guest
-
-**Description:** Toggle guest access on/off for the PinePods instance
-
-**Authentication:** 👑 Admin API Key
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_ADMIN_API_KEY"
-```
-
-**Request Example:**
-```bash
-curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
-     http://localhost:8000/api/data/enable_disable_guest
-```
-
-**Response Example:**
-```json
-{
-  "success": true
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - Admin access required
-- `500`: Internal Server Error - Database error
-
-**Implementation Notes:**
-- **Admin Only**: Requires administrator privileges to toggle guest access
-- **Toggle Behavior**: Switches between enabled/disabled states automatically
-- **System Wide**: Affects all non-authenticated access to the application
-- **Security Impact**: Controls whether unauthenticated users can access content
-- **Python Compatibility**: Matches Python `api_enable_disable_guest` function exactly
-
----
-
-### POST /api/data/enable_disable_downloads
-
-**Description:** Toggle download functionality on/off for the PinePods instance
-
-**Authentication:** 👑 Admin API Key
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_ADMIN_API_KEY"
-```
-
-**Request Example:**
-```bash
-curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
-     http://localhost:8000/api/data/enable_disable_downloads
-```
-
-**Response Example:**
-```json
-{
-  "success": true
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - Admin access required
-- `500`: Internal Server Error - Database error
-
-**Implementation Notes:**
-- **Admin Only**: Requires administrator privileges to control download feature
-- **Toggle Behavior**: Switches between enabled/disabled states automatically
-- **System Wide**: Affects all users' ability to download podcast episodes
-- **Storage Impact**: Disabling prevents new downloads but doesn't remove existing files
-- **UI Integration**: Frontend should hide/show download buttons based on this setting
-- **Python Compatibility**: Matches Python `api_enable_disable_downloads` function exactly
-
----
-
-### POST /api/data/enable_disable_self_service
-
-**Description:** Toggle self-service user registration on/off for the PinePods instance
-
-**Authentication:** 👑 Admin API Key
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_ADMIN_API_KEY"
-```
-
-**Request Example:**
-```bash
-curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
-     http://localhost:8000/api/data/enable_disable_self_service
-```
-
-**Response Example:**
-```json
-{
-  "success": true
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - Admin access required
-- `500`: Internal Server Error - Database error
-
-**Implementation Notes:**
-- **Admin Only**: Requires administrator privileges to control user registration
-- **Toggle Behavior**: Switches between enabled/disabled states automatically
-- **Registration Control**: Affects `/api/data/add_login_user` endpoint availability
-- **Security Feature**: Prevents unauthorized user account creation when disabled
-- **UI Integration**: Registration forms should check this status before allowing signups
-- **Python Compatibility**: Matches Python `api_enable_disable_self_service` function exactly
-
----
-
-### GET /api/data/guest_status
-
-**Description:** Get current guest access status for the PinePods instance
-
-**Authentication:** 🔐 User API Key (Any authenticated user)
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_API_KEY"
-```
-
-**Request Example:**
-```bash
-curl -X GET -H "Api-Key: YOUR_API_KEY" \
-     http://localhost:8000/api/data/guest_status
-```
-
-**Response Example (Enabled):**
-```json
-true
-```
-
-**Response Example (Disabled):**
-```json
-false
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `500`: Internal Server Error - Database error
-
-**Implementation Notes:**
-- **Public Check**: Any authenticated user can check guest access status
-- **Boolean Response**: Simple true/false indicating if guest access is enabled
-- **UI Integration**: Used by frontend to show/hide guest access features
-- **Security Information**: Helps determine if unauthenticated browsing is available
-- **Python Compatibility**: Matches Python `api_guest_status` function exactly
-
----
-
-### GET /api/data/download_status
-
-**Description:** Get current download feature status for the PinePods instance
-
-**Authentication:** 🔐 User API Key (Any authenticated user)
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_API_KEY"
-```
-
-**Request Example:**
-```bash
-curl -X GET -H "Api-Key: YOUR_API_KEY" \
-     http://localhost:8000/api/data/download_status
-```
-
-**Response Example (Enabled):**
-```json
-true
-```
-
-**Response Example (Disabled):**
-```json
-false
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `500`: Internal Server Error - Database error
-
-**Implementation Notes:**
-- **Public Check**: Any authenticated user can check download feature status
-- **Boolean Response**: Simple true/false indicating if downloads are enabled
-- **UI Integration**: Used by frontend to show/hide download buttons and features
-- **Feature Control**: Determines availability of episode download functionality
-- **Python Compatibility**: Matches Python `api_download_status` function exactly
-
----
-
-### GET /api/data/admin_self_service_status
-
-**Description:** Get detailed self-service registration status including admin existence
-
-**Authentication:** 🔐 User API Key (Any authenticated user)
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_API_KEY"
-```
-
-**Request Example:**
-```bash
-curl -X GET -H "Api-Key: YOUR_API_KEY" \
-     http://localhost:8000/api/data/admin_self_service_status
-```
-
-**Response Example:**
-```json
-{
-  "status": true,
-  "first_admin_created": true
-}
-```
-
-**Response Example (Registration Disabled):**
-```json
-{
-  "status": false,
-  "first_admin_created": true
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `500`: Internal Server Error - Database error
-
-**Implementation Notes:**
-- **Public Check**: Any authenticated user can check self-service status
-- **Detailed Response**: Includes both registration status and admin existence
-- **Setup Integration**: `first_admin_created` helps determine if initial setup is complete
-- **Registration Control**: `status` indicates if new user registration is allowed
-- **Setup Flow**: Used during initial application setup and configuration
-- **Python Compatibility**: Matches Python `api_self_service_status` function exactly
-
----
-
-### GET /api/data/rss_feed_status
-
-**Description:** Get RSS feed feature status for the authenticated user
-
-**Authentication:** 🔐 User API Key
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_API_KEY"
-```
-
-**Request Example:**
-```bash
-curl -X GET -H "Api-Key: YOUR_API_KEY" \
-     http://localhost:8000/api/data/rss_feed_status
-```
-
-**Response Example (Enabled):**
-```json
-true
-```
-
-**Response Example (Disabled):**
-```json
-false
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `500`: Internal Server Error - Database error
-
-**Implementation Notes:**
-- **User-Specific**: Returns RSS feed status for the authenticated user
-- **Boolean Response**: Simple true/false indicating if RSS feeds are enabled
-- **Feature Control**: Determines availability of RSS feed generation for user
-- **Privacy Control**: Allows users to control public access to their podcast feeds
-- **Python Compatibility**: Matches Python `get_rss_feed_status` function exactly
-
----
-
-### POST /api/data/toggle_rss_feeds
-
-**Description:** Toggle RSS feed feature on/off for the authenticated user
-
-**Authentication:** 🔐 User API Key
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_API_KEY"
-```
-
-**Request Example:**
-```bash
-curl -X POST -H "Api-Key: YOUR_API_KEY" \
-     http://localhost:8000/api/data/toggle_rss_feeds
-```
-
-**Response Example:**
-```json
-{
-  "success": true,
-  "enabled": true
-}
-```
-
-**Response Example (Disabled):**
-```json
-{
-  "success": true,
-  "enabled": false
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `500`: Internal Server Error - Database error
-
-**Implementation Notes:**
-- **User-Specific**: Toggles RSS feed feature for the authenticated user only
-- **Toggle Behavior**: Switches between enabled/disabled states automatically
-- **Return Status**: Response includes the new status after toggling
-- **Privacy Feature**: Allows users to control public access to their RSS feeds
-- **Feed Access**: When disabled, RSS feed URLs become inaccessible
-- **Python Compatibility**: Matches Python `toggle_rss_feeds` function exactly
-
----
-
-## Email Settings
-
-Administrative endpoints for configuring and managing SMTP email settings, testing email functionality, and sending emails through the system. All endpoints require admin privileges.
-
-### POST /api/data/save_email_settings
-
-**Description:** Configure SMTP email server settings for the PinePods instance
-
-**Authentication:** 👑 Admin API Key
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_ADMIN_API_KEY"
--H "Content-Type: application/json"
-```
-
-**Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| email_settings | object | Yes | Email configuration object |
-| email_settings.server_name | string | Yes | SMTP server hostname |
-| email_settings.server_port | string/integer | Yes | SMTP server port number |
-| email_settings.from_email | string | Yes | Email address to send from |
-| email_settings.send_mode | string | Yes | Send mode (typically "SMTP") |
-| email_settings.encryption | string | Yes | Encryption type ("SSL/TLS", "STARTTLS", "None") |
-| email_settings.auth_required | boolean | Yes | Whether SMTP authentication is required |
-| email_settings.email_username | string | No | SMTP username (if auth_required) |
-| email_settings.email_password | string | No | SMTP password (if auth_required) |
-
-**Request Example:**
-```bash
-curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
-     -H "Content-Type: application/json" \
-     -d '{"email_settings":{"server_name":"smtp.gmail.com","server_port":"587","from_email":"noreply@example.com","send_mode":"SMTP","encryption":"STARTTLS","auth_required":true,"email_username":"user@gmail.com","email_password":"app_password"}}' \
-     http://localhost:8000/api/data/save_email_settings
-```
-
-**Response Example:**
-```json
-{
-  "message": "Email settings saved."
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - Admin access required
-- `400`: Bad Request - Invalid email settings format
-- `500`: Internal Server Error - Database error
-
-**Implementation Notes:**
-- **Admin Only**: Requires administrator privileges to configure email settings
-- **SMTP Configuration**: Supports standard SMTP server configurations
-- **Encryption Options**: Supports SSL/TLS, STARTTLS, and no encryption
-- **Authentication**: Optional SMTP authentication for secure servers
-- **Password Storage**: Email passwords are stored securely in database
-- **Python Compatibility**: Matches Python `api_save_email_settings` function exactly
-
----
-
-### GET /api/data/get_email_settings
-
-**Description:** Retrieve current SMTP email server configuration
-
-**Authentication:** 👑 Admin API Key
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_ADMIN_API_KEY"
-```
-
-**Request Example:**
-```bash
-curl -X GET -H "Api-Key: YOUR_ADMIN_API_KEY" \
-     http://localhost:8000/api/data/get_email_settings
-```
-
-**Response Example:**
-```json
-{
-  "Emailsettingsid": 1,
-  "ServerName": "smtp.gmail.com",
-  "ServerPort": 587,
-  "FromEmail": "noreply@example.com",
-  "SendMode": "SMTP",
-  "Encryption": "STARTTLS",
-  "AuthRequired": 1,
-  "Username": "user@gmail.com",
-  "Password": "encrypted_password_hash"
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - Admin access required
-- `404`: Not Found - Email settings not configured
-- `500`: Internal Server Error - Database error
-
-**Implementation Notes:**
-- **Admin Only**: Requires administrator privileges to view email settings
-- **Complete Configuration**: Returns all configured email settings
-- **Password Security**: Passwords are returned encrypted/hashed for security
-- **Field Naming**: Uses Python-compatible field naming convention
-- **Setup Check**: Returns 404 if email has not been configured yet
-- **Python Compatibility**: Matches Python `api_get_email_settings` function exactly
-
----
-
-### POST /api/data/send_test_email
-
-**Description:** Send a test email using provided SMTP settings to verify configuration
-
-**Authentication:** 👑 Admin API Key
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_ADMIN_API_KEY"
--H "Content-Type: application/json"
-```
-
-**Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| server_name | string | Yes | SMTP server hostname |
-| server_port | string | Yes | SMTP server port number |
-| from_email | string | Yes | Email address to send from |
-| send_mode | string | Yes | Send mode (typically "SMTP") |
-| encryption | string | Yes | Encryption type ("SSL/TLS", "STARTTLS", "None") |
-| auth_required | boolean | Yes | Whether SMTP authentication is required |
-| email_username | string | No | SMTP username (if auth_required) |
-| email_password | string | No | SMTP password (if auth_required) |
-| to_email | string | Yes | Recipient email address for test |
-| message | string | Yes | Test message content |
-
-**Request Example:**
-```bash
-curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
-     -H "Content-Type: application/json" \
-     -d '{"server_name":"smtp.gmail.com","server_port":"587","from_email":"test@example.com","send_mode":"SMTP","encryption":"STARTTLS","auth_required":true,"email_username":"user@gmail.com","email_password":"app_password","to_email":"admin@example.com","message":"This is a test email from PinePods."}' \
-     http://localhost:8000/api/data/send_test_email
-```
-
-**Response Example (Success):**
-```json
-{
-  "email_status": "Email sent successfully"
-}
-```
-
-**Response Example (Failure):**
-```json
-{
-  "email_status": "Failed to send email: Authentication failed"
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - Admin access required
-- `400`: Bad Request - Invalid email settings or addresses
-- `500`: Internal Server Error - SMTP configuration or connection error
-
-**Implementation Notes:**
-- **Admin Only**: Requires administrator privileges to send test emails
-- **Configuration Test**: Tests SMTP settings without saving them to database
-- **Timeout Protection**: 30-second timeout to prevent hanging connections
-- **Encryption Support**: Handles SSL/TLS, STARTTLS, and unencrypted connections
-- **Error Reporting**: Detailed error messages for troubleshooting SMTP issues
-- **Real SMTP**: Uses lettre library for actual SMTP communication
-- **Python Compatibility**: Matches Python `api_send_email` function behavior
-
----
-
-### POST /api/data/send_email
-
-**Description:** Send an email using stored database email settings
-
-**Authentication:** 👑 Admin API Key
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_ADMIN_API_KEY"
--H "Content-Type: application/json"
-```
-
-**Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| to_email | string | Yes | Recipient email address |
-| subject | string | Yes | Email subject line |
-| message | string | Yes | Email message content |
-
-**Request Example:**
-```bash
-curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
-     -H "Content-Type: application/json" \
-     -d '{"to_email":"user@example.com","subject":"Welcome to PinePods","message":"Your PinePods account has been created successfully."}' \
-     http://localhost:8000/api/data/send_email
-```
-
-**Response Example (Success):**
-```json
-{
-  "email_status": "Email sent successfully"
-}
-```
-
-**Response Example (Failure):**
-```json
-{
-  "email_status": "Failed to send email: SMTP server connection failed"
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - Admin access required
-- `404`: Not Found - Email settings not configured in database
-- `400`: Bad Request - Invalid recipient email address
-- `500`: Internal Server Error - SMTP sending failure
-
-**Implementation Notes:**
-- **Admin Only**: Requires administrator privileges to send emails
-- **Database Settings**: Uses email settings previously saved in database
-- **Production Use**: Designed for sending actual emails (notifications, alerts, etc.)
-- **Timeout Protection**: 30-second timeout to prevent hanging connections
-- **Error Handling**: Comprehensive error reporting for debugging
-- **Security**: Uses encrypted stored credentials for SMTP authentication
-- **Python Compatibility**: Matches Python `api_send_email` function exactly
-
----
-
-## Server Backup & Restore
-
-Administrative endpoints for comprehensive database backup and restore operations. These endpoints provide full system backup capabilities for disaster recovery and data migration. All endpoints require admin privileges.
-
-### POST /api/data/backup_server
-
-**Description:** Create a complete backup of the PinePods database using native database tools
-
-**Authentication:** 👑 Admin API Key
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_ADMIN_API_KEY"
--H "Content-Type: application/json"
-```
-
-**Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| database_pass | string | Yes | Database user password for authentication |
-
-**Request Example:**
-```bash
-curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
-     -H "Content-Type: application/json" \
-     -d '{"database_pass":"your_db_password"}' \
-     http://localhost:8000/api/data/backup_server
-```
-
-**Response Example (Success):**
-- **Content-Type**: `application/sql` or `text/plain`
-- **Content-Disposition**: `attachment; filename="pinepods_backup_YYYY-MM-DD.sql"`
-- **Body**: SQL dump file content (streamed)
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - Admin access required
-- `500`: Internal Server Error - Backup process failed
-
-**Implementation Notes:**
-- **Admin Only**: Requires administrator privileges for database backup
-- **Native Tools**: Uses `pg_dump` for PostgreSQL or `mysqldump` for MySQL
-- **Streaming Response**: Large databases are streamed to prevent memory issues
-- **Data-Only Backup**: Includes data without schema for portability
-- **Security**: Database password required and passed securely via environment
-- **Environment Variables**: Uses DB_HOST, DB_PORT, DB_NAME, DB_USER from environment
-- **File Format**: Returns standard SQL dump format compatible with database restore tools
-
-**Database-Specific Options:**
-
-**PostgreSQL (pg_dump):**
-- `--data-only`: Exports only data, not schema
-- `--disable-triggers`: Prevents trigger execution during restore
-- `--format=plain`: Standard SQL format
-- Password passed via `PGPASSWORD` environment variable
-
-**MySQL (mysqldump):**
-- `--single-transaction`: Ensures consistent backup
-- `--routines --triggers`: Includes stored procedures and triggers
-- `--default-auth=mysql_native_password`: Compatibility option
-- Password passed via command line (secured in process)
-
----
-
-### POST /api/data/restore_server
-
-**Description:** Restore PinePods database from uploaded SQL backup file
-
-**Authentication:** 👑 Admin API Key
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_ADMIN_API_KEY"
--H "Content-Type: multipart/form-data"
-```
-
-**Form Data:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| backup_file | file | Yes | SQL backup file (.sql extension required) |
-| database_pass | string | Yes | Database user password for authentication |
-
-**Request Example:**
-```bash
-curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
-     -F "backup_file=@pinepods_backup.sql" \
-     -F "database_pass=your_db_password" \
-     http://localhost:8000/api/data/restore_server
-```
-
-**Response Example:**
-```json
-{
-  "message": "Server restore started successfully"
-}
-```
-
-**Error Responses:**
-- `400`: Bad Request - Invalid file format, missing file, or file too large
-  ```json
-  {
-    "error": "Only SQL files are allowed"
-  }
-  ```
-  ```json
-  {
-    "error": "File too large (max 100MB)"
-  }
-  ```
-  ```json
-  {
-    "error": "Database password is required"
-  }
-  ```
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - Admin access required
-- `500`: Internal Server Error - Restore process failed
-
-**Implementation Notes:**
-- **Admin Only**: Requires administrator privileges for database restore
-- **Multipart Upload**: Accepts file uploads via multipart form data
-- **File Validation**: Only accepts .sql files with UTF-8 encoding
-- **Size Limit**: Maximum file size of 100MB to prevent memory issues
-- **Background Processing**: Restore runs asynchronously to prevent request timeouts
-- **Immediate Response**: Returns success immediately, actual restore runs in background
-- **Data Safety**: Overwrites existing data - ensure proper backups before restore
-- **File Format**: Accepts standard SQL dump files from pg_dump or mysqldump
-
-**Security Considerations:**
-- **Admin Verification**: Double-checks admin status before processing
-- **File Type Validation**: Ensures only SQL files are processed
-- **Size Limits**: Prevents abuse through large file uploads
-- **UTF-8 Validation**: Ensures file content is valid UTF-8
-- **Password Required**: Database authentication required for restore operations
-
-**Operational Notes:**
-- **Downtime**: Restore operations may cause temporary service interruption
-- **Data Loss**: Restore overwrites existing database - backup current data first
-- **Background Task**: Long-running restores continue after HTTP response
-- **Monitoring**: Check application logs for restore progress and completion
-- **Recovery**: Failed restores may require manual database recovery
-
----
-
-## System Maintenance Tasks
-
-Administrative endpoints for system maintenance operations including podcast feed refresh, sync operations, cleanup tasks, and system initialization. These endpoints are primarily designed for automated scheduled tasks and system administration.
-
-### GET /api/data/refresh_pods
-
-**Description:** Refresh all podcast feeds system-wide as a background task
-
-**Authentication:** 👑 Admin API Key (System Task)
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_SYSTEM_API_KEY"
-```
-
-**Request Example:**
-```bash
-curl -X GET -H "Api-Key: YOUR_SYSTEM_API_KEY" \
-     http://localhost:8000/api/data/refresh_pods
-```
-
-**Response Example:**
-```json
-{
-  "detail": "Refresh initiated."
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - System API key required
-- `500`: Internal Server Error - Task spawning failed
-
-**Implementation Notes:**
-- **Background Task**: Runs as asynchronous background process, returns immediately
-- **System-Wide**: Refreshes all podcast feeds for all users
-- **No WebSocket**: Unlike user-specific refresh, this runs without real-time updates
-- **Task Spawning**: Creates background task that continues after HTTP response
-- **Python Compatibility**: Matches Python `refresh_pods` function exactly
-- **Scheduled Operation**: Designed for automated scheduled execution
-
----
-
-### GET /api/data/refresh_gpodder_subscriptions
-
-**Description:** Refresh GPodder subscriptions for all users with GPodder sync enabled
-
-**Authentication:** 👑 Admin API Key (System Task)
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_SYSTEM_API_KEY"
-```
-
-**Request Example:**
-```bash
-curl -X GET -H "Api-Key: YOUR_SYSTEM_API_KEY" \
-     http://localhost:8000/api/data/refresh_gpodder_subscriptions
-```
-
-**Response Example:**
-```json
-{
-  "detail": "GPodder sync initiated",
-  "task_id": "task-uuid-1234"
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - System API key required
-- `500`: Internal Server Error - Task spawning failed
-
-**Implementation Notes:**
-- **Multi-User Operation**: Processes all users with GPodder sync enabled
-- **Progress Tracking**: Returns task ID for progress monitoring
-- **Sync Type Support**: Handles internal, external, and both sync types (excludes Nextcloud)
-- **Background Processing**: Runs asynchronously with progress reporting
-- **User Filtering**: Only syncs users with GPodder sync configured
-- **Error Tolerance**: Individual user sync failures don't stop overall process
-- **Statistics Tracking**: Counts successful and failed syncs
-
----
-
-### GET /api/data/refresh_nextcloud_subscriptions
-
-**Description:** Refresh Nextcloud subscriptions for all users with Nextcloud sync enabled
-
-**Authentication:** 👑 Admin API Key (System Task)
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_SYSTEM_API_KEY"
-```
-
-**Request Example:**
-```bash
-curl -X GET -H "Api-Key: YOUR_SYSTEM_API_KEY" \
-     http://localhost:8000/api/data/refresh_nextcloud_subscriptions
-```
-
-**Response Example:**
-```json
-{
-  "detail": "Nextcloud sync initiated",
-  "task_id": "task-uuid-5678"
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - System API key required
-- `500`: Internal Server Error - Task spawning failed
-
-**Implementation Notes:**
-- **Nextcloud-Specific**: Separate from GPodder sync operations
-- **Multi-User Operation**: Processes all users with Nextcloud sync enabled
-- **Progress Tracking**: Returns task ID for monitoring sync progress
-- **Background Processing**: Runs asynchronously to prevent timeouts
-- **User Filtering**: Only processes users with Nextcloud sync configured
-- **Success Tracking**: Counts successful and failed sync operations
-- **Independent Operation**: Separate from GPodder sync for different sync mechanisms
-
----
-
-### GET /api/data/refresh_hosts
-
-**Description:** Refresh podcast host/person information and trigger related podcast updates
-
-**Authentication:** 👑 Admin API Key (System Task - UserID 1)
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_SYSTEM_API_KEY"
-```
-
-**Request Example:**
-```bash
-curl -X GET -H "Api-Key: YOUR_SYSTEM_API_KEY" \
-     http://localhost:8000/api/data/refresh_hosts
-```
-
-**Response Example:**
-```json
-{
-  "detail": "Host refresh initiated.",
-  "task_id": "task-uuid-9999"
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - System API key (UserID 1) required
-- `500`: Internal Server Error - Task spawning failed
-
-**Implementation Notes:**
-- **System API Key**: Requires specific system API key from UserID 1
-- **Host Processing**: Refreshes all people/hosts in the system
-- **Progress Tracking**: Provides detailed progress updates per host
-- **Background Processing**: Runs asynchronously with progress reporting
-- **Cascade Refresh**: Triggers podcast refresh after host processing
-- **Person Subscriptions**: Updates subscriptions based on host information
-- **Error Tolerance**: Individual host failures don't stop overall process
-
----
-
-### GET /api/data/cleanup_tasks
-
-**Description:** Run system cleanup tasks to remove old episodes and optimize database
-
-**Authentication:** 👑 Admin API Key (System Task - UserID 1)
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_SYSTEM_API_KEY"
-```
-
-**Request Example:**
-```bash
-curl -X GET -H "Api-Key: YOUR_SYSTEM_API_KEY" \
-     http://localhost:8000/api/data/cleanup_tasks
-```
-
-**Response Example:**
-```json
-{
-  "detail": "Cleanup tasks initiated.",
-  "task_id": "task-uuid-abcd"
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - System API key (UserID 1) required
-- `500`: Internal Server Error - Task spawning failed
-
-**Implementation Notes:**
-- **System API Key**: Requires specific system API key from UserID 1
-- **Database Optimization**: Removes old episodes based on retention policies
-- **Background Processing**: Runs asynchronously to prevent request timeouts
-- **Progress Tracking**: Provides task ID for monitoring cleanup progress
-- **Storage Management**: Helps manage disk space by removing outdated content
-- **Scheduled Operation**: Designed for regular automated execution
-
----
-
-### GET /api/data/auto_complete_episodes
-
-**Description:** Auto-complete episodes for users based on their configured completion settings
-
-**Authentication:** 👑 Admin API Key (System Task - UserID 1)
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_SYSTEM_API_KEY"
-```
-
-**Request Example:**
-```bash
-curl -X GET -H "Api-Key: YOUR_SYSTEM_API_KEY" \
-     http://localhost:8000/api/data/auto_complete_episodes
-```
-
-**Response Example:**
-```json
-{
-  "status": "Auto-complete task completed successfully",
-  "episodes_completed": 42
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - System API key (UserID 1) required
-- `500`: Internal Server Error - Auto-complete process failed
-
-**Implementation Notes:**
-- **System API Key**: Requires specific system API key from UserID 1
-- **User-Based Processing**: Processes users with auto-complete settings enabled
-- **Completion Logic**: Automatically marks episodes as completed based on user thresholds
-- **Statistics**: Returns count of episodes marked as completed
-- **Nightly Task**: Designed for regular scheduled execution
-- **User Settings**: Respects individual user auto-complete second settings
-
----
-
-### GET /api/data/update_playlists
-
-**Description:** Update all playlist information and metadata system-wide
-
-**Authentication:** 👑 Admin API Key (System Task - UserID 1)
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_SYSTEM_API_KEY"
-```
-
-**Request Example:**
-```bash
-curl -X GET -H "Api-Key: YOUR_SYSTEM_API_KEY" \
-     http://localhost:8000/api/data/update_playlists
-```
-
-**Response Example:**
-```json
-{
-  "detail": "Playlist update initiated.",
-  "task_id": "task-uuid-efgh"
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid or missing API key
-- `403`: Forbidden - System API key (UserID 1) required
-- `500`: Internal Server Error - Task spawning failed
-
-**Implementation Notes:**
-- **System API Key**: Requires specific system API key from UserID 1
-- **System-Wide Update**: Updates all playlists across all users
-- **Background Processing**: Runs asynchronously with progress tracking
-- **Metadata Refresh**: Updates playlist metadata and statistics
-- **Progress Monitoring**: Returns task ID for tracking update progress
-- **Scheduled Operation**: Designed for regular maintenance execution
-
----
-
-### POST /api/init/startup_tasks
-
-**Description:** Run system initialization tasks required at application startup
-
-**Authentication:** 👑 Admin API Key (System Task - UserID 1)
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_SYSTEM_API_KEY"
--H "Content-Type: application/json"
-```
-
-**Request Body:**
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| api_key | string | Yes | System API key for authentication |
-
-**Request Example:**
-```bash
-curl -X POST -H "Api-Key: YOUR_SYSTEM_API_KEY" \
-     -H "Content-Type: application/json" \
-     -d '{"api_key":"YOUR_SYSTEM_API_KEY"}' \
-     http://localhost:8000/api/init/startup_tasks
-```
-
-**Response Example:**
-```json
-{
-  "status": "Startup tasks completed successfully."
-}
-```
-
-**Error Responses:**
-- `403`: Forbidden - System API key (UserID 1) required
-  ```json
-  {
-    "error": "Invalid or unauthorized API key"
-  }
-  ```
-- `500`: Internal Server Error - Startup task execution failed
-
-**Implementation Notes:**
-- **System API Key**: Requires specific system API key from UserID 1 (background_tasks user)
-- **Initialization Tasks**: Adds default news feed if not already present
-- **Startup Integration**: Called during application initialization process
-- **Synchronous Execution**: Completes before returning response
-- **System Setup**: Ensures required system data is properly initialized
-- **Python Compatibility**: Matches Python `startup_tasks` function exactly
 
 ---
 
@@ -10403,3 +9027,1384 @@ curl -X GET -H "Api-Key: YOUR_API_KEY" \
 - **Frontend Integration**: Used by login forms to display available providers
 - **Provider Status**: Only returns active/enabled providers
 - **Python Compatibility**: Matches Python list_oidc_providers endpoint functionality
+
+---
+
+## 👑 Admin ENDPOINTS (Administrative privileges required)
+
+---
+
+## 👑 Admin User Management
+
+Administrative endpoints for comprehensive user account management including creation, deletion, permissions, and system-wide user oversight. All endpoints require admin privileges.
+
+### GET /api/data/get_user_info
+
+**Description:** Get comprehensive information for all users in the system
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     http://localhost:8000/api/data/get_user_info
+```
+
+**Response Example:**
+```json
+[
+  {
+    "userid": 1,
+    "fullname": "Admin User",
+    "username": "admin",
+    "email": "admin@example.com",
+    "isadmin": 1
+  },
+  {
+    "userid": 2,
+    "fullname": "John Smith",
+    "username": "jsmith",
+    "email": "john@example.com",
+    "isadmin": 0
+  },
+  {
+    "userid": 3,
+    "fullname": "Jane Doe",
+    "username": "jdoe",
+    "email": "jane@example.com",
+    "isadmin": 0
+  }
+]
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Admin Only**: Requires admin privileges to access system-wide user information
+- **Complete Data**: Returns all user fields including sensitive admin status
+- **Boolean Conversion**: `isadmin` field serialized as integer (1/0) for Python compatibility
+- **No Pagination**: Returns all users in system (consider pagination for large deployments)
+- **Python Compatibility**: Matches Python `api_get_user_info` function exactly
+
+---
+
+### POST /api/data/add_user
+
+**Description:** Create a new user account with admin privileges
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| fullname | string | Yes | User's full display name |
+| username | string | Yes | Unique username (will be converted to lowercase) |
+| email | string | Yes | Unique email address |
+| hash_pw | string | Yes | Pre-hashed password (bcrypt recommended) |
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"fullname":"New User","username":"newuser","email":"newuser@example.com","hash_pw":"$2b$12$hashed_password_here"}' \
+     http://localhost:8000/api/data/add_user
+```
+
+**Response Example (Success):**
+```json
+{
+  "detail": "Success",
+  "user_id": 4
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `409`: Conflict - Username or email already exists
+  ```json
+  {
+    "error": "This username is already taken. Please choose a different username."
+  }
+  ```
+  ```json
+  {
+    "error": "This email is already in use. Please use a different email address."
+  }
+  ```
+- `500`: Internal Server Error - Failed to create user
+
+**Implementation Notes:**
+- **Admin Only**: Only administrators can create user accounts via this endpoint
+- **Username Normalization**: Username automatically converted to lowercase
+- **Password Security**: Expects pre-hashed password, does not hash plain text
+- **Unique Constraints**: Both username and email must be unique system-wide
+- **User ID Return**: Returns newly created user's ID for reference
+- **Python Compatibility**: Matches Python `api_add_user` function exactly
+
+---
+
+### DELETE /api/data/user/delete/*user_id*
+
+**Description:** Permanently delete a user account and all associated data
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user_id | integer | Yes | ID of user to delete |
+
+**Request Example:**
+```bash
+curl -X DELETE -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     http://localhost:8000/api/data/user/delete/123
+```
+
+**Response Example:**
+```json
+{
+  "status": "User deleted"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `404`: Not Found - User ID does not exist
+- `500`: Internal Server Error - Deletion failed
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges for user deletion
+- **Permanent Action**: User deletion is irreversible and removes all associated data
+- **Cascade Delete**: Removes user's podcasts, episodes, history, and all related records
+- **Safety Considerations**: No confirmation prompt - ensure proper UI warnings
+- **Final Admin Protection**: System should prevent deletion of final admin user
+- **Python Compatibility**: Matches Python `api_delete_user` function exactly
+
+---
+
+### PUT /api/data/user/set_isadmin
+
+**Description:** Grant or revoke administrative privileges for a user
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| user_id | integer | Yes | ID of user to modify |
+| isadmin | boolean | Yes | Whether user should have admin privileges |
+
+**Request Example (Grant Admin):**
+```bash
+curl -X PUT -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"user_id":123,"isadmin":true}' \
+     http://localhost:8000/api/data/user/set_isadmin
+```
+
+**Request Example (Revoke Admin):**
+```bash
+curl -X PUT -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"user_id":123,"isadmin":false}' \
+     http://localhost:8000/api/data/user/set_isadmin
+```
+
+**Response Example:**
+```json
+{
+  "detail": "IsAdmin status updated."
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `404`: Not Found - User ID does not exist
+- `500`: Internal Server Error - Update failed
+
+**Implementation Notes:**
+- **Admin Only**: Only administrators can modify admin privileges
+- **Permission Management**: Controls access to all admin-only endpoints and features
+- **Final Admin Check**: Should prevent removal of admin status from final admin
+- **Immediate Effect**: Changes take effect immediately for active sessions
+- **Security Critical**: Grants access to all administrative functions
+- **Python Compatibility**: Matches Python `api_set_isadmin` function exactly
+
+---
+
+### GET /api/data/user/final_admin/*user_id*
+
+**Description:** Check if a user is the final (last remaining) administrator in the system
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user_id | integer | Yes | User ID to check final admin status |
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     http://localhost:8000/api/data/user/final_admin/1
+```
+
+**Response Example (Is Final Admin):**
+```json
+{
+  "final_admin": true
+}
+```
+
+**Response Example (Not Final Admin):**
+```json
+{
+  "final_admin": false
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `404`: Not Found - User ID does not exist
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges to check final admin status
+- **System Protection**: Used to prevent deletion or demotion of final admin
+- **UI Integration**: Frontend should disable delete/demote buttons for final admin
+- **Business Logic**: System must always maintain at least one administrator
+- **Safety Check**: Critical for preventing system lockout scenarios
+- **Python Compatibility**: Matches Python `api_final_admin` function exactly
+
+---
+
+### GET /api/data/user_admin_check/*user_id*
+
+**Description:** Check if a specific user has administrative privileges
+
+**Authentication:** 🔐 User API Key (Self-check only)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user_id | integer | Yes | User ID to check (must match API key owner) |
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/data/user_admin_check/123
+```
+
+**Response Example (Is Admin):**
+```json
+{
+  "is_admin": true
+}
+```
+
+**Response Example (Not Admin):**
+```json
+{
+  "is_admin": false
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Can only check your own admin status
+- `404`: Not Found - User ID does not exist
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Self-Check Only**: Users can only check their own admin status for security
+- **Authorization Restriction**: API key must belong to the user being checked
+- **UI Integration**: Used by frontend to show/hide admin features and menus
+- **Session Management**: Helps determine user capabilities and interface elements
+- **Security Model**: Prevents users from probing other users' privilege levels
+- **Python Compatibility**: Matches Python `api_user_admin_check_route` function exactly
+
+---
+
+## System Configuration
+
+Administrative endpoints for managing system-wide settings including guest access, download permissions, self-service registration, and RSS feed features. All endpoints require admin privileges.
+
+### POST /api/data/enable_disable_guest
+
+**Description:** Toggle guest access on/off for the PinePods instance
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     http://localhost:8000/api/data/enable_disable_guest
+```
+
+**Response Example:**
+```json
+{
+  "success": true
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges to toggle guest access
+- **Toggle Behavior**: Switches between enabled/disabled states automatically
+- **System Wide**: Affects all non-authenticated access to the application
+- **Security Impact**: Controls whether unauthenticated users can access content
+- **Python Compatibility**: Matches Python `api_enable_disable_guest` function exactly
+
+---
+
+### POST /api/data/enable_disable_downloads
+
+**Description:** Toggle download functionality on/off for the PinePods instance
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     http://localhost:8000/api/data/enable_disable_downloads
+```
+
+**Response Example:**
+```json
+{
+  "success": true
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges to control download feature
+- **Toggle Behavior**: Switches between enabled/disabled states automatically
+- **System Wide**: Affects all users' ability to download podcast episodes
+- **Storage Impact**: Disabling prevents new downloads but doesn't remove existing files
+- **UI Integration**: Frontend should hide/show download buttons based on this setting
+- **Python Compatibility**: Matches Python `api_enable_disable_downloads` function exactly
+
+---
+
+### POST /api/data/enable_disable_self_service
+
+**Description:** Toggle self-service user registration on/off for the PinePods instance
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     http://localhost:8000/api/data/enable_disable_self_service
+```
+
+**Response Example:**
+```json
+{
+  "success": true
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges to control user registration
+- **Toggle Behavior**: Switches between enabled/disabled states automatically
+- **Registration Control**: Affects `/api/data/add_login_user` endpoint availability
+- **Security Feature**: Prevents unauthorized user account creation when disabled
+- **UI Integration**: Registration forms should check this status before allowing signups
+- **Python Compatibility**: Matches Python `api_enable_disable_self_service` function exactly
+
+---
+
+### GET /api/data/guest_status
+
+**Description:** Get current guest access status for the PinePods instance
+
+**Authentication:** 🔐 User API Key (Any authenticated user)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/data/guest_status
+```
+
+**Response Example (Enabled):**
+```json
+true
+```
+
+**Response Example (Disabled):**
+```json
+false
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Public Check**: Any authenticated user can check guest access status
+- **Boolean Response**: Simple true/false indicating if guest access is enabled
+- **UI Integration**: Used by frontend to show/hide guest access features
+- **Security Information**: Helps determine if unauthenticated browsing is available
+- **Python Compatibility**: Matches Python `api_guest_status` function exactly
+
+---
+
+### GET /api/data/download_status
+
+**Description:** Get current download feature status for the PinePods instance
+
+**Authentication:** 🔐 User API Key (Any authenticated user)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/data/download_status
+```
+
+**Response Example (Enabled):**
+```json
+true
+```
+
+**Response Example (Disabled):**
+```json
+false
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Public Check**: Any authenticated user can check download feature status
+- **Boolean Response**: Simple true/false indicating if downloads are enabled
+- **UI Integration**: Used by frontend to show/hide download buttons and features
+- **Feature Control**: Determines availability of episode download functionality
+- **Python Compatibility**: Matches Python `api_download_status` function exactly
+
+---
+
+### GET /api/data/admin_self_service_status
+
+**Description:** Get detailed self-service registration status including admin existence
+
+**Authentication:** 🔐 User API Key (Any authenticated user)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/data/admin_self_service_status
+```
+
+**Response Example:**
+```json
+{
+  "status": true,
+  "first_admin_created": true
+}
+```
+
+**Response Example (Registration Disabled):**
+```json
+{
+  "status": false,
+  "first_admin_created": true
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Public Check**: Any authenticated user can check self-service status
+- **Detailed Response**: Includes both registration status and admin existence
+- **Setup Integration**: `first_admin_created` helps determine if initial setup is complete
+- **Registration Control**: `status` indicates if new user registration is allowed
+- **Setup Flow**: Used during initial application setup and configuration
+- **Python Compatibility**: Matches Python `api_self_service_status` function exactly
+
+---
+
+### GET /api/data/rss_feed_status
+
+**Description:** Get RSS feed feature status for the authenticated user
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/data/rss_feed_status
+```
+
+**Response Example (Enabled):**
+```json
+true
+```
+
+**Response Example (Disabled):**
+```json
+false
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **User-Specific**: Returns RSS feed status for the authenticated user
+- **Boolean Response**: Simple true/false indicating if RSS feeds are enabled
+- **Feature Control**: Determines availability of RSS feed generation for user
+- **Privacy Control**: Allows users to control public access to their podcast feeds
+- **Python Compatibility**: Matches Python `get_rss_feed_status` function exactly
+
+---
+
+### POST /api/data/toggle_rss_feeds
+
+**Description:** Toggle RSS feed feature on/off for the authenticated user
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/data/toggle_rss_feeds
+```
+
+**Response Example:**
+```json
+{
+  "success": true,
+  "enabled": true
+}
+```
+
+**Response Example (Disabled):**
+```json
+{
+  "success": true,
+  "enabled": false
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **User-Specific**: Toggles RSS feed feature for the authenticated user only
+- **Toggle Behavior**: Switches between enabled/disabled states automatically
+- **Return Status**: Response includes the new status after toggling
+- **Privacy Feature**: Allows users to control public access to their RSS feeds
+- **Feed Access**: When disabled, RSS feed URLs become inaccessible
+- **Python Compatibility**: Matches Python `toggle_rss_feeds` function exactly
+
+---
+
+## Email Settings
+
+Administrative endpoints for configuring and managing SMTP email settings, testing email functionality, and sending emails through the system. All endpoints require admin privileges.
+
+### POST /api/data/save_email_settings
+
+**Description:** Configure SMTP email server settings for the PinePods instance
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| email_settings | object | Yes | Email configuration object |
+| email_settings.server_name | string | Yes | SMTP server hostname |
+| email_settings.server_port | string/integer | Yes | SMTP server port number |
+| email_settings.from_email | string | Yes | Email address to send from |
+| email_settings.send_mode | string | Yes | Send mode (typically "SMTP") |
+| email_settings.encryption | string | Yes | Encryption type ("SSL/TLS", "STARTTLS", "None") |
+| email_settings.auth_required | boolean | Yes | Whether SMTP authentication is required |
+| email_settings.email_username | string | No | SMTP username (if auth_required) |
+| email_settings.email_password | string | No | SMTP password (if auth_required) |
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"email_settings":{"server_name":"smtp.gmail.com","server_port":"587","from_email":"noreply@example.com","send_mode":"SMTP","encryption":"STARTTLS","auth_required":true,"email_username":"user@gmail.com","email_password":"app_password"}}' \
+     http://localhost:8000/api/data/save_email_settings
+```
+
+**Response Example:**
+```json
+{
+  "message": "Email settings saved."
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `400`: Bad Request - Invalid email settings format
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges to configure email settings
+- **SMTP Configuration**: Supports standard SMTP server configurations
+- **Encryption Options**: Supports SSL/TLS, STARTTLS, and no encryption
+- **Authentication**: Optional SMTP authentication for secure servers
+- **Password Storage**: Email passwords are stored securely in database
+- **Python Compatibility**: Matches Python `api_save_email_settings` function exactly
+
+---
+
+### GET /api/data/get_email_settings
+
+**Description:** Retrieve current SMTP email server configuration
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     http://localhost:8000/api/data/get_email_settings
+```
+
+**Response Example:**
+```json
+{
+  "Emailsettingsid": 1,
+  "ServerName": "smtp.gmail.com",
+  "ServerPort": 587,
+  "FromEmail": "noreply@example.com",
+  "SendMode": "SMTP",
+  "Encryption": "STARTTLS",
+  "AuthRequired": 1,
+  "Username": "user@gmail.com",
+  "Password": "encrypted_password_hash"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `404`: Not Found - Email settings not configured
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges to view email settings
+- **Complete Configuration**: Returns all configured email settings
+- **Password Security**: Passwords are returned encrypted/hashed for security
+- **Field Naming**: Uses Python-compatible field naming convention
+- **Setup Check**: Returns 404 if email has not been configured yet
+- **Python Compatibility**: Matches Python `api_get_email_settings` function exactly
+
+---
+
+### POST /api/data/send_test_email
+
+**Description:** Send a test email using provided SMTP settings to verify configuration
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| server_name | string | Yes | SMTP server hostname |
+| server_port | string | Yes | SMTP server port number |
+| from_email | string | Yes | Email address to send from |
+| send_mode | string | Yes | Send mode (typically "SMTP") |
+| encryption | string | Yes | Encryption type ("SSL/TLS", "STARTTLS", "None") |
+| auth_required | boolean | Yes | Whether SMTP authentication is required |
+| email_username | string | No | SMTP username (if auth_required) |
+| email_password | string | No | SMTP password (if auth_required) |
+| to_email | string | Yes | Recipient email address for test |
+| message | string | Yes | Test message content |
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"server_name":"smtp.gmail.com","server_port":"587","from_email":"test@example.com","send_mode":"SMTP","encryption":"STARTTLS","auth_required":true,"email_username":"user@gmail.com","email_password":"app_password","to_email":"admin@example.com","message":"This is a test email from PinePods."}' \
+     http://localhost:8000/api/data/send_test_email
+```
+
+**Response Example (Success):**
+```json
+{
+  "email_status": "Email sent successfully"
+}
+```
+
+**Response Example (Failure):**
+```json
+{
+  "email_status": "Failed to send email: Authentication failed"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `400`: Bad Request - Invalid email settings or addresses
+- `500`: Internal Server Error - SMTP configuration or connection error
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges to send test emails
+- **Configuration Test**: Tests SMTP settings without saving them to database
+- **Timeout Protection**: 30-second timeout to prevent hanging connections
+- **Encryption Support**: Handles SSL/TLS, STARTTLS, and unencrypted connections
+- **Error Reporting**: Detailed error messages for troubleshooting SMTP issues
+- **Real SMTP**: Uses lettre library for actual SMTP communication
+- **Python Compatibility**: Matches Python `api_send_email` function behavior
+
+---
+
+### POST /api/data/send_email
+
+**Description:** Send an email using stored database email settings
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| to_email | string | Yes | Recipient email address |
+| subject | string | Yes | Email subject line |
+| message | string | Yes | Email message content |
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"to_email":"user@example.com","subject":"Welcome to PinePods","message":"Your PinePods account has been created successfully."}' \
+     http://localhost:8000/api/data/send_email
+```
+
+**Response Example (Success):**
+```json
+{
+  "email_status": "Email sent successfully"
+}
+```
+
+**Response Example (Failure):**
+```json
+{
+  "email_status": "Failed to send email: SMTP server connection failed"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `404`: Not Found - Email settings not configured in database
+- `400`: Bad Request - Invalid recipient email address
+- `500`: Internal Server Error - SMTP sending failure
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges to send emails
+- **Database Settings**: Uses email settings previously saved in database
+- **Production Use**: Designed for sending actual emails (notifications, alerts, etc.)
+- **Timeout Protection**: 30-second timeout to prevent hanging connections
+- **Error Handling**: Comprehensive error reporting for debugging
+- **Security**: Uses encrypted stored credentials for SMTP authentication
+- **Python Compatibility**: Matches Python `api_send_email` function exactly
+
+---
+
+## Server Backup & Restore
+
+Administrative endpoints for comprehensive database backup and restore operations. These endpoints provide full system backup capabilities for disaster recovery and data migration. All endpoints require admin privileges.
+
+### POST /api/data/backup_server
+
+**Description:** Create a complete backup of the PinePods database using native database tools
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| database_pass | string | Yes | Database user password for authentication |
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"database_pass":"your_db_password"}' \
+     http://localhost:8000/api/data/backup_server
+```
+
+**Response Example (Success):**
+- **Content-Type**: `application/sql` or `text/plain`
+- **Content-Disposition**: `attachment; filename="pinepods_backup_YYYY-MM-DD.sql"`
+- **Body**: SQL dump file content (streamed)
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `500`: Internal Server Error - Backup process failed
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges for database backup
+- **Native Tools**: Uses `pg_dump` for PostgreSQL or `mysqldump` for MySQL
+- **Streaming Response**: Large databases are streamed to prevent memory issues
+- **Data-Only Backup**: Includes data without schema for portability
+- **Security**: Database password required and passed securely via environment
+- **Environment Variables**: Uses DB_HOST, DB_PORT, DB_NAME, DB_USER from environment
+- **File Format**: Returns standard SQL dump format compatible with database restore tools
+
+**Database-Specific Options:**
+
+**PostgreSQL (pg_dump):**
+- `--data-only`: Exports only data, not schema
+- `--disable-triggers`: Prevents trigger execution during restore
+- `--format=plain`: Standard SQL format
+- Password passed via `PGPASSWORD` environment variable
+
+**MySQL (mysqldump):**
+- `--single-transaction`: Ensures consistent backup
+- `--routines --triggers`: Includes stored procedures and triggers
+- `--default-auth=mysql_native_password`: Compatibility option
+- Password passed via command line (secured in process)
+
+---
+
+### POST /api/data/restore_server
+
+**Description:** Restore PinePods database from uploaded SQL backup file
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+-H "Content-Type: multipart/form-data"
+```
+
+**Form Data:**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| backup_file | file | Yes | SQL backup file (.sql extension required) |
+| database_pass | string | Yes | Database user password for authentication |
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     -F "backup_file=@pinepods_backup.sql" \
+     -F "database_pass=your_db_password" \
+     http://localhost:8000/api/data/restore_server
+```
+
+**Response Example:**
+```json
+{
+  "message": "Server restore started successfully"
+}
+```
+
+**Error Responses:**
+- `400`: Bad Request - Invalid file format, missing file, or file too large
+  ```json
+  {
+    "error": "Only SQL files are allowed"
+  }
+  ```
+  ```json
+  {
+    "error": "File too large (max 100MB)"
+  }
+  ```
+  ```json
+  {
+    "error": "Database password is required"
+  }
+  ```
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `500`: Internal Server Error - Restore process failed
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges for database restore
+- **Multipart Upload**: Accepts file uploads via multipart form data
+- **File Validation**: Only accepts .sql files with UTF-8 encoding
+- **Size Limit**: Maximum file size of 100MB to prevent memory issues
+- **Background Processing**: Restore runs asynchronously to prevent request timeouts
+- **Immediate Response**: Returns success immediately, actual restore runs in background
+- **Data Safety**: Overwrites existing data - ensure proper backups before restore
+- **File Format**: Accepts standard SQL dump files from pg_dump or mysqldump
+
+**Security Considerations:**
+- **Admin Verification**: Double-checks admin status before processing
+- **File Type Validation**: Ensures only SQL files are processed
+- **Size Limits**: Prevents abuse through large file uploads
+- **UTF-8 Validation**: Ensures file content is valid UTF-8
+- **Password Required**: Database authentication required for restore operations
+
+**Operational Notes:**
+- **Downtime**: Restore operations may cause temporary service interruption
+- **Data Loss**: Restore overwrites existing database - backup current data first
+- **Background Task**: Long-running restores continue after HTTP response
+- **Monitoring**: Check application logs for restore progress and completion
+- **Recovery**: Failed restores may require manual database recovery
+
+---
+
+## System Maintenance Tasks
+
+Administrative endpoints for system maintenance operations including podcast feed refresh, sync operations, cleanup tasks, and system initialization. These endpoints are primarily designed for automated scheduled tasks and system administration.
+
+### GET /api/data/refresh_pods
+
+**Description:** Refresh all podcast feeds system-wide as a background task
+
+**Authentication:** 👑 Admin API Key (System Task)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_SYSTEM_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_SYSTEM_API_KEY" \
+     http://localhost:8000/api/data/refresh_pods
+```
+
+**Response Example:**
+```json
+{
+  "detail": "Refresh initiated."
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - System API key required
+- `500`: Internal Server Error - Task spawning failed
+
+**Implementation Notes:**
+- **Background Task**: Runs as asynchronous background process, returns immediately
+- **System-Wide**: Refreshes all podcast feeds for all users
+- **No WebSocket**: Unlike user-specific refresh, this runs without real-time updates
+- **Task Spawning**: Creates background task that continues after HTTP response
+- **Python Compatibility**: Matches Python `refresh_pods` function exactly
+- **Scheduled Operation**: Designed for automated scheduled execution
+
+---
+
+### GET /api/data/refresh_gpodder_subscriptions
+
+**Description:** Refresh GPodder subscriptions for all users with GPodder sync enabled
+
+**Authentication:** 👑 Admin API Key (System Task)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_SYSTEM_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_SYSTEM_API_KEY" \
+     http://localhost:8000/api/data/refresh_gpodder_subscriptions
+```
+
+**Response Example:**
+```json
+{
+  "detail": "GPodder sync initiated",
+  "task_id": "task-uuid-1234"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - System API key required
+- `500`: Internal Server Error - Task spawning failed
+
+**Implementation Notes:**
+- **Multi-User Operation**: Processes all users with GPodder sync enabled
+- **Progress Tracking**: Returns task ID for progress monitoring
+- **Sync Type Support**: Handles internal, external, and both sync types (excludes Nextcloud)
+- **Background Processing**: Runs asynchronously with progress reporting
+- **User Filtering**: Only syncs users with GPodder sync configured
+- **Error Tolerance**: Individual user sync failures don't stop overall process
+- **Statistics Tracking**: Counts successful and failed syncs
+
+---
+
+### GET /api/data/refresh_nextcloud_subscriptions
+
+**Description:** Refresh Nextcloud subscriptions for all users with Nextcloud sync enabled
+
+**Authentication:** 👑 Admin API Key (System Task)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_SYSTEM_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_SYSTEM_API_KEY" \
+     http://localhost:8000/api/data/refresh_nextcloud_subscriptions
+```
+
+**Response Example:**
+```json
+{
+  "detail": "Nextcloud sync initiated",
+  "task_id": "task-uuid-5678"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - System API key required
+- `500`: Internal Server Error - Task spawning failed
+
+**Implementation Notes:**
+- **Nextcloud-Specific**: Separate from GPodder sync operations
+- **Multi-User Operation**: Processes all users with Nextcloud sync enabled
+- **Progress Tracking**: Returns task ID for monitoring sync progress
+- **Background Processing**: Runs asynchronously to prevent timeouts
+- **User Filtering**: Only processes users with Nextcloud sync configured
+- **Success Tracking**: Counts successful and failed sync operations
+- **Independent Operation**: Separate from GPodder sync for different sync mechanisms
+
+---
+
+### GET /api/data/refresh_hosts
+
+**Description:** Refresh podcast host/person information and trigger related podcast updates
+
+**Authentication:** 👑 Admin API Key (System Task - UserID 1)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_SYSTEM_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_SYSTEM_API_KEY" \
+     http://localhost:8000/api/data/refresh_hosts
+```
+
+**Response Example:**
+```json
+{
+  "detail": "Host refresh initiated.",
+  "task_id": "task-uuid-9999"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - System API key (UserID 1) required
+- `500`: Internal Server Error - Task spawning failed
+
+**Implementation Notes:**
+- **System API Key**: Requires specific system API key from UserID 1
+- **Host Processing**: Refreshes all people/hosts in the system
+- **Progress Tracking**: Provides detailed progress updates per host
+- **Background Processing**: Runs asynchronously with progress reporting
+- **Cascade Refresh**: Triggers podcast refresh after host processing
+- **Person Subscriptions**: Updates subscriptions based on host information
+- **Error Tolerance**: Individual host failures don't stop overall process
+
+---
+
+### GET /api/data/cleanup_tasks
+
+**Description:** Run system cleanup tasks to remove old episodes and optimize database
+
+**Authentication:** 👑 Admin API Key (System Task - UserID 1)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_SYSTEM_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_SYSTEM_API_KEY" \
+     http://localhost:8000/api/data/cleanup_tasks
+```
+
+**Response Example:**
+```json
+{
+  "detail": "Cleanup tasks initiated.",
+  "task_id": "task-uuid-abcd"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - System API key (UserID 1) required
+- `500`: Internal Server Error - Task spawning failed
+
+**Implementation Notes:**
+- **System API Key**: Requires specific system API key from UserID 1
+- **Database Optimization**: Removes old episodes based on retention policies
+- **Background Processing**: Runs asynchronously to prevent request timeouts
+- **Progress Tracking**: Provides task ID for monitoring cleanup progress
+- **Storage Management**: Helps manage disk space by removing outdated content
+- **Scheduled Operation**: Designed for regular automated execution
+
+---
+
+### GET /api/data/auto_complete_episodes
+
+**Description:** Auto-complete episodes for users based on their configured completion settings
+
+**Authentication:** 👑 Admin API Key (System Task - UserID 1)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_SYSTEM_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_SYSTEM_API_KEY" \
+     http://localhost:8000/api/data/auto_complete_episodes
+```
+
+**Response Example:**
+```json
+{
+  "status": "Auto-complete task completed successfully",
+  "episodes_completed": 42
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - System API key (UserID 1) required
+- `500`: Internal Server Error - Auto-complete process failed
+
+**Implementation Notes:**
+- **System API Key**: Requires specific system API key from UserID 1
+- **User-Based Processing**: Processes users with auto-complete settings enabled
+- **Completion Logic**: Automatically marks episodes as completed based on user thresholds
+- **Statistics**: Returns count of episodes marked as completed
+- **Nightly Task**: Designed for regular scheduled execution
+- **User Settings**: Respects individual user auto-complete second settings
+
+---
+
+### GET /api/data/update_playlists
+
+**Description:** Update all playlist information and metadata system-wide
+
+**Authentication:** 👑 Admin API Key (System Task - UserID 1)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_SYSTEM_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_SYSTEM_API_KEY" \
+     http://localhost:8000/api/data/update_playlists
+```
+
+**Response Example:**
+```json
+{
+  "detail": "Playlist update initiated.",
+  "task_id": "task-uuid-efgh"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - System API key (UserID 1) required
+- `500`: Internal Server Error - Task spawning failed
+
+**Implementation Notes:**
+- **System API Key**: Requires specific system API key from UserID 1
+- **System-Wide Update**: Updates all playlists across all users
+- **Background Processing**: Runs asynchronously with progress tracking
+- **Metadata Refresh**: Updates playlist metadata and statistics
+- **Progress Monitoring**: Returns task ID for tracking update progress
+- **Scheduled Operation**: Designed for regular maintenance execution
+
+---
+
+### POST /api/init/startup_tasks
+
+**Description:** Run system initialization tasks required at application startup
+
+**Authentication:** 👑 Admin API Key (System Task - UserID 1)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_SYSTEM_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| api_key | string | Yes | System API key for authentication |
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_SYSTEM_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"api_key":"YOUR_SYSTEM_API_KEY"}' \
+     http://localhost:8000/api/init/startup_tasks
+```
+
+**Response Example:**
+```json
+{
+  "status": "Startup tasks completed successfully."
+}
+```
+
+**Error Responses:**
+- `403`: Forbidden - System API key (UserID 1) required
+  ```json
+  {
+    "error": "Invalid or unauthorized API key"
+  }
+  ```
+- `500`: Internal Server Error - Startup task execution failed
+
+**Implementation Notes:**
+- **System API Key**: Requires specific system API key from UserID 1 (background_tasks user)
+- **Initialization Tasks**: Adds default news feed if not already present
+- **Startup Integration**: Called during application initialization process
+- **Synchronous Execution**: Completes before returning response
+- **System Setup**: Ensures required system data is properly initialized
+- **Python Compatibility**: Matches Python `startup_tasks` function exactly

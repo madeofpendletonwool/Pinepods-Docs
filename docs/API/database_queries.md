@@ -4049,6 +4049,267 @@ curl -X POST \
 
 ---
 
+
+## 🎵 Queue Management
+
+Queue Management endpoints allow users to create and manage their episode playback queue, controlling the order and content of episodes to be played.
+
+---
+
+#### POST /api/data/queue_pod
+
+**Description:** Add an episode to the user's playback queue
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+```json
+{
+  "user_id": 123,
+  "episode_id": 789,
+  "is_youtube": false
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user_id | integer | Yes | ID of the user |
+| episode_id | integer | Yes | ID of the episode to queue |
+| is_youtube | boolean | Yes | Whether this is a YouTube video (true/false) |
+
+**Request Example:**
+```bash
+curl -X POST \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id":123,"episode_id":789,"is_youtube":false}' \
+  http://localhost:8000/api/data/queue_pod
+```
+
+**Response Example:**
+```json
+{
+  "data": "Episode queued successfully"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot queue episodes for other users (non-admin)
+- `500`: Internal Server Error - Database error
+
+**Notes:**
+- Episodes are added to the end of queue
+- Duplicate episodes in queue are prevented at database level
+- Returns message "Video queued successfully" for YouTube content
+- User can only queue episodes for themselves unless admin
+
+---
+
+#### POST /api/data/remove_queued_pod
+
+**Description:** Remove an episode from the user's playback queue
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+```json
+{
+  "user_id": 123,
+  "episode_id": 789,
+  "is_youtube": false
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user_id | integer | Yes | ID of the user |
+| episode_id | integer | Yes | ID of the episode to remove |
+| is_youtube | boolean | Yes | Whether this is a YouTube video (true/false) |
+
+**Request Example:**
+```bash
+curl -X POST \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id":123,"episode_id":789,"is_youtube":false}' \
+  http://localhost:8000/api/data/remove_queued_pod
+```
+
+**Response Example:**
+```json
+{
+  "data": "Episode removed from queue successfully"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot modify other user's queue (non-admin)
+- `500`: Internal Server Error - Database error
+
+**Notes:**
+- Removes episode from queue regardless of position
+- Queue positions are automatically adjusted after removal
+- Returns message "Video removed from queue successfully" for YouTube content
+- User can only modify their own queue unless admin
+
+---
+
+#### GET /api/data/get_queued_episodes
+
+**Description:** Retrieve all episodes in the user's playback queue in order
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user_id | integer | Yes (query) | ID of the user |
+
+**Request Example:**
+```bash
+curl -X GET \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  "http://localhost:8000/api/data/get_queued_episodes?user_id=123"
+```
+
+**Response Example:**
+```json
+{
+  "data": [
+    {
+      "episodetitle": "AI Revolution in 2024",
+      "podcastname": "Tech Talk",
+      "episodepubdate": "2024-01-15T10:00:00",
+      "episodedescription": "Discussion about AI developments this year",
+      "episodeartwork": "https://techtalk.example/art42.jpg",
+      "episodeurl": "https://techtalk.example/ep42.mp3",
+      "queueposition": 1,
+      "episodeduration": 3600,
+      "queuedate": "2024-01-20T14:30:00",
+      "listenduration": null,
+      "episodeid": 789,
+      "completed": false,
+      "saved": false,
+      "queued": true,
+      "downloaded": false,
+      "is_youtube": false
+    },
+    {
+      "episodetitle": "Climate Change Update", 
+      "podcastname": "Science Weekly",
+      "episodepubdate": "2024-01-16T09:00:00",
+      "episodedescription": "Latest climate research findings",
+      "episodeartwork": "https://scienceweekly.example/art43.jpg",
+      "episodeurl": "https://scienceweekly.example/ep43.mp3",
+      "queueposition": 2,
+      "episodeduration": 2700,
+      "queuedate": "2024-01-20T15:00:00",
+      "listenduration": 300,
+      "episodeid": 790,
+      "completed": false,
+      "saved": true,
+      "queued": true,
+      "downloaded": true,
+      "is_youtube": false
+    }
+  ]
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot access other user's queue (non-admin)
+- `500`: Internal Server Error - Database error
+
+**Notes:**
+- Episodes returned in queue order (queueposition ascending)
+- Includes full episode metadata, status flags, and listen progress
+- queueposition can be null for some items
+- listenduration shows partial playback progress in seconds
+- Boolean flags show episode status (completed, saved, queued, downloaded)
+
+---
+
+#### POST /api/data/reorder_queue
+
+**Description:** Reorder episodes in the user's playback queue by providing ordered list of episode IDs
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Query Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user_id | integer | Yes | ID of the user |
+
+**Request Body:**
+```json
+{
+  "episode_ids": [790, 789, 791]
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| episode_ids | array | Yes | Array of episode IDs in desired order |
+
+**Request Example:**
+```bash
+curl -X POST \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{"episode_ids":[790,789,791]}' \
+  "http://localhost:8000/api/data/reorder_queue?user_id=123"
+```
+
+**Response Example:**
+```json
+{
+  "message": "Queue reordered successfully"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot access other user's queue (non-admin)
+- `500`: Internal Server Error - Database error
+
+**Notes:**
+- Episode IDs in array define the new queue order (position 1, 2, 3...)
+- All episodes must exist in user's current queue
+- Episodes not included in the list remain in their relative order
+- Operation updates queue positions atomically
+
+---
+
+
 ## 🔍 Search & Discovery
 
 Search & Discovery endpoints enable users to find new podcasts and YouTube channels, search through existing content, and manage YouTube channel subscriptions.
@@ -4783,15 +5044,15 @@ curl -X POST \
 
 ---
 
-## 🎵 Queue Management
+## 📝 Transcripts & Advanced Features
 
-Queue Management endpoints allow users to create and manage their episode playback queue, controlling the order and content of episodes to be played.
+Advanced podcast features including transcript fetching and Podcasting 2.0 standard support for enhanced metadata, chapters, transcripts, people information, funding details, and other modern podcast features.
 
 ---
 
-#### POST /api/data/queue_pod
+#### POST /api/data/fetch_transcript
 
-**Description:** Add an episode to the user's playback queue
+**Description:** Fetch episode transcript content from external URL (CORS proxy endpoint)
 
 **Authentication:** 🔐 User API Key
 
@@ -4804,108 +5065,55 @@ Queue Management endpoints allow users to create and manage their episode playba
 **Request Body:**
 ```json
 {
-  "user_id": 123,
-  "episode_id": 789,
-  "is_youtube": false
+  "url": "https://example.com/transcript.txt"
 }
 ```
 
 **Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| user_id | integer | Yes | ID of the user |
-| episode_id | integer | Yes | ID of the episode to queue |
-| is_youtube | boolean | Yes | Whether this is a YouTube video (true/false) |
+| `url` | string | Yes | External URL of the transcript file to fetch |
 
 **Request Example:**
 ```bash
 curl -X POST \
   -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
   -H "Content-Type: application/json" \
-  -d '{"user_id":123,"episode_id":789,"is_youtube":false}' \
-  http://localhost:8000/api/data/queue_pod
+  -d '{"url":"https://podcasts.example.com/transcripts/episode123.txt"}' \
+  http://localhost:8000/api/data/fetch_transcript
 ```
 
 **Response Example:**
 ```json
 {
-  "data": "Episode queued successfully"
+  "success": true,
+  "content": "Welcome to today's episode. Today we're discussing..."
+}
+```
+
+**Error Response Example:**
+```json
+{
+  "success": false,
+  "error": "Failed to fetch transcript: Connection timeout"
 }
 ```
 
 **Error Responses:**
 - `401`: Unauthorized - Invalid API key
-- `403`: Forbidden - Cannot queue episodes for other users (non-admin)
-- `500`: Internal Server Error - Database error
+- `200`: Always returns 200, but check `success` field in response
 
 **Notes:**
-- Episodes are added to the end of queue
-- Duplicate episodes in queue are prevented at database level
-- Returns message "Video queued successfully" for YouTube content
-- User can only queue episodes for themselves unless admin
+- Acts as a CORS proxy to fetch transcript content from external URLs
+- Returns success/error status within the JSON response body
+- Used to bypass browser CORS restrictions when fetching transcripts
+- Handles network errors gracefully and returns error details
 
 ---
 
-#### POST /api/data/remove_queued_pod
+#### GET /api/data/fetch_podcasting_2_data
 
-**Description:** Remove an episode from the user's playback queue
-
-**Authentication:** 🔐 User API Key
-
-**Request Headers:**
-```bash
--H "Api-Key: YOUR_API_KEY"
--H "Content-Type: application/json"
-```
-
-**Request Body:**
-```json
-{
-  "user_id": 123,
-  "episode_id": 789,
-  "is_youtube": false
-}
-```
-
-**Parameters:**
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| user_id | integer | Yes | ID of the user |
-| episode_id | integer | Yes | ID of the episode to remove |
-| is_youtube | boolean | Yes | Whether this is a YouTube video (true/false) |
-
-**Request Example:**
-```bash
-curl -X POST \
-  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
-  -H "Content-Type: application/json" \
-  -d '{"user_id":123,"episode_id":789,"is_youtube":false}' \
-  http://localhost:8000/api/data/remove_queued_pod
-```
-
-**Response Example:**
-```json
-{
-  "data": "Episode removed from queue successfully"
-}
-```
-
-**Error Responses:**
-- `401`: Unauthorized - Invalid API key
-- `403`: Forbidden - Cannot modify other user's queue (non-admin)
-- `500`: Internal Server Error - Database error
-
-**Notes:**
-- Removes episode from queue regardless of position
-- Queue positions are automatically adjusted after removal
-- Returns message "Video removed from queue successfully" for YouTube content
-- User can only modify their own queue unless admin
-
----
-
-#### GET /api/data/get_queued_episodes
-
-**Description:** Retrieve all episodes in the user's playback queue in order
+**Description:** Get comprehensive Podcasting 2.0 metadata for a specific episode, including chapters, transcripts, and people information
 
 **Authentication:** 🔐 User API Key
 
@@ -4914,57 +5122,54 @@ curl -X POST \
 -H "Api-Key: YOUR_API_KEY"
 ```
 
-**Parameters:**
+**Query Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| user_id | integer | Yes (query) | ID of the user |
+| `episode_id` | integer | Yes | ID of the episode to get Podcasting 2.0 data for |
+| `user_id` | integer | Yes | User ID (must match API key owner) |
 
 **Request Example:**
 ```bash
 curl -X GET \
   -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
-  "http://localhost:8000/api/data/get_queued_episodes?user_id=123"
+  "http://localhost:8000/api/data/fetch_podcasting_2_data?episode_id=789&user_id=123"
 ```
 
 **Response Example:**
 ```json
 {
-  "data": [
+  "chapters": [
     {
-      "episodetitle": "AI Revolution in 2024",
-      "podcastname": "Tech Talk",
-      "episodepubdate": "2024-01-15T10:00:00",
-      "episodedescription": "Discussion about AI developments this year",
-      "episodeartwork": "https://techtalk.example/art42.jpg",
-      "episodeurl": "https://techtalk.example/ep42.mp3",
-      "queueposition": 1,
-      "episodeduration": 3600,
-      "queuedate": "2024-01-20T14:30:00",
-      "listenduration": null,
-      "episodeid": 789,
-      "completed": false,
-      "saved": false,
-      "queued": true,
-      "downloaded": false,
-      "is_youtube": false
+      "start_time": 0,
+      "title": "Introduction",
+      "url": "https://example.com/chapter1",
+      "image": "https://example.com/chapter1.jpg"
     },
     {
-      "episodetitle": "Climate Change Update", 
-      "podcastname": "Science Weekly",
-      "episodepubdate": "2024-01-16T09:00:00",
-      "episodedescription": "Latest climate research findings",
-      "episodeartwork": "https://scienceweekly.example/art43.jpg",
-      "episodeurl": "https://scienceweekly.example/ep43.mp3",
-      "queueposition": 2,
-      "episodeduration": 2700,
-      "queuedate": "2024-01-20T15:00:00",
-      "listenduration": 300,
-      "episodeid": 790,
-      "completed": false,
-      "saved": true,
-      "queued": true,
-      "downloaded": true,
-      "is_youtube": false
+      "start_time": 300,
+      "title": "Main Discussion",
+      "url": "https://example.com/chapter2"
+    }
+  ],
+  "transcripts": [
+    {
+      "url": "https://example.com/transcript.json",
+      "type": "application/json",
+      "language": "en",
+      "rel": "captions"
+    }
+  ],
+  "people": [
+    {
+      "name": "John Doe",
+      "role": "host",
+      "href": "https://johndoe.example.com",
+      "image": "https://johndoe.example.com/avatar.jpg"
+    },
+    {
+      "name": "Jane Smith", 
+      "role": "guest",
+      "href": "https://janesmith.example.com"
     }
   ]
 }
@@ -4972,21 +5177,176 @@ curl -X GET \
 
 **Error Responses:**
 - `401`: Unauthorized - Invalid API key
-- `403`: Forbidden - Cannot access other user's queue (non-admin)
-- `500`: Internal Server Error - Database error
+- `403`: Forbidden - Cannot access other users' episode data
+- `404`: Not Found - Episode not found
+- `500`: Internal Server Error - Feed parsing error
 
 **Notes:**
-- Episodes returned in queue order (queueposition ascending)
-- Includes full episode metadata, status flags, and listen progress
-- queueposition can be null for some items
-- listenduration shows partial playback progress in seconds
-- Boolean flags show episode status (completed, saved, queued, downloaded)
+- Parses RSS feed for Podcasting 2.0 standard tags
+- Returns chapters with timestamps and optional metadata
+- Includes transcript URLs in various formats (JSON, SRT, VTT)
+- People data includes hosts, guests, and other contributors
+- Falls back to PodPeople API for additional person metadata
+- Requires user to have access to the episode's podcast
+- Some features depend on podcast feed supporting Podcasting 2.0 standard
 
 ---
 
-#### POST /api/data/reorder_queue
+#### GET /api/data/fetch_podcasting_2_pod_data
 
-**Description:** Reorder episodes in the user's playback queue by providing ordered list of episode IDs
+**Description:** Get podcast-level Podcasting 2.0 metadata including people, podroll, funding information, and value settings
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Query Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `podcast_id` | integer | Yes | ID of the podcast to get Podcasting 2.0 data for |
+| `user_id` | integer | Yes | User ID (must match API key owner) |
+
+**Request Example:**
+```bash
+curl -X GET \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  "http://localhost:8000/api/data/fetch_podcasting_2_pod_data?podcast_id=456&user_id=123"
+```
+
+**Response Example:**
+```json
+{
+  "people": [
+    {
+      "name": "John Doe",
+      "role": "host",
+      "href": "https://johndoe.example.com",
+      "image": "https://johndoe.example.com/avatar.jpg",
+      "group": "cast"
+    }
+  ],
+  "podroll": [
+    {
+      "title": "Similar Podcast",
+      "url": "https://similar-podcast.example.com/feed.xml",
+      "description": "Another great tech podcast"
+    }
+  ],
+  "funding": [
+    {
+      "url": "https://patreon.com/podcast",
+      "message": "Support us on Patreon"
+    },
+    {
+      "url": "https://ko-fi.com/podcast", 
+      "message": "Buy us a coffee"
+    }
+  ],
+  "value": {
+    "type": "lightning",
+    "method": "keysend",
+    "suggested": 0.00000010,
+    "recipients": [
+      {
+        "name": "Host",
+        "type": "node",
+        "address": "030a58b8653d32b99200a5ccb8f5e2e7f8f8a9c1d5e5f5e5f5e5f5e5f5e5f5e5",
+        "split": 80
+      }
+    ]
+  }
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot access other users' podcast data
+- `404`: Not Found - Podcast not found
+- `500`: Internal Server Error - Feed parsing error
+
+**Notes:**
+- Fetches podcast-level Podcasting 2.0 metadata from RSS feed
+- People includes all podcast contributors with roles and metadata
+- Podroll contains recommendations for similar podcasts
+- Funding provides ways for listeners to financially support the podcast
+- Value contains Lightning Network payment information for micropayments
+- Requires user to be subscribed to the podcast
+- Data availability depends on podcast feed supporting Podcasting 2.0 standard
+- Falls back to PodPeople API for enhanced people metadata
+
+---
+
+## 👥 Person/Host Features
+
+Person and host management features that allow users to subscribe to specific podcast hosts or guests, track episodes where they appear, and discover podcasts by host. Integrates with the PodPeople database for enhanced person metadata.
+
+---
+
+#### GET /api/data/podpeople/host_podcasts
+
+**Description:** Search for podcasts by host name using the PodPeople external database service
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Query Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `hostname` | string | Yes | Name of the host to search for |
+
+**Request Example:**
+```bash
+curl -X GET \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  "http://localhost:8000/api/data/podpeople/host_podcasts?hostname=Joe%20Rogan"
+```
+
+**Response Example:**
+```json
+{
+  "success": true,
+  "podcasts": [
+    {
+      "podcast_id": "123456789",
+      "name": "The Joe Rogan Experience",
+      "artwork_url": "https://example.com/artwork.jpg",
+      "description": "The official podcast of comedian Joe Rogan",
+      "feed_url": "https://feeds.redcircle.com/jre",
+      "website": "https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk",
+      "categories": ["Comedy", "Society & Culture"],
+      "host_info": {
+        "name": "Joe Rogan",
+        "role": "host"
+      }
+    }
+  ]
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `503`: Service Unavailable - PodPeople API unavailable
+- `500`: Internal Server Error - External API error
+
+**Notes:**
+- Queries the external PodPeople database service
+- Service URL configurable via `PEOPLE_API_URL` environment variable
+- Returns podcasts where the specified person is a host
+- Used for podcast discovery by host/personality
+- Data sourced from comprehensive podcast host database
+
+---
+
+#### POST /api/data/person/subscribe/{user_id}/{person_id}
+
+**Description:** Subscribe to a specific person/host to track episodes where they appear
 
 **Authentication:** 🔐 User API Key
 
@@ -4996,48 +5356,637 @@ curl -X GET \
 -H "Content-Type: application/json"
 ```
 
-**Query Parameters:**
+**Path Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| user_id | integer | Yes | ID of the user |
+| `user_id` | integer | Yes | User ID (must match API key owner) |
+| `person_id` | integer | Yes | External person ID from PodPeople database |
 
 **Request Body:**
 ```json
 {
-  "episode_ids": [790, 789, 791]
+  "person_name": "Joe Rogan",
+  "person_img": "https://example.com/joe-rogan.jpg",
+  "podcast_id": 456
 }
 ```
 
 **Parameters:**
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| episode_ids | array | Yes | Array of episode IDs in desired order |
+| `person_name` | string | Yes | Display name of the person |
+| `person_img` | string | Yes | URL to person's profile image |
+| `podcast_id` | integer | Yes | Associated podcast ID where person appears |
 
 **Request Example:**
 ```bash
 curl -X POST \
   -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
   -H "Content-Type: application/json" \
-  -d '{"episode_ids":[790,789,791]}' \
-  "http://localhost:8000/api/data/reorder_queue?user_id=123"
+  -d '{"person_name":"Joe Rogan","person_img":"https://example.com/joe-rogan.jpg","podcast_id":456}' \
+  http://localhost:8000/api/data/person/subscribe/123/789
 ```
 
 **Response Example:**
 ```json
 {
-  "message": "Queue reordered successfully"
+  "success": true,
+  "message": "Successfully subscribed to person",
+  "person_id": 42
 }
 ```
 
 **Error Responses:**
 - `401`: Unauthorized - Invalid API key
-- `403`: Forbidden - Cannot access other user's queue (non-admin)
+- `403`: Forbidden - Cannot subscribe for other users
+- `400`: Bad Request - Invalid person or podcast data
+- `500`: Internal Server Error - Subscription failed
+
+**Notes:**
+- User can only subscribe to people for themselves
+- Triggers background task to collect person's episodes
+- Person metadata stored locally for faster access
+- Associates person with specific podcast context
+- Enables episode tracking across multiple podcasts
+
+---
+
+#### DELETE /api/data/person/unsubscribe/{user_id}/{person_id}
+
+**Description:** Unsubscribe from a person/host to stop tracking their episodes
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID (must match API key owner) |
+| `person_id` | integer | Yes | External person ID from subscription |
+
+**Request Body:**
+```json
+{
+  "person_name": "Joe Rogan"
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `person_name` | string | Yes | Name of the person to unsubscribe from |
+
+**Request Example:**
+```bash
+curl -X DELETE \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{"person_name":"Joe Rogan"}' \
+  http://localhost:8000/api/data/person/unsubscribe/123/789
+```
+
+**Response Example:**
+```json
+{
+  "success": true,
+  "message": "Successfully unsubscribed from person"
+}
+```
+
+**Error Response Example:**
+```json
+{
+  "success": false,
+  "message": "Person subscription not found"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot unsubscribe for other users
+- `404`: Not Found - Subscription not found
+- `500`: Internal Server Error - Unsubscribe failed
+
+**Notes:**
+- User can only unsubscribe from their own person subscriptions
+- Removes person from tracking list
+- Episodes associated with person remain but are no longer tracked
+- Returns success status even if subscription wasn't found
+
+---
+
+#### GET /api/data/person/subscriptions/{user_id}
+
+**Description:** Get all person subscriptions for a user
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID (must match API key owner) |
+
+**Request Example:**
+```bash
+curl -X GET \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  http://localhost:8000/api/data/person/subscriptions/123
+```
+
+**Response Example:**
+```json
+{
+  "subscriptions": [
+    {
+      "personid": 789,
+      "userid": 123,
+      "name": "Joe Rogan",
+      "personimg": "https://example.com/joe-rogan.jpg",
+      "peopledbid": 456,
+      "associatedpodcasts": "456,789,123"
+    },
+    {
+      "personid": 790,
+      "userid": 123,
+      "name": "Lex Fridman",
+      "personimg": "https://example.com/lex-fridman.jpg",
+      "peopledbid": 457,
+      "associatedpodcasts": "789"
+    }
+  ]
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot access other users' subscriptions
 - `500`: Internal Server Error - Database error
 
 **Notes:**
-- Episode IDs in array define the new queue order (position 1, 2, 3...)
-- All episodes must exist in user's current queue
-- Episodes not included in the list remain in their relative order
-- Operation updates queue positions atomically
+- User can only access their own person subscriptions
+- Returns comprehensive person metadata and associations
+- `associatedpodcasts` contains comma-separated podcast IDs
+- Used to populate person subscription management interfaces
+- Ordered alphabetically by person name
 
 ---
+
+#### GET /api/data/person/episodes/{user_id}/{person_id}
+
+**Description:** Get episodes featuring a specific person/host that the user has subscribed to
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID (must match API key owner) |
+| `person_id` | integer | Yes | Person ID from user's subscriptions |
+
+**Request Example:**
+```bash
+curl -X GET \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  http://localhost:8000/api/data/person/episodes/123/789
+```
+
+**Response Example:**
+```json
+{
+  "episodes": [
+    {
+      "episodeid": 12345,
+      "episodetitle": "AI and the Future of Humanity",
+      "episodedescription": "Discussion about artificial intelligence...",
+      "episodeurl": "https://example.com/episode.mp3",
+      "episodeartwork": "https://example.com/artwork.jpg",
+      "episodepubdate": "2024-01-15T14:30:00Z",
+      "episodeduration": 7200,
+      "podcastname": "The Joe Rogan Experience",
+      "saved": true,
+      "completed": false,
+      "user_subscribed": true
+    },
+    {
+      "episodeid": null,
+      "episodetitle": "Guest Episode on Another Show",
+      "episodedescription": "Joe appears as a guest...",
+      "episodeurl": "https://other-show.com/episode.mp3",
+      "episodeartwork": "https://other-show.com/artwork.jpg", 
+      "episodepubdate": "2024-01-10T10:00:00Z",
+      "episodeduration": 5400,
+      "podcastname": "Another Podcast",
+      "saved": false,
+      "completed": false,
+      "user_subscribed": false
+    }
+  ]
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot access other users' person episodes
+- `404`: Not Found - Person subscription not found
+- `500`: Internal Server Error - Database error
+
+**Notes:**
+- User can only access episodes for people they're subscribed to
+- Returns episodes from both subscribed and non-subscribed podcasts
+- `episodeid` is null for episodes from podcasts user isn't subscribed to
+- `user_subscribed` indicates if user is subscribed to episode's podcast
+- Episodes include playback status (saved, completed) when available
+- Used to create personalized feeds based on host/guest appearances
+
+---
+
+## 🎛️ Media Controls & Customization
+
+Media playback customization and notification management features that allow users to personalize their podcast listening experience with custom skip times, notification preferences, and platform integrations.
+
+---
+
+#### POST /api/data/adjust_skip_times
+
+**Description:** Adjust custom skip forward and backward times for a specific podcast
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+```json
+{
+  "podcast_id": 456,
+  "start_skip": 30,
+  "end_skip": 45,
+  "user_id": 123
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `podcast_id` | integer | Yes | ID of the podcast to adjust skip times for |
+| `start_skip` | integer | No | Seconds to skip at episode start (default: 0) |
+| `end_skip` | integer | No | Seconds to skip at episode end (default: 0) |
+| `user_id` | integer | Yes | User ID (must match API key owner) |
+
+**Request Example:**
+```bash
+curl -X POST \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{"podcast_id":456,"start_skip":30,"end_skip":45,"user_id":123}' \
+  http://localhost:8000/api/data/adjust_skip_times
+```
+
+**Response Example:**
+```json
+{
+  "detail": "Skip times updated."
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot modify other users' podcast settings
+- `400`: Bad Request - Invalid podcast ID or skip values
+- `500`: Internal Server Error - Database update failed
+
+**Notes:**
+- User can only adjust skip times for their own podcasts
+- Skip times are applied automatically during playback
+- Useful for skipping intros, outros, or ads consistently
+- Values are in seconds and must be non-negative
+- Settings are podcast-specific, not episode-specific
+
+---
+
+#### PUT /api/data/podcast/toggle_notifications
+
+**Description:** Toggle notification settings for a specific podcast
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+```json
+{
+  "user_id": 123,
+  "podcast_id": 456,
+  "enabled": true
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID (must match API key owner) |
+| `podcast_id` | integer | Yes | ID of the podcast to toggle notifications for |
+| `enabled` | boolean | Yes | Whether to enable (true) or disable (false) notifications |
+
+**Request Example:**
+```bash
+curl -X PUT \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id":123,"podcast_id":456,"enabled":true}' \
+  http://localhost:8000/api/data/podcast/toggle_notifications
+```
+
+**Response Example:**
+```json
+true
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot modify other users' podcast settings
+- `404`: Not Found - Podcast not found or not owned by user
+- `500`: Internal Server Error - Database update failed
+
+**Notes:**
+- User can only toggle notifications for their own podcasts
+- Returns boolean indicating success/failure of the operation
+- Requires global notification settings to be configured
+- Only affects notifications for new episodes of the specified podcast
+- Does not impact existing queued notifications
+
+---
+
+#### POST /api/data/podcast/notification_status
+
+**Description:** Get the current notification status for a specific podcast
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+```json
+{
+  "user_id": 123,
+  "podcast_id": 456
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID (must match API key owner) |
+| `podcast_id` | integer | Yes | ID of the podcast to check notification status for |
+
+**Request Example:**
+```bash
+curl -X POST \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id":123,"podcast_id":456}' \
+  http://localhost:8000/api/data/podcast/notification_status
+```
+
+**Response Example:**
+```json
+{
+  "enabled": true
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot access other users' podcast settings
+- `404`: Not Found - Podcast not found or does not belong to user
+- `500`: Internal Server Error - Database query failed
+
+**Notes:**
+- User can only check notification status for their own podcasts
+- Returns current notification setting for the specified podcast
+- Used by client applications to show toggle states
+- Does not indicate global notification system status
+
+---
+
+#### POST /api/data/user/test_notification
+
+**Description:** Send a test notification to verify notification platform configuration
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+```json
+{
+  "user_id": 123,
+  "platform": "ntfy"
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID (must match API key owner) |
+| `platform` | string | Yes | Notification platform to test ("ntfy", "gotify", "discord", etc.) |
+
+**Request Example:**
+```bash
+curl -X POST \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id":123,"platform":"ntfy"}' \
+  http://localhost:8000/api/data/user/test_notification
+```
+
+**Response Example:**
+```json
+{
+  "detail": "Test notification sent successfully"
+}
+```
+
+**Error Response Example:**
+```json
+{
+  "error": "Failed to send test notification - check your settings"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot test notifications for other users
+- `400`: Bad Request - Platform not found or invalid configuration
+- `500`: Internal Server Error - Notification system error
+
+**Notes:**
+- User can only test their own notification configurations
+- Requires notification platform settings to be configured first
+- Sends a test message through the specified platform
+- Supported platforms include ntfy, Gotify, Discord, and others
+- Useful for verifying notification credentials and connectivity
+- Returns detailed error messages for troubleshooting
+
+---
+
+## 📂 Categories & Organization
+
+Category management features that allow users to organize their podcasts with custom categories and tags for better organization and discovery.
+
+---
+
+#### POST /api/data/add_category
+
+**Description:** Add a custom category to a podcast for better organization
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+```json
+{
+  "podcast_id": 456,
+  "user_id": 123,
+  "category": "Technology"
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `podcast_id` | integer | Yes | ID of the podcast to add category to |
+| `user_id` | integer | Yes | User ID (must match API key owner) |
+| `category` | string | Yes | Name of the category to add |
+
+**Request Example:**
+```bash
+curl -X POST \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{"podcast_id":456,"user_id":123,"category":"Technology"}' \
+  http://localhost:8000/api/data/add_category
+```
+
+**Response Example:**
+```json
+{
+  "detail": "Category added successfully."
+}
+```
+
+**Response Example (Category Already Exists):**
+```json
+{
+  "detail": "Category already exists."
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot modify other users' podcast categories
+- `404`: Not Found - Podcast not found or not owned by user
+- `500`: Internal Server Error - Database update failed
+
+**Notes:**
+- User can only add categories to their own podcasts
+- Categories are stored as key-value pairs in JSON format
+- Duplicate categories are detected and prevented
+- Category keys are auto-generated sequential numbers
+- Useful for organizing podcasts by topic, genre, or personal preferences
+- Categories can be used for filtering and searching podcasts
+
+---
+
+#### POST /api/data/remove_category
+
+**Description:** Remove a custom category from a podcast
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+```json
+{
+  "podcast_id": 456,
+  "user_id": 123,
+  "category": "Technology"
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `podcast_id` | integer | Yes | ID of the podcast to remove category from |
+| `user_id` | integer | Yes | User ID (must match API key owner) |
+| `category` | string | Yes | Name of the category to remove |
+
+**Request Example:**
+```bash
+curl -X POST \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{"podcast_id":456,"user_id":123,"category":"Technology"}' \
+  http://localhost:8000/api/data/remove_category
+```
+
+**Response Example:**
+```json
+{
+  "detail": "Category removed."
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot modify other users' podcast categories
+- `404`: Not Found - Podcast not found, not owned by user, or category not found
+- `500`: Internal Server Error - Database update failed
+
+**Notes:**
+- User can only remove categories from their own podcasts
+- Removes category by matching the exact category name
+- No error returned if category doesn't exist (idempotent operation)
+- Categories are removed from the JSON structure in the database
+- Used to clean up podcast organization when categories are no longer needed
+- Does not affect other podcasts that may have the same category name

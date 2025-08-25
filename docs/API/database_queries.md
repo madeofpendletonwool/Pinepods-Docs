@@ -571,7 +571,7 @@ curl -X GET \
 
 ---
 
-#### GET /api/data/user_details_id/{user_id}
+#### GET /api/data/user_details_id/*user_id*
 
 **Description:** Get detailed user information by user ID. Users can only access their own details unless they are admin.
 
@@ -618,7 +618,7 @@ curl -X GET \
 
 ---
 
-#### GET /api/data/get_theme/{user_id}
+#### GET /api/data/get_theme/*user_id*
 
 **Description:** Get the current theme settings for a user. Users can only get their own theme settings.
 
@@ -710,7 +710,7 @@ curl -X PUT \
 
 ---
 
-#### GET /api/data/first_login_done/{user_id}
+#### GET /api/data/first_login_done/*user_id*
 
 **Description:** Check if a user has completed their first login setup process
 
@@ -753,7 +753,7 @@ curl -X GET \
 
 ---
 
-#### GET /api/data/my_user_info/{user_id}
+#### GET /api/data/my_user_info/*user_id*
 
 **Description:** Get comprehensive user information for the authenticated user. More detailed than user_details_id.
 
@@ -857,7 +857,7 @@ curl -X POST \
 
 ---
 
-#### PUT /api/data/set_fullname/{user_id}
+#### PUT /api/data/set_fullname/*user_id*
 
 **Description:** Update the full name for a user. Users can update their own name, admins can update any user's name.
 
@@ -906,7 +906,7 @@ curl -X PUT \
 
 ---
 
-#### PUT /api/data/set_password/{user_id}
+#### PUT /api/data/set_password/*user_id*
 
 **Description:** Update password for a user. Users can update their own password, admins can update any user's password.
 
@@ -1311,7 +1311,7 @@ curl -X GET \
 
 ---
 
-#### GET /api/data/get_auto_complete_seconds/{user_id}
+#### GET /api/data/get_auto_complete_seconds/*user_id*
 
 **Description:** Get the auto-complete threshold in seconds for episode completion
 
@@ -1637,7 +1637,7 @@ curl -X POST \
 
 ---
 
-#### GET /api/data/return_pods/{user_id}
+#### GET /api/data/return_pods/*user_id*
 
 **Description:** Get list of podcasts subscribed by a user
 
@@ -1695,7 +1695,7 @@ curl -X GET \
 
 ---
 
-#### GET /api/data/return_pods_extra/{user_id}
+#### GET /api/data/return_pods_extra/*user_id*
 
 **Description:** Get detailed list of podcasts with extended metadata including episode counts, last update times, and subscription statistics
 
@@ -2221,7 +2221,7 @@ curl -X GET \
 
 ### Episode Management
 
-#### GET /api/data/return_episodes/{user_id}
+#### GET /api/data/return_episodes/*user_id*
 
 **Description:** Get all episodes from user's subscribed podcasts with playback status and metadata
 
@@ -2293,7 +2293,7 @@ curl -X GET \
 
 ---
 
-#### GET /api/data/check_episode_in_db/{user_id}
+#### GET /api/data/check_episode_in_db/*user_id*
 
 **Description:** Check if a specific episode exists in the database for a user
 
@@ -3036,7 +3036,7 @@ curl -X POST \
 
 ### Playback & Tracking
 
-#### GET /api/data/user_history/{user_id}
+#### GET /api/data/user_history/*user_id*
 
 **Description:** Get user's playback history with episode details and timestamps
 
@@ -3094,7 +3094,7 @@ curl -X GET \
 
 ---
 
-#### PUT /api/data/increment_listen_time/{user_id}
+#### PUT /api/data/increment_listen_time/*user_id*
 
 **Description:** Increment the total listening time counter for a user
 
@@ -3136,7 +3136,7 @@ curl -X PUT \
 
 ---
 
-#### PUT /api/data/increment_played/{user_id}
+#### PUT /api/data/increment_played/*user_id*
 
 **Description:** Increment the total episode play count for a user
 
@@ -3586,7 +3586,7 @@ curl -X POST \
 
 ---
 
-#### GET /api/data/saved_episode_list/{user_id}
+#### GET /api/data/saved_episode_list/*user_id*
 
 **Description:** Get all saved episodes for a specific user with episode details and metadata
 
@@ -3890,7 +3890,7 @@ curl -X GET \
 
 ---
 
-#### GET /api/data/download_status/{user_id}
+#### GET /api/data/download_status/*user_id*
 
 **Description:** Get download status and statistics for a specific user
 

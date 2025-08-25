@@ -2577,7 +2577,7 @@ curl -X POST \
 
 ---
 
-#### GET /api/data/stream/{episode_id}
+#### GET /api/data/stream/*episode_id*
 
 **Description:** Stream episode audio with optional range support and playback tracking
 

@@ -5247,7 +5247,7 @@ curl -X GET -H "Api-Key: YOUR_API_KEY" \
 
 **Implementation Notes:**
 - **User Determination**: Automatically gets user ID from API key
-- **Same Logic**: Uses same backend function as `/devices/{user_id}` but with auth user
+- **Same Logic**: Uses same backend function as `/devices/*user_id*` but with auth user
 - **Python Compatibility**: Matches Python `get_all_devices` function exactly
 
 ---
@@ -5792,7 +5792,7 @@ curl -X GET -H "Api-Key: YOUR_API_KEY" \
 
 **Connection URL:**
 ```
-ws://localhost:8000/ws/api/tasks/{user_id}?api_key=YOUR_API_KEY
+ws://localhost:8000/ws/api/tasks/*user_id*?api_key=YOUR_API_KEY
 ```
 
 **Path Parameters:**
@@ -5918,7 +5918,7 @@ ws.onclose = function() {
 
 **Connection URL:**
 ```
-ws://localhost:8000/ws/api/data/episodes/{user_id}?api_key=YOUR_API_KEY&nextcloud_refresh=false
+ws://localhost:8000/ws/api/data/episodes/*user_id*?api_key=YOUR_API_KEY&nextcloud_refresh=false
 ```
 
 **Path Parameters:**
@@ -8796,7 +8796,7 @@ curl -X GET \
 
 ### RSS Feed Access
 
-#### GET /api/feed/{user_id}
+#### GET /api/feed/*user_id*
 
 **Description:** Generate and retrieve RSS 2.0 XML feed containing user's podcast episodes with full RSS functionality including filtering, limiting, and iTunes-compatible tags
 
@@ -8879,7 +8879,7 @@ curl -X GET \
 
 ### MFA Setup & Management
 
-#### GET /api/data/generate_mfa_secret/{user_id}
+#### GET /api/data/generate_mfa_secret/*user_id*
 
 **Description:** Generate a new MFA secret key and QR code for Time-based One-Time Password (TOTP) authentication setup
 
@@ -8988,7 +8988,7 @@ curl -X POST \
 - One-time verification - secret moves from temporary to permanent storage
 - Required step before MFA is fully enabled on the account
 
-#### GET /api/data/check_mfa_enabled/{user_id}
+#### GET /api/data/check_mfa_enabled/*user_id*
 
 **Description:** Check whether Multi-Factor Authentication is enabled for a specific user account
 
@@ -9267,9 +9267,9 @@ curl -X POST \
 - Automatically extracts podcast metadata from RSS feeds
 - Duplicate podcasts are handled gracefully by database constraints
 - Task completion triggers cleanup of progress tracking data
-- Use `/api/data/import_progress/{user_id}` to monitor real-time progress
+- Use `/api/data/import_progress/*user_id*` to monitor real-time progress
 
-#### GET /api/data/import_progress/{user_id}
+#### GET /api/data/import_progress/*user_id*
 
 **Description:** Get real-time progress updates for ongoing OPML import operations
 
@@ -9568,7 +9568,7 @@ curl -X DELETE \
 - **Audit Logging**: Debug logging tracks deletion attempts with user and ownership details
 - User_id parameter in request body is not used for authorization (determined by API key)
 
-#### GET /api/data/get_api_info/{user_id}
+#### GET /api/data/get_api_info/*user_id*
 
 **Description:** Retrieve comprehensive API key information for a user, with admin users seeing all keys and regular users seeing only their own
 
@@ -9926,7 +9926,7 @@ curl -X POST \
 
 ### Sync Configuration Management
 
-#### GET /api/data/get_gpodder_settings/{user_id}
+#### GET /api/data/get_gpodder_settings/*user_id*
 
 **Description:** Retrieve GPodder synchronization settings and configuration for a specific user
 
@@ -9974,7 +9974,7 @@ curl -X GET \
 - Empty or null values indicate unconfigured settings
 - Used by frontend to display current sync configuration
 
-#### GET /api/data/check_gpodder_settings/{user_id}
+#### GET /api/data/check_gpodder_settings/*user_id*
 
 **Description:** Check if GPodder synchronization is configured for a user (boolean check)
 

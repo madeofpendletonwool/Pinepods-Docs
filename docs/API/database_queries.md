@@ -5044,6 +5044,2715 @@ curl -X POST \
 
 ---
 
+## GPodder API Endpoints
+
+Direct GPodder API compatible endpoints for podcast synchronization, device management, and statistics. These endpoints provide GPodder v2 API compatibility while working with PinePods' internal sync system.
+
+### GET /api/gpodder/test-connection
+
+**Description:** Test connection to external GPodder server with provided credentials
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Query Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user_id | integer | Yes | User ID to test connection for |
+| gpodder_url | string | Yes | GPodder server URL to test |
+| gpodder_username | string | Yes | Username for GPodder server |
+| gpodder_password | string | Yes | Password for GPodder server |
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_API_KEY" \
+     "http://localhost:8000/api/gpodder/test-connection?user_id=123&gpodder_url=https://gpodder.net&gpodder_username=myuser&gpodder_password=mypass"
+```
+
+**Response Example (Success):**
+```json
+{
+  "success": true,
+  "message": "Successfully connected to GPodder server and verified access.",
+  "data": {
+    "auth_type": "session",
+    "has_devices": true
+  }
+}
+```
+
+**Response Example (Failure):**
+```json
+{
+  "success": false,
+  "message": "Failed to connect to GPodder server",
+  "data": null
+}
+```
+
+**Error Responses:**
+- `400`: Bad Request - Missing required parameters or invalid user_id format
+- `401`: Unauthorized - Invalid or missing API key  
+- `403`: Forbidden - User can only test connections for themselves (unless using web key)
+- `500`: Internal Server Error - Database or network error
+
+**Implementation Notes:**
+- **Authentication Test**: Makes HTTP POST to `/api/2/auth/{username}/login.json` with Basic Auth
+- **Authorization Check**: Users can only test connections for their own account unless using web key
+- **URL Format**: GPodder API v2 standard authentication endpoint  
+- **Connection Verification**: Tests actual HTTP connection and authentication, not just credential validation
+- **Python Compatibility**: Replicates Python test connection functionality exactly
+
+---
+
+### POST /api/gpodder/set_default/*device_id*
+
+**Description:** Set the default GPodder device for the authenticated user
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| device_id | integer | Yes | Device ID to set as default |
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/gpodder/set_default/456
+```
+
+**Response Example (Success):**
+```json
+{
+  "status": "success"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Device does not belong to user or insufficient permissions
+- `404`: Not Found - Device ID does not exist
+- `500`: Internal Server Error - Failed to set default device
+
+**Implementation Notes:**
+- **User Authorization**: Automatically determines user from API key, no user_id parameter needed
+- **Device Ownership**: Validates that device belongs to the authenticated user
+- **Database Update**: Updates user's default device setting in database
+- **Python Compatibility**: Matches Python `set_default_device` function exactly
+
+---
+
+### GET /api/gpodder/devices/*user_id*
+
+**Description:** Get all GPodder devices for a specific user
+
+**Authentication:** 🔐 User API Key (or Web Key for admin access)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user_id | integer | Yes | User ID to get devices for |
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/gpodder/devices/123
+```
+
+**Response Example:**
+```json
+[
+  {
+    "device_id": "pinepods-device-123",
+    "name": "My Phone",
+    "type": "mobile",
+    "caption": "iPhone 15 Pro",
+    "subscriptions": 42,
+    "is_default": true
+  },
+  {
+    "device_id": "pinepods-device-456", 
+    "name": "Desktop",
+    "type": "desktop",
+    "caption": "MacBook Pro",
+    "subscriptions": 42,
+    "is_default": false
+  }
+]
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Can only view your own devices (unless web key)
+- `404`: Not Found - User does not exist
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Authorization Check**: Users can only view their own devices unless using web key
+- **Device Format**: Returns GPodder API compatible device format
+- **Subscription Count**: Includes number of subscriptions synced to each device
+- **Python Compatibility**: Matches Python `get_devices` function exactly
+
+---
+
+### GET /api/gpodder/devices
+
+**Description:** Get all GPodder devices for the authenticated user
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/gpodder/devices
+```
+
+**Response Example:**
+```json
+[
+  {
+    "device_id": "pinepods-device-123",
+    "name": "My Phone", 
+    "type": "mobile",
+    "caption": "iPhone 15 Pro",
+    "subscriptions": 42,
+    "is_default": true
+  }
+]
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **User Determination**: Automatically gets user ID from API key
+- **Same Logic**: Uses same backend function as `/devices/{user_id}` but with auth user
+- **Python Compatibility**: Matches Python `get_all_devices` function exactly
+
+---
+
+### GET /api/gpodder/default_device
+
+**Description:** Get the default GPodder device for the authenticated user
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/gpodder/default_device
+```
+
+**Response Example:**
+```json
+{
+  "device_id": "pinepods-device-123",
+  "name": "My Phone",
+  "type": "mobile", 
+  "caption": "iPhone 15 Pro",
+  "is_default": true,
+  "subscriptions": 42
+}
+```
+
+**Response Example (No Default):**
+```json
+null
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **User Determination**: Automatically gets user ID from API key
+- **Null Response**: Returns null if user has no default device set
+- **Python Compatibility**: Matches Python `get_default_device` function exactly
+
+---
+
+### POST /api/gpodder/devices
+
+**Description:** Create a new GPodder device via the GPodder API
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| device_name | string | Yes | Name for the new device |
+| device_type | string | Yes | Device type (mobile, desktop, laptop, etc.) |
+| device_caption | string | No | Optional caption/description for device |
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"device_name":"My Tablet","device_type":"tablet","device_caption":"iPad Pro 2024"}' \
+     http://localhost:8000/api/gpodder/devices
+```
+
+**Response Example:**
+```json
+{
+  "id": "pinepods-tablet-789",
+  "name": "My Tablet",
+  "type": "tablet", 
+  "caption": "iPad Pro 2024",
+  "last_sync": null,
+  "is_active": true,
+  "is_remote": true,
+  "is_default": false
+}
+```
+
+**Error Responses:**
+- `400`: Bad Request - GPodder sync not enabled or invalid request data
+- `401`: Unauthorized - Invalid or missing API key
+- `500`: Internal Server Error - Failed to create device via GPodder API
+
+**Implementation Notes:**
+- **Sync Requirement**: User must have GPodder sync enabled (sync_type: gpodder, both, or external)
+- **API Integration**: Creates device via actual GPodder API using user's configured credentials
+- **Token Handling**: Properly handles encrypted tokens for external GPodder servers
+- **Standard Format**: Returns GPodder API v2 standard device response format
+- **Python Compatibility**: Matches Python `create_device` function exactly
+
+---
+
+### POST /api/gpodder/sync/force
+
+**Description:** Force a complete initial GPodder synchronization (without timestamps)
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/gpodder/sync/force
+```
+
+**Response Example (Success):**
+```json
+{
+  "success": true,
+  "message": "Initial sync completed successfully - all data refreshed",
+  "data": null
+}
+```
+
+**Response Example (No Sync Configured):**
+```json
+{
+  "success": false,
+  "message": "No sync configured for this user",
+  "data": null
+}
+```
+
+**Response Example (Failure):**
+```json
+{
+  "success": false,
+  "message": "Initial sync failed: Authentication failed",
+  "data": null
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `500`: Internal Server Error - Sync process failed
+
+**Implementation Notes:**
+- **Full Sync**: Performs complete initial synchronization without timestamp filtering
+- **Multi-Type Support**: Handles gpodder, nextcloud, external, and both sync types
+- **Device Management**: Automatically creates or retrieves default device
+- **Token Decryption**: Properly decrypts stored tokens for external servers
+- **Fault Tolerance**: For "both" sync type, attempts both internal and external, succeeds if either works
+- **Python Compatibility**: Matches initial full sync behavior from Python implementation
+
+---
+
+### POST /api/gpodder/sync
+
+**Description:** Perform standard incremental GPodder synchronization with timestamps
+
+**Authentication:** 🔐 User API Key  
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/gpodder/sync
+```
+
+**Response Example (Success):**
+```json
+{
+  "success": true,
+  "message": "Sync completed successfully", 
+  "data": null
+}
+```
+
+**Response Example (No Changes):**
+```json
+{
+  "success": false,
+  "message": "Sync failed or no changes detected - check your sync configuration",
+  "data": null
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `500`: Internal Server Error - Sync process failed
+
+**Implementation Notes:**
+- **Incremental Sync**: Uses timestamps to only sync changes since last sync
+- **Task Integration**: Uses same sync process as scheduled background tasks
+- **Change Detection**: Returns false if no changes were detected or sync failed
+- **Efficient Operation**: Only transfers modified data, not complete datasets
+- **Python Compatibility**: Matches scheduled sync behavior from tasks.py
+
+---
+
+### GET /api/gpodder/gpodder_statistics
+
+**Description:** Get comprehensive GPodder server statistics and connection status
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**  
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/gpodder/gpodder_statistics
+```
+
+**Response Example (Sync Enabled):**
+```json
+{
+  "server_url": "https://gpodder.net",
+  "sync_type": "external",
+  "sync_enabled": true,
+  "server_devices": [
+    {
+      "id": "device-123",
+      "caption": "My Phone",
+      "device_type": "mobile",
+      "subscriptions": 42
+    }
+  ],
+  "total_devices": 1,
+  "server_subscriptions": [
+    {
+      "url": "https://example.com/feed.xml",
+      "title": "Tech Talk",
+      "description": "Weekly technology discussion"
+    }
+  ],
+  "total_subscriptions": 1,
+  "recent_episode_actions": [
+    {
+      "podcast": "https://example.com/feed.xml",
+      "episode": "https://example.com/ep123.mp3", 
+      "action": "play",
+      "timestamp": "2024-01-15T14:30:00Z",
+      "position": 1800,
+      "device": "device-123"
+    }
+  ],
+  "total_episode_actions": 1,
+  "connection_status": "All endpoints working",
+  "last_sync_timestamp": "2024-01-15T14:00:00Z",
+  "api_endpoints_tested": [
+    {
+      "endpoint": "/api/2/auth/login",
+      "status": "success",
+      "response_time_ms": 125,
+      "error": null
+    }
+  ]
+}
+```
+
+**Response Example (No Sync):**
+```json
+{
+  "server_url": "No sync configured",
+  "sync_type": "None", 
+  "sync_enabled": false,
+  "server_devices": [],
+  "total_devices": 0,
+  "server_subscriptions": [],
+  "total_subscriptions": 0,
+  "recent_episode_actions": [],
+  "total_episode_actions": 0,
+  "connection_status": "Not configured",
+  "last_sync_timestamp": null,
+  "api_endpoints_tested": []
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `500`: Internal Server Error - Failed to gather statistics
+
+**Implementation Notes:**
+- **Real Server Data**: Fetches actual statistics from configured GPodder server
+- **Connection Testing**: Tests multiple API endpoints and measures response times
+- **Comprehensive Status**: Includes devices, subscriptions, episode actions, and sync timestamps
+- **Performance Monitoring**: Tracks API response times for monitoring
+- **Fault Tolerance**: Gracefully handles partial failures and connection issues
+- **Python Compatibility**: Provides equivalent statistics to Python implementation
+
+---
+
+## Task Management & WebSockets
+
+Real-time task management and progress tracking system with WebSocket support for live updates. These endpoints provide comprehensive task monitoring capabilities including background downloads, imports, and sync operations.
+
+### GET /api/tasks/user/*user_id*
+
+**Description:** Get all tasks (pending, running, completed, failed) for a specific user
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user_id | integer | Yes | User ID to get tasks for |
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/tasks/user/123
+```
+
+**Response Example:**
+```json
+[
+  {
+    "id": "task-uuid-1234",
+    "task_type": "podcast_download",
+    "user_id": 123,
+    "status": "DOWNLOADING",
+    "progress": 45.5,
+    "message": "Downloading episode: Tech Talk Episode 42",
+    "created_at": "2024-01-15T14:30:00Z",
+    "updated_at": "2024-01-15T14:32:15Z",
+    "result": null
+  },
+  {
+    "id": "task-uuid-5678",
+    "task_type": "opml_import", 
+    "user_id": 123,
+    "status": "SUCCESS",
+    "progress": 100.0,
+    "message": "Import completed successfully",
+    "created_at": "2024-01-15T14:00:00Z",
+    "updated_at": "2024-01-15T14:05:30Z",
+    "result": {
+      "imported_podcasts": 15,
+      "imported_episodes": 342
+    }
+  }
+]
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Cannot access other user's tasks (unless web key)
+- `500`: Internal Server Error - Task manager error
+
+**Implementation Notes:**
+- **Authorization Check**: Users can only view their own tasks unless using web key
+- **Task Status**: PENDING, DOWNLOADING (Running), SUCCESS (Completed), FAILED
+- **Progress Tracking**: Real-time progress from 0.0 to 100.0
+- **Task Types**: podcast_download, youtube_download, opml_import, gpodder_sync, etc.
+- **Result Data**: Contains task-specific completion data when successful
+
+---
+
+### GET /api/tasks/active
+
+**Description:** Get all currently active (pending or running) tasks for a user
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Query Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user_id | integer | Yes | User ID to get active tasks for |
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_API_KEY" \
+     "http://localhost:8000/api/tasks/active?user_id=123"
+```
+
+**Response Example:**
+```json
+[
+  {
+    "id": "task-uuid-1234",
+    "task_type": "podcast_download",
+    "user_id": 123,
+    "status": "DOWNLOADING",
+    "progress": 67.3,
+    "message": "Downloading: episode-audio.mp3 (15MB/22MB)",
+    "created_at": "2024-01-15T14:30:00Z",
+    "updated_at": "2024-01-15T14:34:22Z",
+    "result": null
+  },
+  {
+    "id": "task-uuid-9999", 
+    "task_type": "gpodder_sync",
+    "user_id": 123,
+    "status": "PENDING",
+    "progress": 0.0,
+    "message": "Queued for processing",
+    "created_at": "2024-01-15T14:35:00Z",
+    "updated_at": "2024-01-15T14:35:00Z",
+    "result": null
+  }
+]
+```
+
+**Response Example (No Active Tasks):**
+```json
+[]
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `400`: Bad Request - Missing user_id parameter
+- `500`: Internal Server Error - Task manager error
+
+**Implementation Notes:**
+- **Filtering**: Only returns tasks with status PENDING or DOWNLOADING (Running)
+- **Real-time Data**: Progress and messages update in real-time
+- **Required Parameter**: user_id must be provided in query string
+- **Empty Response**: Returns empty array when no active tasks exist
+
+---
+
+### GET /api/tasks/*task_id*
+
+**Description:** Get detailed status and information for a specific task
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| task_id | string | Yes | Unique task ID (UUID format) |
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/tasks/task-uuid-1234
+```
+
+**Response Example (Running Task):**
+```json
+{
+  "id": "task-uuid-1234",
+  "task_type": "podcast_download",
+  "user_id": 123,
+  "status": "DOWNLOADING",
+  "progress": 78.2,
+  "message": "Downloading: tech-talk-ep42.mp3 (18.5MB/23.7MB)",
+  "created_at": "2024-01-15T14:30:00Z",
+  "updated_at": "2024-01-15T14:36:45Z",
+  "result": null
+}
+```
+
+**Response Example (Completed Task):**
+```json
+{
+  "id": "task-uuid-5678",
+  "task_type": "opml_import",
+  "user_id": 123,
+  "status": "SUCCESS",
+  "progress": 100.0,
+  "message": "OPML import completed successfully",
+  "created_at": "2024-01-15T14:00:00Z",
+  "updated_at": "2024-01-15T14:05:30Z",
+  "result": {
+    "imported_podcasts": 15,
+    "imported_episodes": 342,
+    "skipped_duplicates": 3,
+    "processing_time_seconds": 330
+  }
+}
+```
+
+**Response Example (Failed Task):**
+```json
+{
+  "id": "task-uuid-9999",
+  "task_type": "podcast_download",
+  "user_id": 123,
+  "status": "FAILED",
+  "progress": 25.0,
+  "message": "Download failed: Connection timeout",
+  "created_at": "2024-01-15T15:00:00Z",
+  "updated_at": "2024-01-15T15:02:30Z",
+  "result": {
+    "error_code": "TIMEOUT",
+    "retry_count": 3,
+    "last_error": "Failed to download after 3 attempts"
+  }
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `404`: Not Found - Task ID does not exist
+- `403`: Forbidden - Task belongs to different user (unless web key)
+- `500`: Internal Server Error - Task manager error
+
+**Implementation Notes:**
+- **Task Ownership**: Users can only view tasks they own unless using web key
+- **Progress Details**: Includes real-time progress updates and detailed status messages
+- **Result Data**: Contains task-specific completion data or error details
+- **UUID Format**: Task IDs are in UUID format for uniqueness
+- **Status Tracking**: Comprehensive status information with timestamps
+
+---
+
+### WS /ws/api/tasks/*user_id*
+
+**Description:** WebSocket connection for real-time task progress updates and notifications
+
+**Authentication:** 🔐 User API Key (via query parameter)
+
+**Connection URL:**
+```
+ws://localhost:8000/ws/api/tasks/{user_id}?api_key=YOUR_API_KEY
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user_id | integer | Yes | User ID to receive task updates for |
+
+**Query Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| api_key | string | Yes | User's API key for authentication |
+
+**Connection Example (JavaScript):**
+```javascript
+const ws = new WebSocket('ws://localhost:8000/ws/api/tasks/123?api_key=YOUR_API_KEY');
+
+ws.onopen = function() {
+    console.log('Connected to task progress WebSocket');
+};
+
+ws.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    console.log('Task update:', data);
+};
+
+ws.onclose = function() {
+    console.log('Task WebSocket connection closed');
+};
+```
+
+**Initial Message (on connection):**
+```json
+{
+  "event": "initial",
+  "task": null,
+  "tasks": [
+    {
+      "id": "task-uuid-1234",
+      "task_type": "podcast_download", 
+      "user_id": 123,
+      "status": "DOWNLOADING",
+      "progress": 45.5,
+      "message": "Downloading episode audio...",
+      "created_at": "2024-01-15T14:30:00Z",
+      "updated_at": "2024-01-15T14:32:15Z",
+      "result": null
+    }
+  ]
+}
+```
+
+**Update Message (during task execution):**
+```json
+{
+  "event": "update",
+  "task": {
+    "task_id": "task-uuid-1234",
+    "user_id": 123,
+    "type": "podcast_download",
+    "item_id": 789,
+    "progress": 67.8,
+    "status": "DOWNLOADING",
+    "details": {
+      "episode_title": "Tech Talk Episode 42",
+      "file_size": "23.7MB",
+      "downloaded": "16.1MB",
+      "download_speed": "1.2MB/s"
+    },
+    "started_at": "2024-01-15T14:30:00Z"
+  },
+  "tasks": null
+}
+```
+
+**Completion Message:**
+```json
+{
+  "event": "update", 
+  "task": {
+    "task_id": "task-uuid-1234",
+    "user_id": 123,
+    "type": "podcast_download",
+    "item_id": 789,
+    "progress": 100.0,
+    "status": "SUCCESS",
+    "details": {
+      "episode_title": "Tech Talk Episode 42",
+      "file_path": "/downloads/tech-talk-ep42.mp3",
+      "file_size": "23.7MB",
+      "duration": "3600"
+    },
+    "started_at": "2024-01-15T14:30:00Z",
+    "completed_at": "2024-01-15T14:38:22Z"
+  },
+  "tasks": null
+}
+```
+
+**Client Messages (optional):**
+- Send `"ping"` to test connection (server will acknowledge)
+- Connection automatically closes on authentication failure
+
+**Error Responses:**
+- `403 Unauthorized`: Invalid API key or insufficient permissions
+- Connection will be refused for invalid authentication
+
+**Implementation Notes:**
+- **Real-time Updates**: Receives live progress updates for all user tasks
+- **Initial State**: Gets current task list immediately on connection
+- **Authorization**: Users can only subscribe to their own task updates (unless web key)
+- **Connection Management**: Automatic cleanup on disconnect
+- **Progress Broadcasting**: All task progress changes are broadcast instantly
+- **Multiple Connections**: User can have multiple WebSocket connections active
+- **Task Filtering**: Only receives updates for tasks belonging to the authenticated user
+
+---
+
+### WS /ws/api/data/episodes/*user_id*
+
+**Description:** WebSocket connection for real-time episode refresh progress and podcast feed updates
+
+**Authentication:** 🔐 User API Key (via query parameter)  
+
+**Connection URL:**
+```
+ws://localhost:8000/ws/api/data/episodes/{user_id}?api_key=YOUR_API_KEY&nextcloud_refresh=false
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user_id | integer | Yes | User ID to refresh episodes for |
+
+**Query Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| api_key | string | Yes | User's API key for authentication |
+| nextcloud_refresh | boolean | No | Whether to include Nextcloud sync (default: false) |
+
+**Connection Example (JavaScript):**
+```javascript
+const ws = new WebSocket('ws://localhost:8000/ws/api/data/episodes/123?api_key=YOUR_API_KEY&nextcloud_refresh=true');
+
+ws.onopen = function() {
+    console.log('Connected to episode refresh WebSocket');
+};
+
+ws.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    handleRefreshUpdate(data);
+};
+
+ws.onclose = function(event) {
+    if (event.code === 1008) {
+        console.error('Authentication failed');
+    } else {
+        console.log('Episode refresh completed');
+    }
+};
+```
+
+**Progress Messages:**
+
+**Start Message:**
+```json
+{
+  "type": "refresh_start",
+  "message": "Starting podcast refresh for user 123",
+  "total_podcasts": 25,
+  "timestamp": "2024-01-15T14:30:00Z"
+}
+```
+
+**Podcast Progress Message:**
+```json
+{
+  "type": "podcast_progress",
+  "podcast_id": 789,
+  "podcast_name": "Tech Talk",
+  "current": 5,
+  "total": 25,
+  "progress_percent": 20.0,
+  "message": "Refreshing: Tech Talk (5/25)",
+  "new_episodes": 3,
+  "timestamp": "2024-01-15T14:32:15Z"
+}
+```
+
+**Episode Discovery Message:**
+```json
+{
+  "type": "episodes_found",
+  "podcast_id": 789,
+  "podcast_name": "Tech Talk",
+  "episodes": [
+    {
+      "title": "AI Revolution in 2024",
+      "url": "https://techtalk.example/ep42.mp3",
+      "pub_date": "2024-01-15T12:00:00Z"
+    },
+    {
+      "title": "Blockchain Updates",
+      "url": "https://techtalk.example/ep41.mp3", 
+      "pub_date": "2024-01-12T12:00:00Z"
+    }
+  ],
+  "timestamp": "2024-01-15T14:32:30Z"
+}
+```
+
+**Auto-Download Message:**
+```json
+{
+  "type": "auto_download",
+  "podcast_id": 789,
+  "episode_id": 1234,
+  "episode_title": "AI Revolution in 2024",
+  "task_id": "download-task-uuid-5678",
+  "message": "Auto-download queued for: AI Revolution in 2024",
+  "timestamp": "2024-01-15T14:32:45Z"
+}
+```
+
+**Nextcloud Sync Message (when enabled):**
+```json
+{
+  "type": "nextcloud_sync",
+  "status": "running",
+  "message": "Syncing subscriptions with Nextcloud server",
+  "synced_podcasts": 12,
+  "timestamp": "2024-01-15T14:33:00Z"
+}
+```
+
+**Completion Message:**
+```json
+{
+  "type": "refresh_complete",
+  "message": "Episode refresh completed successfully",
+  "total_podcasts": 25,
+  "total_new_episodes": 47,
+  "total_auto_downloads": 12,
+  "duration_seconds": 185,
+  "timestamp": "2024-01-15T14:33:05Z"
+}
+```
+
+**Error Message:**
+```json
+{
+  "type": "error",
+  "podcast_id": 789,
+  "podcast_name": "Tech Talk", 
+  "message": "Failed to refresh podcast: Connection timeout",
+  "error_code": "NETWORK_ERROR",
+  "timestamp": "2024-01-15T14:32:45Z"
+}
+```
+
+**Concurrent Refresh Block:**
+```json
+{
+  "type": "error",
+  "message": "Refresh job already running for this user.",
+  "code": "REFRESH_IN_PROGRESS",
+  "timestamp": "2024-01-15T14:30:05Z"
+}
+```
+
+**Error Responses:**
+- `403 Unauthorized`: Invalid API key or insufficient permissions  
+- `409 Conflict`: Refresh already running for user (connection closes with error message)
+- Connection will be refused for invalid authentication
+
+**Implementation Notes:**
+- **Concurrency Protection**: Only one refresh per user at a time - additional connections rejected
+- **Authorization**: Users can only refresh their own episodes (unless web key)
+- **Auto-Download Integration**: Triggers automatic downloads for enabled podcasts
+- **Nextcloud Integration**: Optional Nextcloud synchronization during refresh
+- **Real-time Feedback**: Live progress updates for each podcast being processed
+- **Error Handling**: Individual podcast errors don't stop overall refresh
+- **YouTube Support**: Handles both regular podcasts and YouTube channels
+- **Feed Processing**: Fetches and parses RSS feeds with comprehensive error handling
+- **Background Tasks**: Spawns download tasks automatically for new episodes when enabled
+
+---
+
+## Image Proxy
+
+Secure image proxy service for serving external images through PinePods infrastructure with caching and security controls.
+
+### GET /api/proxy/image
+
+**Description:** Proxy external images securely with validation, caching, and CORS support
+
+**Authentication:** 🔓 Open Endpoint (No authentication required)
+
+**Query Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| url | string | Yes | External image URL to proxy (must be http/https) |
+
+**Request Example:**
+```bash
+curl -X GET "http://localhost:8000/api/proxy/image?url=https://example.com/podcast-cover.jpg"
+```
+
+**Response Example (Success):**
+- **Content-Type**: Original image content type (image/jpeg, image/png, etc.)
+- **Cache-Control**: `public, max-age=86400` (24 hour cache)
+- **Access-Control-Allow-Origin**: `*` (CORS enabled)
+- **X-Content-Type-Options**: `nosniff` (security header)
+- **Body**: Binary image data
+
+**Error Responses:**
+- `400`: Bad Request - Invalid URL format or non-image content type
+- `502`: Bad Gateway - Failed to fetch image from external URL or upstream server error
+- `500`: Internal Server Error - HTTP client initialization failed
+
+**Implementation Notes:**
+- **URL Validation**: Only accepts http/https URLs for security
+- **Content-Type Validation**: Ensures response is image/* or application/octet-stream
+- **Redirect Handling**: Follows up to 10 redirects automatically
+- **Timeout Protection**: 10-second timeout for external requests
+- **Cache Headers**: Sets 24-hour cache for browser/CDN caching
+- **Security Headers**: Includes CORS and content-type protection
+- **No Authentication**: Public endpoint for serving podcast artwork and images
+- **Python Compatibility**: Matches Python proxy_image endpoint functionality
+
+---
+
+## Podcast Notifications
+
+User notification system supporting multiple platforms including Ntfy and Gotify for podcast episode alerts and updates.
+
+### GET /api/data/user/notification_settings
+
+**Description:** Get notification settings for all platforms configured by a user
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Query Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user_id | integer | Yes | User ID to get notification settings for |
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_API_KEY" \
+     "http://localhost:8000/api/data/user/notification_settings?user_id=123"
+```
+
+**Response Example:**
+```json
+{
+  "settings": [
+    {
+      "platform": "ntfy",
+      "enabled": true,
+      "ntfy_topic": "my-podcast-alerts",
+      "ntfy_server_url": "https://ntfy.sh",
+      "ntfy_username": "myuser",
+      "ntfy_password": "encrypted_password_hash",
+      "ntfy_access_token": null,
+      "created_at": "2024-01-15T14:30:00Z",
+      "updated_at": "2024-01-15T16:45:00Z"
+    },
+    {
+      "platform": "gotify",
+      "enabled": false,
+      "gotify_url": "https://gotify.example.com",
+      "gotify_token": "encrypted_token_hash",
+      "created_at": "2024-01-12T10:15:00Z",
+      "updated_at": "2024-01-12T10:15:00Z"
+    }
+  ]
+}
+```
+
+**Response Example (No Settings):**
+```json
+{
+  "settings": []
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Can only view your own notification settings (unless web key)
+- `404`: Not Found - User does not exist
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Authorization Check**: Users can only view their own settings unless using web key
+- **Multiple Platforms**: Returns settings for all configured notification platforms
+- **Credential Security**: Passwords and tokens are stored encrypted in database
+- **Platform Support**: Currently supports Ntfy and Gotify notification services
+- **Python Compatibility**: Matches Python notification_settings GET function exactly
+
+---
+
+### PUT /api/data/user/notification_settings
+
+**Description:** Update notification settings for a specific platform
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| user_id | integer | Yes | User ID (must match API key owner) |
+| platform | string | Yes | Notification platform ("ntfy" or "gotify") |
+| enabled | boolean | Yes | Whether notifications are enabled for this platform |
+| ntfy_topic | string | No | Ntfy topic name (required if platform=ntfy) |
+| ntfy_server_url | string | No | Ntfy server URL (default: https://ntfy.sh) |
+| ntfy_username | string | No | Ntfy username for authenticated topics |
+| ntfy_password | string | No | Ntfy password (will be encrypted) |
+| ntfy_access_token | string | No | Ntfy access token (alternative to username/password) |
+| gotify_url | string | No | Gotify server URL (required if platform=gotify) |
+| gotify_token | string | No | Gotify application token (will be encrypted) |
+
+**Request Example (Ntfy):**
+```bash
+curl -X PUT -H "Api-Key: YOUR_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"user_id":123,"platform":"ntfy","enabled":true,"ntfy_topic":"podcast-alerts","ntfy_server_url":"https://ntfy.sh","ntfy_username":"myuser","ntfy_password":"mypassword"}' \
+     http://localhost:8000/api/data/user/notification_settings
+```
+
+**Request Example (Gotify):**
+```bash
+curl -X PUT -H "Api-Key: YOUR_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"user_id":123,"platform":"gotify","enabled":true,"gotify_url":"https://gotify.example.com","gotify_token":"A1B2C3D4E5F6"}' \
+     http://localhost:8000/api/data/user/notification_settings
+```
+
+**Response Example:**
+```json
+{
+  "detail": "Notification settings updated successfully"
+}
+```
+
+**Error Responses:**
+- `400`: Bad Request - Invalid request body or missing required platform fields
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Can only update your own notification settings (unless web key)
+- `500`: Internal Server Error - Database error or encryption failure
+
+**Implementation Notes:**
+- **Authorization Check**: Users can only update their own settings unless using web key
+- **Platform Validation**: Validates required fields for each notification platform
+- **Credential Encryption**: Passwords and tokens are automatically encrypted before storage
+- **Upsert Behavior**: Creates new settings or updates existing ones for the platform
+- **Field Validation**: Ensures required fields are provided for each platform type
+- **Python Compatibility**: Matches Python notification_settings PUT function exactly
+
+---
+
+## Startup Configuration
+
+User interface startup configuration management for customizing the default landing page and initial view settings.
+
+### GET /api/data/startpage
+
+**Description:** Get the configured startup page for a user
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Query Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user_id | integer | Yes | User ID to get startup page configuration for |
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_API_KEY" \
+     "http://localhost:8000/api/data/startpage?user_id=123"
+```
+
+**Response Example:**
+```json
+{
+  "StartPage": "queue"
+}
+```
+
+**Response Example (Default):**
+```json
+{
+  "StartPage": "home"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Can only view your own startpage setting (unless web key)
+- `404`: Not Found - User does not exist
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Authorization Check**: Users can only view their own startpage unless using web key
+- **Default Value**: Returns "home" if no custom startpage is configured
+- **Valid Options**: Typically includes "home", "queue", "episodes", "podcasts", "history", etc.
+- **UI Integration**: Used by frontend to determine initial page after login
+- **Python Compatibility**: Matches Python startpage GET function exactly
+
+---
+
+### POST /api/data/startpage
+
+**Description:** Update the startup page configuration for a user
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Query Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user_id | integer | Yes | User ID (must match API key owner) |
+| startpage | string | No | Startup page name (default: "home") |
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_API_KEY" \
+     "http://localhost:8000/api/data/startpage?user_id=123&startpage=queue"
+```
+
+**Response Example:**
+```json
+{
+  "success": true,
+  "message": "StartPage updated successfully"
+}
+```
+
+**Error Responses:**
+- `400`: Bad Request - Invalid startpage value
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Can only update your own startpage setting (unless web key)
+- `500`: Internal Server Error - Database error
+
+**Valid Startpage Values:**
+- `"home"` - Dashboard/home page (default)
+- `"queue"` - Episode queue page
+- `"episodes"` - All episodes listing
+- `"podcasts"` - Podcast subscriptions
+- `"history"` - Listening history
+- `"downloads"` - Downloaded episodes
+- `"saved"` - Saved episodes
+- `"playlists"` - User playlists
+
+**Implementation Notes:**
+- **Authorization Check**: Users can only update their own startpage unless using web key
+- **Default Handling**: Uses "home" if no startpage parameter provided
+- **Database Update**: Persists setting to user's profile in database
+- **UI Behavior**: Frontend redirects to this page after authentication
+- **Validation**: Should validate against known page names in production
+- **Python Compatibility**: Matches Python startpage POST function exactly
+
+---
+
+## 👑 Admin User Management
+
+Administrative endpoints for comprehensive user account management including creation, deletion, permissions, and system-wide user oversight. All endpoints require admin privileges.
+
+### GET /api/data/get_user_info
+
+**Description:** Get comprehensive information for all users in the system
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     http://localhost:8000/api/data/get_user_info
+```
+
+**Response Example:**
+```json
+[
+  {
+    "userid": 1,
+    "fullname": "Admin User",
+    "username": "admin",
+    "email": "admin@example.com",
+    "isadmin": 1
+  },
+  {
+    "userid": 2,
+    "fullname": "John Smith",
+    "username": "jsmith",
+    "email": "john@example.com",
+    "isadmin": 0
+  },
+  {
+    "userid": 3,
+    "fullname": "Jane Doe",
+    "username": "jdoe",
+    "email": "jane@example.com",
+    "isadmin": 0
+  }
+]
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Admin Only**: Requires admin privileges to access system-wide user information
+- **Complete Data**: Returns all user fields including sensitive admin status
+- **Boolean Conversion**: `isadmin` field serialized as integer (1/0) for Python compatibility
+- **No Pagination**: Returns all users in system (consider pagination for large deployments)
+- **Python Compatibility**: Matches Python `api_get_user_info` function exactly
+
+---
+
+### POST /api/data/add_user
+
+**Description:** Create a new user account with admin privileges
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| fullname | string | Yes | User's full display name |
+| username | string | Yes | Unique username (will be converted to lowercase) |
+| email | string | Yes | Unique email address |
+| hash_pw | string | Yes | Pre-hashed password (bcrypt recommended) |
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"fullname":"New User","username":"newuser","email":"newuser@example.com","hash_pw":"$2b$12$hashed_password_here"}' \
+     http://localhost:8000/api/data/add_user
+```
+
+**Response Example (Success):**
+```json
+{
+  "detail": "Success",
+  "user_id": 4
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `409`: Conflict - Username or email already exists
+  ```json
+  {
+    "error": "This username is already taken. Please choose a different username."
+  }
+  ```
+  ```json
+  {
+    "error": "This email is already in use. Please use a different email address."
+  }
+  ```
+- `500`: Internal Server Error - Failed to create user
+
+**Implementation Notes:**
+- **Admin Only**: Only administrators can create user accounts via this endpoint
+- **Username Normalization**: Username automatically converted to lowercase
+- **Password Security**: Expects pre-hashed password, does not hash plain text
+- **Unique Constraints**: Both username and email must be unique system-wide
+- **User ID Return**: Returns newly created user's ID for reference
+- **Python Compatibility**: Matches Python `api_add_user` function exactly
+
+---
+
+### DELETE /api/data/user/delete/*user_id*
+
+**Description:** Permanently delete a user account and all associated data
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user_id | integer | Yes | ID of user to delete |
+
+**Request Example:**
+```bash
+curl -X DELETE -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     http://localhost:8000/api/data/user/delete/123
+```
+
+**Response Example:**
+```json
+{
+  "status": "User deleted"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `404`: Not Found - User ID does not exist
+- `500`: Internal Server Error - Deletion failed
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges for user deletion
+- **Permanent Action**: User deletion is irreversible and removes all associated data
+- **Cascade Delete**: Removes user's podcasts, episodes, history, and all related records
+- **Safety Considerations**: No confirmation prompt - ensure proper UI warnings
+- **Final Admin Protection**: System should prevent deletion of final admin user
+- **Python Compatibility**: Matches Python `api_delete_user` function exactly
+
+---
+
+### PUT /api/data/user/set_isadmin
+
+**Description:** Grant or revoke administrative privileges for a user
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| user_id | integer | Yes | ID of user to modify |
+| isadmin | boolean | Yes | Whether user should have admin privileges |
+
+**Request Example (Grant Admin):**
+```bash
+curl -X PUT -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"user_id":123,"isadmin":true}' \
+     http://localhost:8000/api/data/user/set_isadmin
+```
+
+**Request Example (Revoke Admin):**
+```bash
+curl -X PUT -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"user_id":123,"isadmin":false}' \
+     http://localhost:8000/api/data/user/set_isadmin
+```
+
+**Response Example:**
+```json
+{
+  "detail": "IsAdmin status updated."
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `404`: Not Found - User ID does not exist
+- `500`: Internal Server Error - Update failed
+
+**Implementation Notes:**
+- **Admin Only**: Only administrators can modify admin privileges
+- **Permission Management**: Controls access to all admin-only endpoints and features
+- **Final Admin Check**: Should prevent removal of admin status from final admin
+- **Immediate Effect**: Changes take effect immediately for active sessions
+- **Security Critical**: Grants access to all administrative functions
+- **Python Compatibility**: Matches Python `api_set_isadmin` function exactly
+
+---
+
+### GET /api/data/user/final_admin/*user_id*
+
+**Description:** Check if a user is the final (last remaining) administrator in the system
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user_id | integer | Yes | User ID to check final admin status |
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     http://localhost:8000/api/data/user/final_admin/1
+```
+
+**Response Example (Is Final Admin):**
+```json
+{
+  "final_admin": true
+}
+```
+
+**Response Example (Not Final Admin):**
+```json
+{
+  "final_admin": false
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `404`: Not Found - User ID does not exist
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges to check final admin status
+- **System Protection**: Used to prevent deletion or demotion of final admin
+- **UI Integration**: Frontend should disable delete/demote buttons for final admin
+- **Business Logic**: System must always maintain at least one administrator
+- **Safety Check**: Critical for preventing system lockout scenarios
+- **Python Compatibility**: Matches Python `api_final_admin` function exactly
+
+---
+
+### GET /api/data/user_admin_check/*user_id*
+
+**Description:** Check if a specific user has administrative privileges
+
+**Authentication:** 🔐 User API Key (Self-check only)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| user_id | integer | Yes | User ID to check (must match API key owner) |
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/data/user_admin_check/123
+```
+
+**Response Example (Is Admin):**
+```json
+{
+  "is_admin": true
+}
+```
+
+**Response Example (Not Admin):**
+```json
+{
+  "is_admin": false
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Can only check your own admin status
+- `404`: Not Found - User ID does not exist
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Self-Check Only**: Users can only check their own admin status for security
+- **Authorization Restriction**: API key must belong to the user being checked
+- **UI Integration**: Used by frontend to show/hide admin features and menus
+- **Session Management**: Helps determine user capabilities and interface elements
+- **Security Model**: Prevents users from probing other users' privilege levels
+- **Python Compatibility**: Matches Python `api_user_admin_check_route` function exactly
+
+---
+
+## System Configuration
+
+Administrative endpoints for managing system-wide settings including guest access, download permissions, self-service registration, and RSS feed features. All endpoints require admin privileges.
+
+### POST /api/data/enable_disable_guest
+
+**Description:** Toggle guest access on/off for the PinePods instance
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     http://localhost:8000/api/data/enable_disable_guest
+```
+
+**Response Example:**
+```json
+{
+  "success": true
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges to toggle guest access
+- **Toggle Behavior**: Switches between enabled/disabled states automatically
+- **System Wide**: Affects all non-authenticated access to the application
+- **Security Impact**: Controls whether unauthenticated users can access content
+- **Python Compatibility**: Matches Python `api_enable_disable_guest` function exactly
+
+---
+
+### POST /api/data/enable_disable_downloads
+
+**Description:** Toggle download functionality on/off for the PinePods instance
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     http://localhost:8000/api/data/enable_disable_downloads
+```
+
+**Response Example:**
+```json
+{
+  "success": true
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges to control download feature
+- **Toggle Behavior**: Switches between enabled/disabled states automatically
+- **System Wide**: Affects all users' ability to download podcast episodes
+- **Storage Impact**: Disabling prevents new downloads but doesn't remove existing files
+- **UI Integration**: Frontend should hide/show download buttons based on this setting
+- **Python Compatibility**: Matches Python `api_enable_disable_downloads` function exactly
+
+---
+
+### POST /api/data/enable_disable_self_service
+
+**Description:** Toggle self-service user registration on/off for the PinePods instance
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     http://localhost:8000/api/data/enable_disable_self_service
+```
+
+**Response Example:**
+```json
+{
+  "success": true
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges to control user registration
+- **Toggle Behavior**: Switches between enabled/disabled states automatically
+- **Registration Control**: Affects `/api/data/add_login_user` endpoint availability
+- **Security Feature**: Prevents unauthorized user account creation when disabled
+- **UI Integration**: Registration forms should check this status before allowing signups
+- **Python Compatibility**: Matches Python `api_enable_disable_self_service` function exactly
+
+---
+
+### GET /api/data/guest_status
+
+**Description:** Get current guest access status for the PinePods instance
+
+**Authentication:** 🔐 User API Key (Any authenticated user)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/data/guest_status
+```
+
+**Response Example (Enabled):**
+```json
+true
+```
+
+**Response Example (Disabled):**
+```json
+false
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Public Check**: Any authenticated user can check guest access status
+- **Boolean Response**: Simple true/false indicating if guest access is enabled
+- **UI Integration**: Used by frontend to show/hide guest access features
+- **Security Information**: Helps determine if unauthenticated browsing is available
+- **Python Compatibility**: Matches Python `api_guest_status` function exactly
+
+---
+
+### GET /api/data/download_status
+
+**Description:** Get current download feature status for the PinePods instance
+
+**Authentication:** 🔐 User API Key (Any authenticated user)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/data/download_status
+```
+
+**Response Example (Enabled):**
+```json
+true
+```
+
+**Response Example (Disabled):**
+```json
+false
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Public Check**: Any authenticated user can check download feature status
+- **Boolean Response**: Simple true/false indicating if downloads are enabled
+- **UI Integration**: Used by frontend to show/hide download buttons and features
+- **Feature Control**: Determines availability of episode download functionality
+- **Python Compatibility**: Matches Python `api_download_status` function exactly
+
+---
+
+### GET /api/data/admin_self_service_status
+
+**Description:** Get detailed self-service registration status including admin existence
+
+**Authentication:** 🔐 User API Key (Any authenticated user)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/data/admin_self_service_status
+```
+
+**Response Example:**
+```json
+{
+  "status": true,
+  "first_admin_created": true
+}
+```
+
+**Response Example (Registration Disabled):**
+```json
+{
+  "status": false,
+  "first_admin_created": true
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Public Check**: Any authenticated user can check self-service status
+- **Detailed Response**: Includes both registration status and admin existence
+- **Setup Integration**: `first_admin_created` helps determine if initial setup is complete
+- **Registration Control**: `status` indicates if new user registration is allowed
+- **Setup Flow**: Used during initial application setup and configuration
+- **Python Compatibility**: Matches Python `api_self_service_status` function exactly
+
+---
+
+### GET /api/data/rss_feed_status
+
+**Description:** Get RSS feed feature status for the authenticated user
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/data/rss_feed_status
+```
+
+**Response Example (Enabled):**
+```json
+true
+```
+
+**Response Example (Disabled):**
+```json
+false
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **User-Specific**: Returns RSS feed status for the authenticated user
+- **Boolean Response**: Simple true/false indicating if RSS feeds are enabled
+- **Feature Control**: Determines availability of RSS feed generation for user
+- **Privacy Control**: Allows users to control public access to their podcast feeds
+- **Python Compatibility**: Matches Python `get_rss_feed_status` function exactly
+
+---
+
+### POST /api/data/toggle_rss_feeds
+
+**Description:** Toggle RSS feed feature on/off for the authenticated user
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/data/toggle_rss_feeds
+```
+
+**Response Example:**
+```json
+{
+  "success": true,
+  "enabled": true
+}
+```
+
+**Response Example (Disabled):**
+```json
+{
+  "success": true,
+  "enabled": false
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **User-Specific**: Toggles RSS feed feature for the authenticated user only
+- **Toggle Behavior**: Switches between enabled/disabled states automatically
+- **Return Status**: Response includes the new status after toggling
+- **Privacy Feature**: Allows users to control public access to their RSS feeds
+- **Feed Access**: When disabled, RSS feed URLs become inaccessible
+- **Python Compatibility**: Matches Python `toggle_rss_feeds` function exactly
+
+---
+
+## Email Settings
+
+Administrative endpoints for configuring and managing SMTP email settings, testing email functionality, and sending emails through the system. All endpoints require admin privileges.
+
+### POST /api/data/save_email_settings
+
+**Description:** Configure SMTP email server settings for the PinePods instance
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| email_settings | object | Yes | Email configuration object |
+| email_settings.server_name | string | Yes | SMTP server hostname |
+| email_settings.server_port | string/integer | Yes | SMTP server port number |
+| email_settings.from_email | string | Yes | Email address to send from |
+| email_settings.send_mode | string | Yes | Send mode (typically "SMTP") |
+| email_settings.encryption | string | Yes | Encryption type ("SSL/TLS", "STARTTLS", "None") |
+| email_settings.auth_required | boolean | Yes | Whether SMTP authentication is required |
+| email_settings.email_username | string | No | SMTP username (if auth_required) |
+| email_settings.email_password | string | No | SMTP password (if auth_required) |
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"email_settings":{"server_name":"smtp.gmail.com","server_port":"587","from_email":"noreply@example.com","send_mode":"SMTP","encryption":"STARTTLS","auth_required":true,"email_username":"user@gmail.com","email_password":"app_password"}}' \
+     http://localhost:8000/api/data/save_email_settings
+```
+
+**Response Example:**
+```json
+{
+  "message": "Email settings saved."
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `400`: Bad Request - Invalid email settings format
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges to configure email settings
+- **SMTP Configuration**: Supports standard SMTP server configurations
+- **Encryption Options**: Supports SSL/TLS, STARTTLS, and no encryption
+- **Authentication**: Optional SMTP authentication for secure servers
+- **Password Storage**: Email passwords are stored securely in database
+- **Python Compatibility**: Matches Python `api_save_email_settings` function exactly
+
+---
+
+### GET /api/data/get_email_settings
+
+**Description:** Retrieve current SMTP email server configuration
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     http://localhost:8000/api/data/get_email_settings
+```
+
+**Response Example:**
+```json
+{
+  "Emailsettingsid": 1,
+  "ServerName": "smtp.gmail.com",
+  "ServerPort": 587,
+  "FromEmail": "noreply@example.com",
+  "SendMode": "SMTP",
+  "Encryption": "STARTTLS",
+  "AuthRequired": 1,
+  "Username": "user@gmail.com",
+  "Password": "encrypted_password_hash"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `404`: Not Found - Email settings not configured
+- `500`: Internal Server Error - Database error
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges to view email settings
+- **Complete Configuration**: Returns all configured email settings
+- **Password Security**: Passwords are returned encrypted/hashed for security
+- **Field Naming**: Uses Python-compatible field naming convention
+- **Setup Check**: Returns 404 if email has not been configured yet
+- **Python Compatibility**: Matches Python `api_get_email_settings` function exactly
+
+---
+
+### POST /api/data/send_test_email
+
+**Description:** Send a test email using provided SMTP settings to verify configuration
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| server_name | string | Yes | SMTP server hostname |
+| server_port | string | Yes | SMTP server port number |
+| from_email | string | Yes | Email address to send from |
+| send_mode | string | Yes | Send mode (typically "SMTP") |
+| encryption | string | Yes | Encryption type ("SSL/TLS", "STARTTLS", "None") |
+| auth_required | boolean | Yes | Whether SMTP authentication is required |
+| email_username | string | No | SMTP username (if auth_required) |
+| email_password | string | No | SMTP password (if auth_required) |
+| to_email | string | Yes | Recipient email address for test |
+| message | string | Yes | Test message content |
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"server_name":"smtp.gmail.com","server_port":"587","from_email":"test@example.com","send_mode":"SMTP","encryption":"STARTTLS","auth_required":true,"email_username":"user@gmail.com","email_password":"app_password","to_email":"admin@example.com","message":"This is a test email from PinePods."}' \
+     http://localhost:8000/api/data/send_test_email
+```
+
+**Response Example (Success):**
+```json
+{
+  "email_status": "Email sent successfully"
+}
+```
+
+**Response Example (Failure):**
+```json
+{
+  "email_status": "Failed to send email: Authentication failed"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `400`: Bad Request - Invalid email settings or addresses
+- `500`: Internal Server Error - SMTP configuration or connection error
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges to send test emails
+- **Configuration Test**: Tests SMTP settings without saving them to database
+- **Timeout Protection**: 30-second timeout to prevent hanging connections
+- **Encryption Support**: Handles SSL/TLS, STARTTLS, and unencrypted connections
+- **Error Reporting**: Detailed error messages for troubleshooting SMTP issues
+- **Real SMTP**: Uses lettre library for actual SMTP communication
+- **Python Compatibility**: Matches Python `api_send_email` function behavior
+
+---
+
+### POST /api/data/send_email
+
+**Description:** Send an email using stored database email settings
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| to_email | string | Yes | Recipient email address |
+| subject | string | Yes | Email subject line |
+| message | string | Yes | Email message content |
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"to_email":"user@example.com","subject":"Welcome to PinePods","message":"Your PinePods account has been created successfully."}' \
+     http://localhost:8000/api/data/send_email
+```
+
+**Response Example (Success):**
+```json
+{
+  "email_status": "Email sent successfully"
+}
+```
+
+**Response Example (Failure):**
+```json
+{
+  "email_status": "Failed to send email: SMTP server connection failed"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `404`: Not Found - Email settings not configured in database
+- `400`: Bad Request - Invalid recipient email address
+- `500`: Internal Server Error - SMTP sending failure
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges to send emails
+- **Database Settings**: Uses email settings previously saved in database
+- **Production Use**: Designed for sending actual emails (notifications, alerts, etc.)
+- **Timeout Protection**: 30-second timeout to prevent hanging connections
+- **Error Handling**: Comprehensive error reporting for debugging
+- **Security**: Uses encrypted stored credentials for SMTP authentication
+- **Python Compatibility**: Matches Python `api_send_email` function exactly
+
+---
+
+## Server Backup & Restore
+
+Administrative endpoints for comprehensive database backup and restore operations. These endpoints provide full system backup capabilities for disaster recovery and data migration. All endpoints require admin privileges.
+
+### POST /api/data/backup_server
+
+**Description:** Create a complete backup of the PinePods database using native database tools
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| database_pass | string | Yes | Database user password for authentication |
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"database_pass":"your_db_password"}' \
+     http://localhost:8000/api/data/backup_server
+```
+
+**Response Example (Success):**
+- **Content-Type**: `application/sql` or `text/plain`
+- **Content-Disposition**: `attachment; filename="pinepods_backup_YYYY-MM-DD.sql"`
+- **Body**: SQL dump file content (streamed)
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `500`: Internal Server Error - Backup process failed
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges for database backup
+- **Native Tools**: Uses `pg_dump` for PostgreSQL or `mysqldump` for MySQL
+- **Streaming Response**: Large databases are streamed to prevent memory issues
+- **Data-Only Backup**: Includes data without schema for portability
+- **Security**: Database password required and passed securely via environment
+- **Environment Variables**: Uses DB_HOST, DB_PORT, DB_NAME, DB_USER from environment
+- **File Format**: Returns standard SQL dump format compatible with database restore tools
+
+**Database-Specific Options:**
+
+**PostgreSQL (pg_dump):**
+- `--data-only`: Exports only data, not schema
+- `--disable-triggers`: Prevents trigger execution during restore
+- `--format=plain`: Standard SQL format
+- Password passed via `PGPASSWORD` environment variable
+
+**MySQL (mysqldump):**
+- `--single-transaction`: Ensures consistent backup
+- `--routines --triggers`: Includes stored procedures and triggers
+- `--default-auth=mysql_native_password`: Compatibility option
+- Password passed via command line (secured in process)
+
+---
+
+### POST /api/data/restore_server
+
+**Description:** Restore PinePods database from uploaded SQL backup file
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_ADMIN_API_KEY"
+-H "Content-Type: multipart/form-data"
+```
+
+**Form Data:**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| backup_file | file | Yes | SQL backup file (.sql extension required) |
+| database_pass | string | Yes | Database user password for authentication |
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_ADMIN_API_KEY" \
+     -F "backup_file=@pinepods_backup.sql" \
+     -F "database_pass=your_db_password" \
+     http://localhost:8000/api/data/restore_server
+```
+
+**Response Example:**
+```json
+{
+  "message": "Server restore started successfully"
+}
+```
+
+**Error Responses:**
+- `400`: Bad Request - Invalid file format, missing file, or file too large
+  ```json
+  {
+    "error": "Only SQL files are allowed"
+  }
+  ```
+  ```json
+  {
+    "error": "File too large (max 100MB)"
+  }
+  ```
+  ```json
+  {
+    "error": "Database password is required"
+  }
+  ```
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `500`: Internal Server Error - Restore process failed
+
+**Implementation Notes:**
+- **Admin Only**: Requires administrator privileges for database restore
+- **Multipart Upload**: Accepts file uploads via multipart form data
+- **File Validation**: Only accepts .sql files with UTF-8 encoding
+- **Size Limit**: Maximum file size of 100MB to prevent memory issues
+- **Background Processing**: Restore runs asynchronously to prevent request timeouts
+- **Immediate Response**: Returns success immediately, actual restore runs in background
+- **Data Safety**: Overwrites existing data - ensure proper backups before restore
+- **File Format**: Accepts standard SQL dump files from pg_dump or mysqldump
+
+**Security Considerations:**
+- **Admin Verification**: Double-checks admin status before processing
+- **File Type Validation**: Ensures only SQL files are processed
+- **Size Limits**: Prevents abuse through large file uploads
+- **UTF-8 Validation**: Ensures file content is valid UTF-8
+- **Password Required**: Database authentication required for restore operations
+
+**Operational Notes:**
+- **Downtime**: Restore operations may cause temporary service interruption
+- **Data Loss**: Restore overwrites existing database - backup current data first
+- **Background Task**: Long-running restores continue after HTTP response
+- **Monitoring**: Check application logs for restore progress and completion
+- **Recovery**: Failed restores may require manual database recovery
+
+---
+
+## System Maintenance Tasks
+
+Administrative endpoints for system maintenance operations including podcast feed refresh, sync operations, cleanup tasks, and system initialization. These endpoints are primarily designed for automated scheduled tasks and system administration.
+
+### GET /api/data/refresh_pods
+
+**Description:** Refresh all podcast feeds system-wide as a background task
+
+**Authentication:** 👑 Admin API Key (System Task)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_SYSTEM_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_SYSTEM_API_KEY" \
+     http://localhost:8000/api/data/refresh_pods
+```
+
+**Response Example:**
+```json
+{
+  "detail": "Refresh initiated."
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - System API key required
+- `500`: Internal Server Error - Task spawning failed
+
+**Implementation Notes:**
+- **Background Task**: Runs as asynchronous background process, returns immediately
+- **System-Wide**: Refreshes all podcast feeds for all users
+- **No WebSocket**: Unlike user-specific refresh, this runs without real-time updates
+- **Task Spawning**: Creates background task that continues after HTTP response
+- **Python Compatibility**: Matches Python `refresh_pods` function exactly
+- **Scheduled Operation**: Designed for automated scheduled execution
+
+---
+
+### GET /api/data/refresh_gpodder_subscriptions
+
+**Description:** Refresh GPodder subscriptions for all users with GPodder sync enabled
+
+**Authentication:** 👑 Admin API Key (System Task)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_SYSTEM_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_SYSTEM_API_KEY" \
+     http://localhost:8000/api/data/refresh_gpodder_subscriptions
+```
+
+**Response Example:**
+```json
+{
+  "detail": "GPodder sync initiated",
+  "task_id": "task-uuid-1234"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - System API key required
+- `500`: Internal Server Error - Task spawning failed
+
+**Implementation Notes:**
+- **Multi-User Operation**: Processes all users with GPodder sync enabled
+- **Progress Tracking**: Returns task ID for progress monitoring
+- **Sync Type Support**: Handles internal, external, and both sync types (excludes Nextcloud)
+- **Background Processing**: Runs asynchronously with progress reporting
+- **User Filtering**: Only syncs users with GPodder sync configured
+- **Error Tolerance**: Individual user sync failures don't stop overall process
+- **Statistics Tracking**: Counts successful and failed syncs
+
+---
+
+### GET /api/data/refresh_nextcloud_subscriptions
+
+**Description:** Refresh Nextcloud subscriptions for all users with Nextcloud sync enabled
+
+**Authentication:** 👑 Admin API Key (System Task)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_SYSTEM_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_SYSTEM_API_KEY" \
+     http://localhost:8000/api/data/refresh_nextcloud_subscriptions
+```
+
+**Response Example:**
+```json
+{
+  "detail": "Nextcloud sync initiated",
+  "task_id": "task-uuid-5678"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - System API key required
+- `500`: Internal Server Error - Task spawning failed
+
+**Implementation Notes:**
+- **Nextcloud-Specific**: Separate from GPodder sync operations
+- **Multi-User Operation**: Processes all users with Nextcloud sync enabled
+- **Progress Tracking**: Returns task ID for monitoring sync progress
+- **Background Processing**: Runs asynchronously to prevent timeouts
+- **User Filtering**: Only processes users with Nextcloud sync configured
+- **Success Tracking**: Counts successful and failed sync operations
+- **Independent Operation**: Separate from GPodder sync for different sync mechanisms
+
+---
+
+### GET /api/data/refresh_hosts
+
+**Description:** Refresh podcast host/person information and trigger related podcast updates
+
+**Authentication:** 👑 Admin API Key (System Task - UserID 1)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_SYSTEM_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_SYSTEM_API_KEY" \
+     http://localhost:8000/api/data/refresh_hosts
+```
+
+**Response Example:**
+```json
+{
+  "detail": "Host refresh initiated.",
+  "task_id": "task-uuid-9999"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - System API key (UserID 1) required
+- `500`: Internal Server Error - Task spawning failed
+
+**Implementation Notes:**
+- **System API Key**: Requires specific system API key from UserID 1
+- **Host Processing**: Refreshes all people/hosts in the system
+- **Progress Tracking**: Provides detailed progress updates per host
+- **Background Processing**: Runs asynchronously with progress reporting
+- **Cascade Refresh**: Triggers podcast refresh after host processing
+- **Person Subscriptions**: Updates subscriptions based on host information
+- **Error Tolerance**: Individual host failures don't stop overall process
+
+---
+
+### GET /api/data/cleanup_tasks
+
+**Description:** Run system cleanup tasks to remove old episodes and optimize database
+
+**Authentication:** 👑 Admin API Key (System Task - UserID 1)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_SYSTEM_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_SYSTEM_API_KEY" \
+     http://localhost:8000/api/data/cleanup_tasks
+```
+
+**Response Example:**
+```json
+{
+  "detail": "Cleanup tasks initiated.",
+  "task_id": "task-uuid-abcd"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - System API key (UserID 1) required
+- `500`: Internal Server Error - Task spawning failed
+
+**Implementation Notes:**
+- **System API Key**: Requires specific system API key from UserID 1
+- **Database Optimization**: Removes old episodes based on retention policies
+- **Background Processing**: Runs asynchronously to prevent request timeouts
+- **Progress Tracking**: Provides task ID for monitoring cleanup progress
+- **Storage Management**: Helps manage disk space by removing outdated content
+- **Scheduled Operation**: Designed for regular automated execution
+
+---
+
+### GET /api/data/auto_complete_episodes
+
+**Description:** Auto-complete episodes for users based on their configured completion settings
+
+**Authentication:** 👑 Admin API Key (System Task - UserID 1)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_SYSTEM_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_SYSTEM_API_KEY" \
+     http://localhost:8000/api/data/auto_complete_episodes
+```
+
+**Response Example:**
+```json
+{
+  "status": "Auto-complete task completed successfully",
+  "episodes_completed": 42
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - System API key (UserID 1) required
+- `500`: Internal Server Error - Auto-complete process failed
+
+**Implementation Notes:**
+- **System API Key**: Requires specific system API key from UserID 1
+- **User-Based Processing**: Processes users with auto-complete settings enabled
+- **Completion Logic**: Automatically marks episodes as completed based on user thresholds
+- **Statistics**: Returns count of episodes marked as completed
+- **Nightly Task**: Designed for regular scheduled execution
+- **User Settings**: Respects individual user auto-complete second settings
+
+---
+
+### GET /api/data/update_playlists
+
+**Description:** Update all playlist information and metadata system-wide
+
+**Authentication:** 👑 Admin API Key (System Task - UserID 1)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_SYSTEM_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_SYSTEM_API_KEY" \
+     http://localhost:8000/api/data/update_playlists
+```
+
+**Response Example:**
+```json
+{
+  "detail": "Playlist update initiated.",
+  "task_id": "task-uuid-efgh"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - System API key (UserID 1) required
+- `500`: Internal Server Error - Task spawning failed
+
+**Implementation Notes:**
+- **System API Key**: Requires specific system API key from UserID 1
+- **System-Wide Update**: Updates all playlists across all users
+- **Background Processing**: Runs asynchronously with progress tracking
+- **Metadata Refresh**: Updates playlist metadata and statistics
+- **Progress Monitoring**: Returns task ID for tracking update progress
+- **Scheduled Operation**: Designed for regular maintenance execution
+
+---
+
+### POST /api/init/startup_tasks
+
+**Description:** Run system initialization tasks required at application startup
+
+**Authentication:** 👑 Admin API Key (System Task - UserID 1)
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_SYSTEM_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| api_key | string | Yes | System API key for authentication |
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_SYSTEM_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"api_key":"YOUR_SYSTEM_API_KEY"}' \
+     http://localhost:8000/api/init/startup_tasks
+```
+
+**Response Example:**
+```json
+{
+  "status": "Startup tasks completed successfully."
+}
+```
+
+**Error Responses:**
+- `403`: Forbidden - System API key (UserID 1) required
+  ```json
+  {
+    "error": "Invalid or unauthorized API key"
+  }
+  ```
+- `500`: Internal Server Error - Startup task execution failed
+
+**Implementation Notes:**
+- **System API Key**: Requires specific system API key from UserID 1 (background_tasks user)
+- **Initialization Tasks**: Adds default news feed if not already present
+- **Startup Integration**: Called during application initialization process
+- **Synchronous Execution**: Completes before returning response
+- **System Setup**: Ensures required system data is properly initialized
+- **Python Compatibility**: Matches Python `startup_tasks` function exactly
+
+---
+
 ## 📝 Transcripts & Advanced Features
 
 Advanced podcast features including transcript fetching and Podcasting 2.0 standard support for enhanced metadata, chapters, transcripts, people information, funding details, and other modern podcast features.
@@ -5990,3 +8699,1707 @@ curl -X POST \
 - Categories are removed from the JSON structure in the database
 - Used to clean up podcast organization when categories are no longer needed
 - Does not affect other podcasts that may have the same category name
+
+---
+
+## RSS & External Access
+
+### RSS Key Management
+
+#### GET /api/data/get_rss_key
+
+**Description:** Get or create an RSS access key for a specific user to enable RSS feed access
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Query Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID to get/create RSS key for |
+
+**Request Example:**
+```bash
+curl -X GET \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  "http://localhost:8000/api/data/get_rss_key?user_id=123"
+```
+
+**Response Example:**
+```json
+{
+  "rss_key": "rss_abc123def456789ghi012345jkl678901"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot get RSS key for other users (unless using web key)
+- `500`: Internal Server Error - Failed to create/retrieve RSS key
+
+**Notes:**
+- Creates a new RSS key if user doesn't have one
+- Returns existing RSS key if one already exists
+- Web keys can retrieve RSS keys for any user
+- RSS key is required to access RSS feeds
+- Keys are automatically generated as UUIDs with "rss_" prefix
+
+#### GET /api/data/rss_key
+
+**Description:** Get the existing RSS key for the authenticated user
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Parameters:** None (uses authenticated user's ID)
+
+**Request Example:**
+```bash
+curl -X GET \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  http://localhost:8000/api/data/rss_key
+```
+
+**Response Example:**
+```json
+{
+  "rss_key": "rss_abc123def456789ghi012345jkl678901"
+}
+```
+
+**Error Response Example:**
+```json
+{
+  "success": false,
+  "message": "No RSS key found. Please enable RSS feeds first."
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Invalid API key
+- `404`: Not Found - No RSS key exists for user
+
+**Notes:**
+- Only returns existing RSS keys, does not create new ones
+- User can only retrieve their own RSS key
+- RSS feeds must be enabled in user settings before key is created
+- Use `/api/data/get_rss_key` to automatically create a key if needed
+
+### RSS Feed Access
+
+#### GET /api/feed/{user_id}
+
+**Description:** Generate and retrieve RSS 2.0 XML feed containing user's podcast episodes with full RSS functionality including filtering, limiting, and iTunes-compatible tags
+
+**Authentication:** 🔓 RSS Key (via query parameter)
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID whose feed to generate |
+
+**Query Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `api_key` | string | Yes | User's RSS key (not regular API key) |
+| `limit` | integer | No | Maximum episodes to return (default: 1000) |
+| `podcast_id` | integer | No | Filter to specific podcast ID |
+| `type` | string | No | Filter by source type ("podcast" or "youtube") |
+
+**Request Example:**
+```bash
+curl -X GET \
+  "http://localhost:8000/api/feed/123?api_key=rss_abc123def456789ghi012345jkl678901&limit=50&podcast_id=456"
+```
+
+**Response Example:**
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+  <channel>
+    <title>JohnDoe's PinePods Feed</title>
+    <link>http://localhost:8000</link>
+    <description>Personal podcast feed for JohnDoe</description>
+    <language>en-us</language>
+    <itunes:author>PinePods</itunes:author>
+    <itunes:category text="Technology"/>
+    
+    <item>
+      <title>Episode Title Here</title>
+      <link>http://localhost:8000/api/stream/123/456/rss_key</link>
+      <description><![CDATA[Episode description content here...]]></description>
+      <pubDate>Wed, 15 Nov 2023 14:30:00 +0000</pubDate>
+      <guid>http://localhost:8000/api/stream/123/456/rss_key</guid>
+      <enclosure url="http://localhost:8000/api/stream/123/456/rss_key" type="audio/mpeg" length="0"/>
+      <itunes:duration>45:30</itunes:duration>
+      <itunes:image href="https://example.com/episode-artwork.jpg"/>
+    </item>
+    <!-- Additional episodes... -->
+  </channel>
+</rss>
+```
+
+**Error Response Example:**
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<error>RSS feeds not enabled for this user</error>
+```
+
+**Error Responses:**
+- `403`: Forbidden - Invalid RSS key or RSS feeds not enabled for user
+- `404`: Not Found - User not found
+- `500`: Internal Server Error - Feed generation failed
+
+**Notes:**
+- Returns RSS 2.0 XML format with iTunes namespace extensions
+- Episodes are ordered by publication date (newest first)
+- Supports both regular podcast episodes and YouTube videos
+- Stream URLs use user's RSS key for authentication
+- Domain is automatically detected from request headers (supports X-Forwarded-Proto)
+- Filtering by `podcast_id` limits feed to episodes from specific podcast
+- Source type filtering ("podcast"/"youtube") allows content type separation
+- Episodes include duration, artwork, descriptions, and iTunes-compatible metadata
+- RSS key validation ensures only authorized access to user's content
+- Feed title includes username for identification
+- Supports both downloaded and streamed content through unified stream API
+- Episode descriptions are wrapped in CDATA for HTML content safety
+
+---
+
+## Multi-Factor Authentication
+
+### MFA Setup & Management
+
+#### GET /api/data/generate_mfa_secret/{user_id}
+
+**Description:** Generate a new MFA secret key and QR code for Time-based One-Time Password (TOTP) authentication setup
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID to generate MFA secret for |
+
+**Request Example:**
+```bash
+curl -X GET \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  http://localhost:8000/api/data/generate_mfa_secret/123
+```
+
+**Response Example:**
+```json
+{
+  "secret": "JBSWY3DPEHPK3PXP",
+  "qr_code_svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"200\" height=\"200\" viewBox=\"0 0 200 200\">...</svg>"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot generate MFA secrets for other users (unless using web key)
+- `404`: Not Found - User not found
+- `500`: Internal Server Error - MFA secret generation failed
+
+**Notes:**
+- Generates a random 160-bit (20-byte) Base32-encoded secret
+- Creates TOTP-compatible QR code with 6-digit codes, 30-second intervals
+- QR code includes provisioning URI: `otpauth://totp/Pinepods:user@email.com?secret=SECRET&issuer=Pinepods`
+- Secret is temporarily stored until verified with `verify_temp_mfa`
+- User can only generate MFA secrets for themselves (web keys can access any user)
+- Uses SHA-1 algorithm with 6-digit codes refreshed every 30 seconds
+- QR code returned as scalable SVG format (200x200 minimum dimensions)
+
+#### POST /api/data/verify_temp_mfa
+
+**Description:** Verify a temporary MFA code during setup to confirm TOTP app configuration is working correctly
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+```json
+{
+  "user_id": 123,
+  "mfa_code": "123456"
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID (must match API key owner) |
+| `mfa_code` | string | Yes | 6-digit TOTP code from authenticator app |
+
+**Request Example:**
+```bash
+curl -X POST \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id":123,"mfa_code":"123456"}' \
+  http://localhost:8000/api/data/verify_temp_mfa
+```
+
+**Response Example:**
+```json
+{
+  "verified": true
+}
+```
+
+**Error Response Example:**
+```json
+{
+  "verified": false
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot verify MFA codes for other users (unless using web key)
+- `500`: Internal Server Error - TOTP verification failed
+
+**Notes:**
+- Must be called after `generate_mfa_secret` to complete MFA setup
+- Automatically saves MFA secret permanently if code verification succeeds
+- Removes temporary secret from memory after successful verification
+- Supports time window tolerance for clock drift between server and client
+- Returns `verified: false` for invalid codes (not an error)
+- One-time verification - secret moves from temporary to permanent storage
+- Required step before MFA is fully enabled on the account
+
+#### GET /api/data/check_mfa_enabled/{user_id}
+
+**Description:** Check whether Multi-Factor Authentication is enabled for a specific user account
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID to check MFA status for |
+
+**Request Example:**
+```bash
+curl -X GET \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  http://localhost:8000/api/data/check_mfa_enabled/123
+```
+
+**Response Example:**
+```json
+{
+  "mfa_enabled": true
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot check MFA status for other users (unless using web key or admin)
+- `404`: Not Found - User not found
+
+**Notes:**
+- Returns true if user has a saved MFA secret in the database
+- Users can only check their own MFA status
+- Web keys and admin users can check any user's MFA status
+- Used by frontend to display MFA setup options appropriately
+- MFA is considered enabled once `save_mfa_secret` has been successfully called
+
+#### POST /api/data/save_mfa_secret
+
+**Description:** Manually save an MFA secret key to enable Multi-Factor Authentication for a user
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+```json
+{
+  "user_id": 123,
+  "mfa_secret": "JBSWY3DPEHPK3PXP"
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID (must match API key owner) |
+| `mfa_secret` | string | Yes | Base32-encoded TOTP secret key |
+
+**Request Example:**
+```bash
+curl -X POST \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id":123,"mfa_secret":"JBSWY3DPEHPK3PXP"}' \
+  http://localhost:8000/api/data/save_mfa_secret
+```
+
+**Response Example:**
+```json
+{
+  "success": true
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot save MFA secrets for other users (unless using web key)
+- `404`: Not Found - User not found
+- `500`: Internal Server Error - Database update failed
+
+**Notes:**
+- Permanently stores MFA secret in user's database record
+- Usually called automatically by `verify_temp_mfa` after successful verification
+- Can be used to manually configure MFA if importing from another system
+- Overwrites any existing MFA secret for the user
+- User can only save MFA secrets for themselves (web keys can save for any user)
+- Secret should be Base32-encoded TOTP-compatible string
+
+#### POST /api/data/verify_mfa
+
+**Description:** Verify a Multi-Factor Authentication code for an already-configured user during login or sensitive operations
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+```json
+{
+  "user_id": 123,
+  "mfa_code": "123456"
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID (must match API key owner) |
+| `mfa_code` | string | Yes | 6-digit TOTP code from authenticator app |
+
+**Request Example:**
+```bash
+curl -X POST \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id":123,"mfa_code":"123456"}' \
+  http://localhost:8000/api/data/verify_mfa
+```
+
+**Response Example:**
+```json
+{
+  "valid": true
+}
+```
+
+**Error Response Example:**
+```json
+{
+  "valid": false
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot verify MFA codes for other users
+- `404`: Not Found - User not found or MFA not enabled
+- `500`: Internal Server Error - TOTP verification failed
+
+**Notes:**
+- Used for ongoing MFA verification after initial setup is complete
+- Requires user to already have MFA enabled (saved secret exists)
+- Validates 6-digit TOTP code against stored secret using current time
+- Returns `valid: false` for incorrect codes (not an error response)
+- Supports time window tolerance for minor clock synchronization issues
+- User can only verify their own MFA codes
+- Part of the complete MFA authentication flow for sensitive operations
+
+#### DELETE /api/data/delete_mfa
+
+**Description:** Remove Multi-Factor Authentication from a user account by deleting their saved MFA secret
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Parameters:** None (uses authenticated user's ID from API key)
+
+**Request Example:**
+```bash
+curl -X DELETE \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  http://localhost:8000/api/data/delete_mfa
+```
+
+**Response Example:**
+```json
+{
+  "success": true
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Invalid API key
+- `404`: Not Found - User not found
+- `500`: Internal Server Error - Database update failed
+
+**Notes:**
+- Permanently removes MFA secret from user's database record
+- User can only disable MFA on their own account
+- Sets mfa_secret field to NULL in the Users table
+- Returns success: true even if no MFA was previously enabled
+- After deletion, user will no longer be required to provide MFA codes
+- Does not affect any temporary MFA secrets stored during setup process
+- Recommended to require current password verification before allowing MFA deletion
+
+---
+
+## OPML Import/Export
+
+### Podcast Subscription Management
+
+#### POST /api/data/import_opml
+
+**Description:** Import podcast subscriptions from OPML format with background processing and real-time progress tracking
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+```json
+{
+  "user_id": 123,
+  "podcasts": [
+    "https://feeds.example.com/podcast1.xml",
+    "https://feeds.example.com/podcast2.xml",
+    "https://feeds.example.com/podcast3.xml"
+  ]
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID (must match API key owner) |
+| `podcasts` | array[string] | Yes | List of podcast RSS feed URLs to import |
+
+**Request Example:**
+```bash
+curl -X POST \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": 123,
+    "podcasts": [
+      "https://feeds.example.com/tech-podcast.xml",
+      "https://feeds.example.com/news-show.xml"
+    ]
+  }' \
+  http://localhost:8000/api/data/import_opml
+```
+
+**Response Example:**
+```json
+{
+  "success": true,
+  "message": "Import process started",
+  "task_id": "opml_import_123_1703527800"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot import podcasts for other users
+- `500`: Internal Server Error - Task creation or background processing failed
+
+**Notes:**
+- Processes imports asynchronously in background to handle large OPML files
+- Creates a task manager entry for tracking overall import status
+- Stores progress in Redis with 1-hour timeout for real-time updates
+- Each podcast URL is individually processed with robust error handling
+- Continues processing remaining podcasts even if some feeds fail
+- Updates progress after each podcast attempt (successful or failed)
+- Automatically extracts podcast metadata from RSS feeds
+- Duplicate podcasts are handled gracefully by database constraints
+- Task completion triggers cleanup of progress tracking data
+- Use `/api/data/import_progress/{user_id}` to monitor real-time progress
+
+#### GET /api/data/import_progress/{user_id}
+
+**Description:** Get real-time progress updates for ongoing OPML import operations
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID (must match API key owner) |
+
+**Request Example:**
+```bash
+curl -X GET \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  http://localhost:8000/api/data/import_progress/123
+```
+
+**Response Example (Import in progress):**
+```json
+{
+  "current": 5,
+  "total": 12,
+  "current_podcast": "https://feeds.example.com/tech-podcast.xml"
+}
+```
+
+**Response Example (Import completed/not running):**
+```json
+{
+  "current": 0,
+  "total": 0,
+  "current_podcast": ""
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot check import progress for other users
+- `500`: Internal Server Error - Redis connection failed
+
+**Notes:**
+- Returns live progress data stored in Redis during active imports
+- Progress is updated after each podcast feed is processed
+- `current` indicates number of podcasts processed so far
+- `total` shows the complete number of podcasts in the import
+- `current_podcast` displays the URL currently being processed
+- Returns zeros when no import is active or after completion
+- Progress data expires from Redis after 1 hour automatically
+- Designed for polling by frontend applications to show progress bars
+- User can only check their own import progress for privacy
+- Does not distinguish between successful and failed podcast imports in count
+
+#### POST /api/data/backup_user
+
+**Description:** Export user's podcast subscriptions to OPML format for backup or migration purposes
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+```json
+{
+  "user_id": 123
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID (must match API key owner) |
+
+**Request Example:**
+```bash
+curl -X POST \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": 123}' \
+  http://localhost:8000/api/data/backup_user
+```
+
+**Response Example:**
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<opml version="2.0">
+  <head>
+    <title>Podcast Subscriptions</title>
+  </head>
+  <body>
+    <outline text="Tech Talk Daily" title="Tech Talk Daily" type="rss" xmlUrl="https://feeds.example.com/tech-talk.xml" />
+    <outline text="Morning News Podcast" title="Morning News Podcast" type="rss" xmlUrl="https://feeds.example.com/morning-news.xml" />
+    <outline text="History Stories" title="History Stories" type="rss" xmlUrl="https://feeds.example.com/history.xml" />
+  </body>
+</opml>
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot backup data for other users (unless using web key)
+- `404`: Not Found - User not found
+- `500`: Internal Server Error - Database query or OPML generation failed
+
+**Notes:**
+- Generates valid OPML 2.0 format compatible with most podcast applications
+- Includes all podcast subscriptions associated with the user account
+- XML characters in podcast names and URLs are properly escaped
+- Each subscription becomes an `<outline>` element with required attributes
+- `text` and `title` attributes both contain the podcast name
+- `type="rss"` indicates RSS feed format
+- `xmlUrl` contains the original RSS feed URL
+- User can only backup their own data (web keys can backup any user)
+- Returns raw OPML XML content, not JSON-wrapped
+- Output can be directly imported into other podcast applications
+- No episode data is included, only subscription information
+- Podcast order matches database storage order (typically by name)
+
+---
+
+## API Key Management
+
+### Key Creation & Administration
+
+#### POST /api/data/create_api_key
+
+**Description:** Create a new API key for user authentication, with support for both standard API keys and RSS-only keys with podcast filtering
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+```json
+{
+  "user_id": 123,
+  "rssonly": false,
+  "podcast_ids": null
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID (must match API key owner) |
+| `rssonly` | boolean | Yes | If true, creates RSS-only key; if false, creates standard API key |
+| `podcast_ids` | array[integer] | No | List of podcast IDs for RSS key filtering (only used when rssonly=true) |
+
+**Request Example (Standard API Key):**
+```bash
+curl -X POST \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": 123,
+    "rssonly": false,
+    "podcast_ids": null
+  }' \
+  http://localhost:8000/api/data/create_api_key
+```
+
+**Request Example (RSS-Only Key):**
+```bash
+curl -X POST \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": 123,
+    "rssonly": true,
+    "podcast_ids": [456, 789, 101112]
+  }' \
+  http://localhost:8000/api/data/create_api_key
+```
+
+**Response Example (Standard API Key):**
+```json
+{
+  "api_key": "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789AB"
+}
+```
+
+**Response Example (RSS-Only Key):**
+```json
+{
+  "rss_key": "rss_abc123def456789ghi012345jkl678901"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot create API keys for other users (unless using web key)
+- `500`: Internal Server Error - Database key creation failed
+
+**Notes:**
+- Generates 64-character random alphanumeric API keys using secure random generation
+- Standard API keys provide full access to all API endpoints for the user
+- RSS-only keys are limited to RSS feed access with optional podcast filtering
+- User can only create API keys for themselves (web keys can create for any user)
+- Keys are immediately active and stored in database with creation timestamp
+- No practical limit on number of API keys per user
+- API keys do not expire automatically but can be manually deleted
+- RSS keys with podcast_ids filter access to only specified podcasts
+
+#### DELETE /api/data/delete_api_key
+
+**Description:** Delete an API key with comprehensive safety checks to prevent account lockouts and system disruption
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+```json
+{
+  "api_id": "42",
+  "user_id": "123"
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `api_id` | string | Yes | API key ID to delete (as string, will be parsed to integer) |
+| `user_id` | string | Yes | User ID (provided but not used for authorization) |
+
+**Request Example:**
+```bash
+curl -X DELETE \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "api_id": "42",
+    "user_id": "123"
+  }' \
+  http://localhost:8000/api/data/delete_api_key
+```
+
+**Response Example:**
+```json
+{
+  "detail": "API key deleted."
+}
+```
+
+**Error Responses:**
+- `400`: Bad Request - Invalid api_id format (not a valid integer)
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Multiple authorization failure scenarios (see notes)
+- `404`: Not Found - API key not found
+- `500`: Internal Server Error - Database deletion failed
+
+**Error Response Examples:**
+```json
+{
+  "success": false,
+  "message": "You are not authorized to access or remove other users api-keys."
+}
+```
+
+```json
+{
+  "success": false,
+  "message": "You cannot delete the API key that is currently in use."
+}
+```
+
+```json
+{
+  "success": false,
+  "message": "Cannot delete your final API key - you must have at least one key to maintain access."
+}
+```
+
+**Notes:**
+- **Authorization Logic**: Admin users can delete any key except background task keys (user_id=1), regular users can only delete their own keys
+- **Self-Deletion Protection**: Cannot delete the API key currently being used for the request
+- **Background Task Protection**: Keys belonging to user_id=1 (background tasks) cannot be deleted by anyone
+- **Account Lockout Prevention**: Users must retain at least one API key to maintain system access
+- **Admin Safety**: Admins cannot delete another user's final API key to prevent lockouts
+- **Database Consistency**: Performs multiple validation queries before deletion
+- **Audit Logging**: Debug logging tracks deletion attempts with user and ownership details
+- User_id parameter in request body is not used for authorization (determined by API key)
+
+#### GET /api/data/get_api_info/{user_id}
+
+**Description:** Retrieve comprehensive API key information for a user, with admin users seeing all keys and regular users seeing only their own
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID to get API key information for |
+
+**Request Example:**
+```bash
+curl -X GET \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  http://localhost:8000/api/data/get_api_info/123
+```
+
+**Response Example (Regular User):**
+```json
+{
+  "api_info": [
+    {
+      "apikeyid": 42,
+      "userid": 123,
+      "username": "johndoe",
+      "lastfourdigits": "AB12",
+      "created": "2023-11-15 14:30:00",
+      "podcastids": []
+    },
+    {
+      "apikeyid": 43,
+      "userid": 123,
+      "username": "johndoe",
+      "lastfourdigits": "CD34",
+      "created": "2023-11-20 09:15:00",
+      "podcastids": [456, 789]
+    }
+  ]
+}
+```
+
+**Response Example (Admin User - All Keys):**
+```json
+{
+  "api_info": [
+    {
+      "apikeyid": 41,
+      "userid": 1,
+      "username": "background_tasks",
+      "lastfourdigits": "SYS1",
+      "created": "2023-01-01 00:00:00",
+      "podcastids": []
+    },
+    {
+      "apikeyid": 42,
+      "userid": 123,
+      "username": "johndoe",
+      "lastfourdigits": "AB12",
+      "created": "2023-11-15 14:30:00",
+      "podcastids": []
+    },
+    {
+      "apikeyid": 44,
+      "userid": 456,
+      "username": "janedoe",
+      "lastfourdigits": "EF56",
+      "created": "2023-11-22 16:45:00",
+      "podcastids": [101, 202, 303]
+    }
+  ]
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot access API key information for other users (unless web key)
+- `404`: Not Found - User not found
+- `500`: Internal Server Error - Database query failed
+
+**Notes:**
+- **Admin Visibility**: Admin users see ALL API keys across the entire system
+- **User Privacy**: Regular users only see their own API keys
+- **Security**: Only last 4 digits of API keys are displayed for security
+- **Web Key Access**: Web keys can access any user's API key information
+- **Comprehensive Data**: Includes key ID, user info, creation timestamp, and associated podcast IDs
+- **Database Join**: Efficiently joins APIKeys and Users tables for username display
+- **RSS Key Support**: Shows podcast IDs for RSS-only keys (empty array for standard keys)
+- **Timestamp Format**: Creation dates returned as readable timestamp strings
+- **System Keys**: Background task keys (user_id=1) visible to admins for system monitoring
+- Authorization determined by API key ownership, not path parameter
+
+---
+
+## Sync Services (GPodder/Nextcloud)
+
+### Nextcloud Integration
+
+#### POST /api/data/initiate_nextcloud_login
+
+**Description:** Start Nextcloud login flow v2 authentication process to obtain login credentials for sync integration
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+```json
+{
+  "user_id": 123,
+  "nextcloud_url": "https://nextcloud.example.com"
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID (must match API key owner) |
+| `nextcloud_url` | string | Yes | Full URL to Nextcloud instance |
+
+**Request Example:**
+```bash
+curl -X POST \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": 123,
+    "nextcloud_url": "https://nextcloud.example.com"
+  }' \
+  http://localhost:8000/api/data/initiate_nextcloud_login
+```
+
+**Response Example:**
+```json
+{
+  "poll": {
+    "token": "abc123def456",
+    "endpoint": "https://nextcloud.example.com/index.php/login/v2/poll"
+  },
+  "login": "https://nextcloud.example.com/index.php/login/v2/flow/abc123def456"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot initiate login for other users
+- `500`: Internal Server Error - Failed to connect to Nextcloud or invalid response
+
+**Notes:**
+- Implements Nextcloud Login Flow v2 for secure authentication
+- Returns polling token for monitoring authentication completion
+- User must visit the login URL to authorize the application
+- Poll endpoint should be used to check for authentication completion
+- Only the user associated with the API key can initiate their own login
+- URL is automatically formatted to use correct Nextcloud login endpoint
+- Raw response from Nextcloud is returned directly to client
+
+#### POST /api/data/add_nextcloud_server
+
+**Description:** Complete Nextcloud server setup by polling for authentication completion and storing credentials
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+```json
+{
+  "user_id": 123,
+  "nextcloud_url": "https://nextcloud.example.com",
+  "token": "abc123def456"
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID (must match API key owner) |
+| `nextcloud_url` | string | Yes | Full URL to Nextcloud instance |
+| `token` | string | Yes | Poll token from initiate_nextcloud_login response |
+
+**Request Example:**
+```bash
+curl -X POST \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": 123,
+    "nextcloud_url": "https://nextcloud.example.com",
+    "token": "abc123def456"
+  }' \
+  http://localhost:8000/api/data/add_nextcloud_server
+```
+
+**Response Example:**
+```json
+{
+  "status": "success",
+  "message": "Nextcloud server added successfully"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot add server for other users
+- `408`: Request Timeout - Authentication polling timed out
+- `500`: Internal Server Error - Failed to complete authentication or store credentials
+
+**Notes:**
+- Clears any existing sync configuration before adding Nextcloud
+- Creates background task for authentication polling process
+- Continuously polls Nextcloud until authentication completes or times out
+- Stores encrypted Nextcloud credentials in user database record
+- Sets sync type to "nextcloud" upon successful completion
+- User must complete web-based authorization before this endpoint succeeds
+- Background task handles all polling logic asynchronously
+- Returns success only after credentials are fully stored and verified
+
+### GPodder Integration
+
+#### POST /api/data/verify_gpodder_auth
+
+**Description:** Test GPodder server credentials by attempting authentication against the GPodder API
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+```json
+{
+  "gpodder_url": "https://gpodder.example.com",
+  "gpodder_username": "username",
+  "gpodder_password": "password"
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `gpodder_url` | string | Yes | Base URL of GPodder server |
+| `gpodder_username` | string | Yes | GPodder username for authentication |
+| `gpodder_password` | string | Yes | GPodder password for authentication |
+
+**Request Example:**
+```bash
+curl -X POST \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "gpodder_url": "https://gpodder.example.com",
+    "gpodder_username": "myuser",
+    "gpodder_password": "mypass"
+  }' \
+  http://localhost:8000/api/data/verify_gpodder_auth
+```
+
+**Response Example:**
+```json
+{
+  "status": "success",
+  "message": "Logged in!"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key or GPodder authentication failed
+- `500`: Internal Server Error - Failed to connect to GPodder server
+
+**Notes:**
+- Makes direct HTTP call to GPodder login endpoint for verification
+- Uses GPodder API v2 authentication with basic auth
+- Does not store credentials - only tests authentication
+- Authentication URL format: `{gpodder_url}/api/2/auth/{username}/login.json`
+- Password is sent securely using HTTP basic authentication
+- Use this endpoint before `add_gpodder_server` to verify credentials
+- Does not require specific user authorization - any authenticated user can test credentials
+
+#### POST /api/data/add_gpodder_server
+
+**Description:** Configure GPodder sync by storing encrypted server credentials and enabling synchronization
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+```json
+{
+  "gpodder_url": "https://gpodder.example.com",
+  "gpodder_username": "username",
+  "gpodder_password": "password"
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `gpodder_url` | string | Yes | Base URL of GPodder server |
+| `gpodder_username` | string | Yes | GPodder username |
+| `gpodder_password` | string | Yes | GPodder password (will be encrypted) |
+
+**Request Example:**
+```bash
+curl -X POST \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "gpodder_url": "https://gpodder.example.com",
+    "gpodder_username": "myuser",
+    "gpodder_password": "mypass"
+  }' \
+  http://localhost:8000/api/data/add_gpodder_server
+```
+
+**Response Example:**
+```json
+{
+  "status": "success"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `500`: Internal Server Error - Failed to encrypt password or store credentials
+
+**Notes:**
+- Encrypts password before storing in database for security
+- Sets sync type to "external" for external GPodder servers
+- User can only configure sync for their own account
+- Overwrites any existing GPodder configuration for the user
+- Does not verify credentials - use `verify_gpodder_auth` first
+- Stored credentials enable automatic synchronization processes
+- Password encryption uses system encryption keys for security
+
+### Sync Configuration Management
+
+#### GET /api/data/get_gpodder_settings/{user_id}
+
+**Description:** Retrieve GPodder synchronization settings and configuration for a specific user
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID to get settings for |
+
+**Request Example:**
+```bash
+curl -X GET \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  http://localhost:8000/api/data/get_gpodder_settings/123
+```
+
+**Response Example:**
+```json
+{
+  "data": {
+    "gpodder_url": "https://gpodder.example.com",
+    "gpodder_login": "myuser",
+    "pod_sync_type": "external"
+  }
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot access settings for other users (unless web key)
+- `404`: Not Found - GPodder settings not found for user
+
+**Notes:**
+- Returns sync configuration including server URL and username
+- Password/token information is never included in response for security
+- Web keys can access any user's settings for administrative purposes
+- Regular users can only access their own settings
+- Includes sync type (None, external, internal, nextcloud, both)
+- Empty or null values indicate unconfigured settings
+- Used by frontend to display current sync configuration
+
+#### GET /api/data/check_gpodder_settings/{user_id}
+
+**Description:** Check if GPodder synchronization is configured for a user (boolean check)
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Path Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID to check settings for |
+
+**Request Example:**
+```bash
+curl -X GET \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  http://localhost:8000/api/data/check_gpodder_settings/123
+```
+
+**Response Example:**
+```json
+{
+  "data": true
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot check settings for other users (unless web key)
+
+**Notes:**
+- Returns boolean indicating if GPodder sync is configured
+- Checks for presence of both GPodder URL and login name
+- Does not verify if credentials are still valid
+- Web keys can check any user's configuration status
+- Regular users can only check their own settings
+- Useful for UI conditional rendering of sync features
+- Returns false if either URL or username is missing
+
+#### DELETE /api/data/remove_podcast_sync
+
+**Description:** Remove all podcast synchronization settings and disable sync for a user
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+```json
+{
+  "user_id": 123
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `user_id` | integer | Yes | User ID (must match API key owner) |
+
+**Request Example:**
+```bash
+curl -X DELETE \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{"user_id": 123}' \
+  http://localhost:8000/api/data/remove_podcast_sync
+```
+
+**Response Example:**
+```json
+{
+  "status": "success"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `403`: Forbidden - Cannot remove sync for other users
+- `500`: Internal Server Error - Database update failed
+
+**Notes:**
+- Clears all sync-related fields: URL, username, token, and sync type
+- Sets sync type to "None" to disable all synchronization
+- User can only remove their own sync configuration
+- Affects both GPodder and Nextcloud sync settings
+- Does not affect existing podcast subscriptions or episode data
+- Stops all automatic synchronization processes
+- Irreversible action - user must reconfigure sync from scratch
+
+### Sync Status & Control
+
+#### GET /api/data/gpodder/status
+
+**Description:** Get comprehensive GPodder synchronization status and statistics for the authenticated user
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  http://localhost:8000/api/data/gpodder/status
+```
+
+**Response Example:**
+```json
+{
+  "server_url": "https://gpodder.example.com",
+  "sync_type": "external",
+  "sync_enabled": true,
+  "server_devices": [
+    {"device_id": "device1", "name": "Phone"},
+    {"device_id": "device2", "name": "Desktop"}
+  ],
+  "total_devices": 2,
+  "server_subscriptions": [
+    {"url": "https://feeds.example.com/podcast1.xml"},
+    {"url": "https://feeds.example.com/podcast2.xml"}
+  ],
+  "total_subscriptions": 2,
+  "recent_episode_actions": [
+    {"action": "play", "episode": "Episode 1", "timestamp": "2023-11-15T14:30:00Z"}
+  ],
+  "total_episode_actions": 1,
+  "connection_status": "All endpoints working",
+  "last_sync_timestamp": "2023-11-15 14:25:00 UTC"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `500`: Internal Server Error - Failed to retrieve sync status
+
+**Notes:**
+- Only authenticated user can access their own sync status
+- Returns comprehensive sync statistics including device and subscription counts
+- Connection status indicates API endpoint health
+- Episode actions show recent synchronization activity
+- Empty arrays returned when no sync is configured (sync_type: "None")
+- Last sync timestamp shows when synchronization last completed
+- Used for sync diagnostics and monitoring dashboard
+- Automatically determined from API key - no user_id parameter needed
+
+#### POST /api/data/gpodder/toggle
+
+**Description:** Toggle GPodder synchronization on/off for the authenticated user
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body:**
+```json
+{
+  "enabled": true
+}
+```
+
+**Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `enabled` | boolean | Yes | Whether to enable (true) or disable (false) sync |
+
+**Request Example:**
+```bash
+curl -X POST \
+  -H "Api-Key: pk_1234567890abcdef1234567890abcdef" \
+  -H "Content-Type: application/json" \
+  -d '{"enabled": false}' \
+  http://localhost:8000/api/data/gpodder/toggle
+```
+
+**Response Example:**
+```json
+{
+  "status": "success",
+  "sync_enabled": false,
+  "sync_type": "None"
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid API key
+- `500`: Internal Server Error - Failed to update sync status
+
+**Notes:**
+- Toggles between current sync type and "None" without losing configuration
+- When enabling, restores previous sync type or defaults to "external"
+- When disabling, sets sync type to "None" but preserves credentials
+- Only affects the authenticated user's sync settings
+- Does not clear stored credentials - only toggles active synchronization
+- Useful for temporarily disabling sync without full reconfiguration
+- Returns current sync status after toggle operation
+
+---
+
+## Custom Podcast Management
+
+Administrative functionality for adding custom podcast feeds with optional authentication credentials.
+
+### POST /api/data/add_custom_podcast
+
+**Description:** Add a custom podcast feed with optional HTTP basic authentication credentials
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| feed_url | string | Yes | RSS/Atom feed URL for the podcast |
+| user_id | integer | Yes | User ID to add the podcast for |
+| username | string | No | HTTP basic auth username (if feed requires auth) |
+| password | string | No | HTTP basic auth password (if feed requires auth) |
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "feed_url": "https://example.com/podcast/feed.xml",
+       "user_id": 123,
+       "username": "feeduser",
+       "password": "feedpass"
+     }' \
+     http://localhost:8000/api/data/add_custom_podcast
+```
+
+**Response Example (Success):**
+```json
+{
+  "status": "success",
+  "podcast_id": 456,
+  "message": "Custom podcast added successfully"
+}
+```
+
+**Error Responses:**
+- `400`: Bad Request - Invalid feed URL or malformed request
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required or insufficient privileges
+- `404`: Not Found - Feed URL not accessible or user not found
+- `500`: Internal Server Error - Database error or feed parsing failed
+
+**Implementation Notes:**
+- **Admin Only**: Requires admin API key privileges for security
+- **Feed Parsing**: Uses feed-rs library to parse RSS/Atom feeds
+- **HTTP Authentication**: Supports basic auth for password-protected feeds
+- **Default Cutoff**: Sets 30-episode retention limit (matches Python default)
+- **User Assignment**: Adds podcast to specified user's subscription list
+- **Metadata Extraction**: Automatically extracts title, description, artwork from feed
+- **Feed Validation**: Validates feed format and accessibility before adding
+- **Python Compatibility**: Matches Python add_custom_podcast endpoint functionality
+
+---
+
+## OIDC Provider Management
+
+Administrative functionality for managing OpenID Connect identity providers for federated authentication.
+
+### POST /api/data/add_oidc_provider
+
+**Description:** Add a new OpenID Connect identity provider for federated authentication
+
+**Authentication:** 👑 Admin API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+-H "Content-Type: application/json"
+```
+
+**Request Body Parameters:**
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| provider_name | string | Yes | Unique name identifier for the provider |
+| client_id | string | Yes | OAuth2/OIDC client ID from provider |
+| client_secret | string | Yes | OAuth2/OIDC client secret from provider |
+| authorization_url | string | Yes | Provider's authorization endpoint URL |
+| token_url | string | Yes | Provider's token exchange endpoint URL |
+| user_info_url | string | Yes | Provider's user information endpoint URL |
+| button_text | string | Yes | Display text for login button |
+| scope | string | Yes | OAuth2 scopes to request (space-separated) |
+| button_color | string | Yes | Hex color code for login button background |
+| button_text_color | string | Yes | Hex color code for login button text |
+| icon_svg | string | No | SVG icon for provider button (optional) |
+| name_claim | string | No | JWT claim for user's display name (default: "name") |
+| email_claim | string | No | JWT claim for user's email address (default: "email") |
+| username_claim | string | No | JWT claim for user's username (default: "username") |
+
+**Request Example:**
+```bash
+curl -X POST -H "Api-Key: YOUR_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "provider_name": "google",
+       "client_id": "your-google-client-id.apps.googleusercontent.com",
+       "client_secret": "your-google-client-secret",
+       "authorization_url": "https://accounts.google.com/o/oauth2/v2/auth",
+       "token_url": "https://oauth2.googleapis.com/token",
+       "user_info_url": "https://www.googleapis.com/oauth2/v2/userinfo",
+       "button_text": "Sign in with Google",
+       "scope": "openid email profile",
+       "button_color": "#4285f4",
+       "button_text_color": "#ffffff",
+       "icon_svg": "<svg>...</svg>",
+       "name_claim": "name",
+       "email_claim": "email",
+       "username_claim": "email"
+     }' \
+     http://localhost:8000/api/data/add_oidc_provider
+```
+
+**Response Example (Success):**
+```json
+{
+  "status": "success",
+  "provider_id": 789,
+  "message": "OIDC provider added successfully"
+}
+```
+
+**Error Responses:**
+- `400`: Bad Request - Invalid URLs or malformed provider configuration
+- `401`: Unauthorized - Invalid or missing API key
+- `403`: Forbidden - Admin access required
+- `409`: Conflict - Provider name already exists
+- `500`: Internal Server Error - Database error or provider validation failed
+
+**Implementation Notes:**
+- **Admin Only**: Requires admin API key privileges for security
+- **Provider Validation**: Validates all URLs are properly formatted
+- **Secure Storage**: Client secrets are encrypted in database storage
+- **JWT Claims**: Configurable claim mapping for user attributes
+- **Visual Customization**: Supports custom button colors and SVG icons
+- **Scope Configuration**: Flexible OAuth2 scope specification
+- **Provider Testing**: Validates provider endpoints during addition
+- **Python Compatibility**: Matches Python add_oidc_provider endpoint functionality
+
+### GET /api/data/list_oidc_providers
+
+**Description:** List all configured OpenID Connect identity providers
+
+**Authentication:** 🔐 User API Key
+
+**Request Headers:**
+```bash
+-H "Api-Key: YOUR_API_KEY"
+```
+
+**Request Example:**
+```bash
+curl -X GET -H "Api-Key: YOUR_API_KEY" \
+     http://localhost:8000/api/data/list_oidc_providers
+```
+
+**Response Example (Success):**
+```json
+{
+  "providers": [
+    {
+      "id": 1,
+      "provider_name": "google",
+      "client_id": "your-google-client-id.apps.googleusercontent.com",
+      "authorization_url": "https://accounts.google.com/o/oauth2/v2/auth",
+      "token_url": "https://oauth2.googleapis.com/token",
+      "user_info_url": "https://www.googleapis.com/oauth2/v2/userinfo",
+      "button_text": "Sign in with Google",
+      "scope": "openid email profile",
+      "button_color": "#4285f4",
+      "button_text_color": "#ffffff",
+      "icon_svg": "<svg>...</svg>",
+      "name_claim": "name",
+      "email_claim": "email",
+      "username_claim": "email"
+    },
+    {
+      "id": 2,
+      "provider_name": "microsoft",
+      "client_id": "your-microsoft-client-id",
+      "authorization_url": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+      "token_url": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+      "user_info_url": "https://graph.microsoft.com/v1.0/me",
+      "button_text": "Sign in with Microsoft",
+      "scope": "openid email profile",
+      "button_color": "#0078d4",
+      "button_text_color": "#ffffff",
+      "icon_svg": null,
+      "name_claim": "displayName",
+      "email_claim": "mail",
+      "username_claim": "userPrincipalName"
+    }
+  ]
+}
+```
+
+**Error Responses:**
+- `401`: Unauthorized - Invalid or missing API key
+- `500`: Internal Server Error - Database error retrieving providers
+
+**Implementation Notes:**
+- **Public Listing**: Available to all authenticated users for login form generation
+- **No Secrets**: Client secrets are excluded from response for security
+- **Complete Configuration**: Returns all non-sensitive provider configuration
+- **Frontend Integration**: Used by login forms to display available providers
+- **Provider Status**: Only returns active/enabled providers
+- **Python Compatibility**: Matches Python list_oidc_providers endpoint functionality

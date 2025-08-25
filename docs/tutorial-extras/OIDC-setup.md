@@ -1,4 +1,4 @@
-## OIDC Setup
+# OIDC Setup
 
 You can now setup OIDC logins in Pinepods to use either your own self-hosted OIDC provider or one of the other large cloud hosted providers such as Github, Google, or Azure. Anything that follows the OIDC standard (and also Github even though they don't follow the standard) will work just fine. Below is instructions for setting up different types of providers
 

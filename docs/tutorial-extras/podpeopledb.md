@@ -1,4 +1,4 @@
-## PodPeopleDB Integration
+# PodPeopleDB Integration
 
 Pinepods integrates with the PodPeopleDB in order to expand host tracking between podcasts. This is a community project that listeners of the given podcasts submit host information to. It's intended as a suppliment for Podcasts that don't currently support the Person Podcasting 2.0 tag. Entering host information for a given podcast will allow others to see these hosts as well. Because of this, maintaining integrety for hosts is vital. There's a simple approval process for submitted hosts to ensure submitteed hosts are actually corrrect and to prevent abuse.
 

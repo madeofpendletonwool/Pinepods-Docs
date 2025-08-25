@@ -5344,7 +5344,7 @@ curl -X GET \
 
 ---
 
-#### POST /api/data/person/subscribe/{user_id}/{person_id}
+#### POST /api/data/person/subscribe/*user_id*/*person_id*
 
 **Description:** Subscribe to a specific person/host to track episodes where they appear
 
@@ -5411,7 +5411,7 @@ curl -X POST \
 
 ---
 
-#### DELETE /api/data/person/unsubscribe/{user_id}/{person_id}
+#### DELETE /api/data/person/unsubscribe/*user_id*/*person_id*
 
 **Description:** Unsubscribe from a person/host to stop tracking their episodes
 
@@ -5480,7 +5480,7 @@ curl -X DELETE \
 
 ---
 
-#### GET /api/data/person/subscriptions/{user_id}
+#### GET /api/data/person/subscriptions/*user_id*
 
 **Description:** Get all person subscriptions for a user
 
@@ -5541,7 +5541,7 @@ curl -X GET \
 
 ---
 
-#### GET /api/data/person/episodes/{user_id}/{person_id}
+#### GET /api/data/person/episodes/*user_id*/*person_id*
 
 **Description:** Get episodes featuring a specific person/host that the user has subscribed to
 

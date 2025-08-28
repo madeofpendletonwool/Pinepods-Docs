@@ -7,26 +7,9 @@ Pinepods provides a comprehensive sign-in experience that includes user authenti
 The Pinepods sign-in system consists of several key components:
 - **User Authentication**: Secure login with username and password
 - **Multi-Factor Authentication**: Optional TOTP-based security enhancement
-- **Password Reset**: Self-service password recovery via email
+- **Password Reset**: Self-service password recovery via email as long as you setup email options
 - **Start Page Configuration**: Customizable landing page after login
 - **Session Management**: Persistent login sessions across devices
-
-## Accessing the Login Page
-
-### Login Interface
-The Pinepods login page provides access to your podcast library and personal settings:
-
-1. **Server Connection**: Navigate to your Pinepods server URL
-2. **Login Form**: Enter your credentials in the provided fields
-3. **Authentication Options**: Access additional security and recovery features
-4. **Direct Access**: Bookmark the login page for quick access
-
-### Login Page Components
-- **Username Field**: Enter your Pinepods username
-- **Password Field**: Enter your account password
-- **Sign In Button**: Submit credentials for authentication
-- **Forgot Password Link**: Access password recovery options
-- **Create New User**: Self-registration option (if enabled by administrators)
 
 ## Standard Login Process
 
@@ -48,7 +31,6 @@ The Pinepods login page provides access to your podcast library and personal set
 1. **Session Creation**: Pinepods establishes your user session
 2. **Preferences Loading**: System loads your personal settings and preferences
 3. **Start Page Navigation**: Automatic redirect to your configured start page
-4. **Data Synchronization**: Recent activity and subscriptions are updated
 
 ## Multi-Factor Authentication (MFA)
 
@@ -76,7 +58,7 @@ If you've enabled MFA on your account, the login process includes an additional 
 ## Password Recovery
 
 ### Forgot Password Process
-If you've forgotten your password, Pinepods provides a self-service recovery option:
+If you've forgotten your password, Pinepods provides a self-service recovery option as long as you set it up in the admin area of settings:
 
 #### Initiating Password Reset
 1. **Forgot Password Link**: Click "Forgot Password?" on the login page
@@ -112,18 +94,16 @@ If enabled by administrators, new users can create their own accounts:
    - **Full Name**: Enter your display name
 3. **Account Validation**: System verifies the provided information
 4. **Account Creation**: Successful validation creates your new account
-5. **Automatic Login**: You're automatically logged in after account creation
 
 #### Self-Registration Requirements
 - **Administrator Permission**: Feature must be enabled by server administrators
 - **Unique Username**: Chosen username must not already exist
 - **Valid Email**: Email address must be properly formatted and accessible
-- **Password Security**: Password must meet any configured security requirements
 
 ## Start Page Configuration
 
 ### Customizing Your Landing Page
-Pinepods allows you to configure which page you see immediately after logging in:
+Pinepods allows you to configure which page you see immediately after logging in in the settings of your account:
 
 #### Available Start Page Options
 - **Home**: Dashboard view with recent activity and quick access features
@@ -140,41 +120,14 @@ Pinepods allows you to configure which page you see immediately after logging in
 4. **Save Settings**: Apply your start page preference
 5. **Next Login**: Your choice takes effect on subsequent logins
 
-### Start Page Benefits
-- **Workflow Optimization**: Start with the page most relevant to your listening habits
-- **Quick Access**: Immediate access to your most-used features
-- **Personalization**: Customize Pinepods to match your podcast consumption patterns
-- **Efficiency**: Reduce clicks and navigation to reach your primary content
-
 ## Session Management
 
 ### Login Session Features
 - **Persistent Sessions**: Stay logged in across browser sessions
 - **Multiple Devices**: Use the same account on different devices simultaneously
-- **Session Security**: Automatic logout after extended inactivity (if configured)
 - **Cross-Platform**: Sessions work across web, mobile, and desktop clients
 
-### Security Considerations
-- **Shared Devices**: Always log out when using public or shared computers
-- **Session Monitoring**: Administrators may monitor login sessions for security
-- **Device Management**: Keep track of which devices have access to your account
-- **Regular Password Updates**: Periodically update your password for security
-
 ## Troubleshooting Login Issues
-
-### Common Login Problems
-
-#### Invalid Credentials
-- **Username Verification**: Confirm your username is spelled correctly
-- **Password Check**: Verify your password, including capitalization
-- **Account Status**: Ensure your account hasn't been disabled
-- **Contact Administrator**: Reach out for help if credentials are definitely correct
-
-#### Account Lockout
-- **Multiple Failed Attempts**: Too many incorrect login attempts may lock your account
-- **Wait Period**: Some systems implement temporary lockouts for security
-- **Administrator Assistance**: Contact your Pinepods administrator for account unlocking
-- **Password Reset**: Try the password reset process if you're unsure of your credentials
 
 #### Email Issues (Password Reset)
 - **Email Configuration**: Verify your account has the correct email address
@@ -195,34 +148,3 @@ Pinepods allows you to configure which page you see immediately after logging in
 - **JavaScript**: Ensure JavaScript is enabled in your browser
 - **Cookies**: Enable cookies for the Pinepods domain
 - **Cache Issues**: Clear browser cache if experiencing persistent problems
-
-#### Network Connectivity
-- **Server Access**: Verify you can reach the Pinepods server
-- **Firewall Issues**: Check for corporate or network firewalls blocking access
-- **VPN Considerations**: Some VPNs may affect connectivity
-- **SSL/HTTPS**: Ensure proper SSL certificate configuration
-
-## Best Practices
-
-### Account Security
-1. **Strong Passwords**: Use complex, unique passwords for your Pinepods account
-2. **Enable MFA**: Add multi-factor authentication for enhanced security
-3. **Regular Updates**: Periodically update your password
-4. **Secure Access**: Only log in from trusted devices and networks
-5. **Logout Practice**: Always log out from shared or public computers
-
-### Efficient Usage
-1. **Start Page Optimization**: Configure your start page for optimal workflow
-2. **Browser Bookmarks**: Bookmark your Pinepods server for quick access
-3. **Credential Management**: Use a password manager for secure credential storage
-4. **Regular Access**: Log in regularly to stay current with new episodes and updates
-5. **Mobile Integration**: Use the mobile app for on-the-go access
-
-### Troubleshooting Preparation
-1. **Contact Information**: Know how to reach your Pinepods administrator
-2. **Email Access**: Ensure you have access to your account's email address
-3. **MFA Backup**: Keep backup authenticator methods or recovery codes
-4. **Documentation**: Familiarize yourself with your organization's Pinepods policies
-5. **Alternative Access**: Know if alternative access methods are available
-
-The Pinepods sign-in system is designed to provide secure, efficient access to your podcast library while offering the flexibility to customize your login experience and landing page preferences to match your listening workflow.

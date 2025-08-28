@@ -10,29 +10,20 @@ Pinepods organizes your podcast content into five main browsing areas, each serv
 - **Podcasts**: Library view of all your subscribed podcasts
 - **Queue**: Episodes you've queued up for listening
 - **Saved**: Episodes you've bookmarked for later
-- **Server Downloads**: Episodes downloaded to the server for offline access
+- **Server Downloads**: Episodes downloaded to the server for archival
 
 ## Feed Page
 
 ### Purpose
-The Feed page serves as your main content discovery hub, displaying the most recent episodes from all your subscribed podcasts in chronological order.
+The Feed page serves as your main content discovery hub, displaying the most recent episodes from all your subscribed podcasts in chronological order from the last 30 days.
 
 ### Content Display
 - **Recent Episodes**: Shows newest episodes across all subscriptions
 - **Mixed Content**: Combines episodes from all your podcasts in one timeline
 - **Publication Order**: Episodes are sorted by their original publication date
-- **Episode Status**: Visual indicators show completed, saved, queued, and downloaded episodes
-
-### Key Features
-- **Unified Timeline**: See all new content in one place
-- **Episode Actions**: Play, save, queue, or download episodes directly from the feed
-- **Status Tracking**: Quickly identify which episodes you've already interacted with
-- **Infinite Scroll**: Seamlessly browse through older episodes
-- **Quick Access**: Jump directly to episode playback or detailed views
 
 ### Navigation Tips
 - Use the Feed page as your starting point for discovering new content
-- Look for visual indicators to identify episode status at a glance
 - Scroll through to find older episodes you might have missed
 - Use episode actions to organize content for later listening
 
@@ -44,12 +35,11 @@ The Podcasts page provides a library view of all your subscribed podcasts, allow
 ### Display Options
 - **Grid Layout**: Visual grid showing podcast artwork and titles
 - **List Layout**: Compact list view with podcast details
-- **Podcast Information**: Title, description, and subscription status
+- **Podcast Information**: Title and description
 - **Episode Counts**: See how many episodes are available for each podcast
 
 ### Management Features
 - **Podcast Removal**: Unsubscribe from podcasts you no longer want
-- **Podcast Details**: Click on any podcast to view its complete episode list
 - **Search and Filter**: Find specific podcasts in your library
 - **Organization Tools**: Sort and categorize your podcast subscriptions
 
@@ -114,9 +104,8 @@ The Saved page contains episodes you've bookmarked for future listening, serving
 The Server Downloads page shows episodes that have been downloaded to the Pinepods server for offline access and improved performance.
 
 ### Download Features
-- **Offline Access**: Episodes available even when source feeds are unavailable
 - **Faster Loading**: Downloaded episodes load more quickly
-- **Server Storage**: Files stored on your Pinepods server
+- **Server Storage/Archival**: Files stored on your Pinepods server
 - **Bandwidth Savings**: Reduced external bandwidth usage for repeated listening
 
 ### Download Management
@@ -129,7 +118,6 @@ The Server Downloads page shows episodes that have been downloaded to the Pinepo
 - **Podcast Grouping**: Episodes grouped by their parent podcast
 - **Search and Filter**: Find specific downloaded content
 - **Completion Status**: Track listening progress for downloaded episodes
-- **Storage Optimization**: Manage server storage usage efficiently
 
 ## Universal Features Across All Pages
 
@@ -137,7 +125,6 @@ The Server Downloads page shows episodes that have been downloaded to the Pinepo
 - **Search Bar**: Top-right search functionality available on all pages
 - **App Drawer**: Side navigation menu for quick page switching
 - **Audio Player**: Persistent audio controls at the bottom of all pages
-- **Scroll to Top**: Quick return to page top on long lists
 
 ### Episode Actions
 Available on all browsing pages:
@@ -151,35 +138,12 @@ Available on all browsing pages:
 Consistent across all pages:
 - **Completion Status**: Visual indicators for completed episodes
 - **Progress Bars**: Show partial listening progress
-- **Action States**: Clear indicators for saved, queued, and downloaded episodes
-- **Loading States**: Smooth loading animations and placeholders
 
 ### Responsive Design
 - **Mobile Optimization**: Touch-friendly interfaces on all pages
 - **Desktop Enhancement**: Hover states and larger click targets on desktop
 - **Adaptive Layouts**: Content adjusts to different screen sizes
 - **Gesture Support**: Swipe and touch gestures on mobile devices
-
-## Browsing Best Practices
-
-### Efficient Navigation
-1. **Start with Feed**: Use the Feed page to discover new content daily
-2. **Organize with Queue**: Plan your listening sessions using the Queue
-3. **Bookmark with Saved**: Save interesting episodes for future reference
-4. **Manage with Podcasts**: Use the Podcasts page for subscription management
-5. **Optimize with Downloads**: Download frequently-accessed content
-
-### Content Discovery
-- **Regular Feed Checks**: Check your feed regularly for new episodes
-- **Podcast Exploration**: Browse individual podcasts to discover older episodes
-- **Search Integration**: Use search to find specific content across all pages
-- **Status Tracking**: Pay attention to visual indicators to track your progress
-
-### Organization Strategies
-- **Queue Planning**: Build themed queues for different moods or activities
-- **Saved Collections**: Use saved episodes to create topic-based collections
-- **Download Management**: Download episodes for commutes or areas with poor connectivity
-- **Regular Cleanup**: Periodically review and clean up your saved episodes and queue
 
 ## Integration with Audio Player
 
@@ -190,9 +154,6 @@ Consistent across all pages:
 - **Progress Sync**: Listening progress syncs across all pages and devices
 
 ### Smart Features
-- **Auto-Queue**: Option to automatically queue related episodes
 - **Resume Playback**: Return to exact playback position when switching pages
 - **Background Play**: Continue listening while browsing other content
 - **Cross-Page Actions**: Episode actions work regardless of which page you're viewing
-
-The browsing interface in Pinepods is designed to provide flexible, efficient access to your podcast content while maintaining consistency across different organizational views. Whether you prefer chronological browsing through the Feed, show-specific exploration via Podcasts, or planned listening through Queues and Saved episodes, Pinepods adapts to your listening preferences and habits.

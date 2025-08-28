@@ -58,7 +58,6 @@ For each existing user, administrators can modify:
 
 #### Account Management
 - **Delete User**: Remove user accounts (use with caution)
-- **Status Management**: Enable or disable user accounts
 
 ## Administrative Controls
 
@@ -75,61 +74,3 @@ Administrators can:
 - Administrative actions are logged for security auditing
 - Only existing administrators can modify user permissions
 - Users cannot elevate their own privileges
-
-## User Information Display
-
-The interface provides comprehensive user information including:
-- **User ID**: Internal system identifier
-- **Creation Date**: When the account was established
-- **Last Login**: Recent activity information
-- **Account Status**: Active, inactive, or suspended
-
-## Best Practices
-
-### Account Creation
-- Use strong, unique passwords for all accounts
-- Provide valid email addresses for password recovery
-- Use descriptive full names for easy user identification
-- Grant administrative privileges sparingly
-
-### Account Maintenance  
-- Regularly review user accounts for inactive users
-- Update email addresses when users change contact information
-- Remove accounts for users who no longer need access
-- Monitor administrative privileges and remove when no longer needed
-
-### Security Guidelines
-- Require users to change default passwords on first login
-- Implement regular password change policies
-- Use the Multi-Factor Authentication (MFA) settings for enhanced security
-- Review user permissions periodically
-
-## Error Handling
-
-Common error scenarios and solutions:
-
-### Username Already Exists
-- Try a different username
-- Check if the user already has an account
-
-### Invalid Email Format
-- Ensure email follows standard format (user@domain.com)
-- Check for typos in the email address
-
-### Password Too Short
-- Use passwords with at least 8 characters
-- Consider using a mix of letters, numbers, and special characters
-
-### Permission Denied
-- Ensure you have administrative privileges
-- Contact your system administrator if needed
-
-## Integration with Other Settings
-
-User Settings work in conjunction with:
-- **User Self-Service Settings**: Allowing users to manage their own information
-- **MFA Settings**: Adding additional security layers
-- **Email Settings**: Configuring notification preferences
-- **OIDC Settings**: Single sign-on integration
-
-For more information about these related features, see their respective documentation sections.

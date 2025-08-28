@@ -2,7 +2,7 @@
 
 *Client* in Pinepods refers to an external app that connects to your Pinepods server. The server being hosted via Docker and the client installed generally as an app on your device locally. In fact when you setup Pinepods via docker it technically comes pre-setup with a client. Which is the web version. This page is details on installing clients besides the web version should you choose to. (The mobile apps are HIGHLY recommended if you listen to podcasts on the go)
 
-There's client versions of Pinepods for Linux (Deb, Appimage, Flatpak, AUR, and RPM), Mac, Windows, Android, and iOS. Scroll down for install instructions. 
+There's client versions of Pinepods for Linux (Deb, Appimage, Flatpak, AUR, and RPM), Mac, Windows, Android, and iOS. Scroll down for install instructions.
 
 ### Linux Client Install :computer:
 
@@ -45,7 +45,7 @@ Install from the AUR (Arch User Repository):
 # Using yay
 yay -S pinepods
 
-# Using paru  
+# Using paru
 paru -S pinepods
 
 # Using makepkg (manual)
@@ -60,9 +60,9 @@ makepkg -si
 
 Download and install the DEB package:
 
+Dowmload the latest deb (here)[https://github.com/madeofpendletonwool/PinePods/releases]
+
 ```bash
-# Download the latest DEB package
-wget https://github.com/madeofpendletonwool/PinePods/releases/latest/download/pinepods_amd64.deb
 
 # Install the package
 sudo dpkg -i pinepods_amd64.deb
@@ -78,13 +78,14 @@ pinepods
 
 Download and install the RPM package:
 
+Dowmload the latest rpm (here)[https://github.com/madeofpendletonwool/PinePods/releases]
+
+
 ```bash
-# Fedora/CentOS/RHEL
-wget https://github.com/madeofpendletonwool/PinePods/releases/latest/download/pinepods.rpm
 sudo dnf install ./pinepods.rpm
 
 # openSUSE
-wget https://github.com/madeofpendletonwool/PinePods/releases/latest/download/pinepods.rpm  
+wget https://github.com/madeofpendletonwool/PinePods/releases/latest/download/pinepods.rpm
 sudo zypper install ./pinepods.rpm
 
 # Run Pinepods
@@ -95,9 +96,11 @@ pinepods
 
 Linux Mint supports both DEB packages and Flatpak:
 
+Dowmload the latest deb (here)[https://github.com/madeofpendletonwool/PinePods/releases]
+
+
 ```bash
 # Option 1: DEB package (recommended for Mint)
-wget https://github.com/madeofpendletonwool/PinePods/releases/latest/download/pinepods_amd64.deb
 sudo dpkg -i pinepods_amd64.deb
 sudo apt-get install -f
 
@@ -118,9 +121,10 @@ flatpak install flathub com.gooseberrydevelopment.pinepods
 
 Pop!_OS supports both DEB and Flatpak:
 
+Dowmload the latest deb (here)[https://github.com/madeofpendletonwool/PinePods/releases]
+
+
 ```bash
-# DEB package (native integration)
-wget https://github.com/madeofpendletonwool/PinePods/releases/latest/download/pinepods_amd64.deb
 sudo dpkg -i pinepods_amd64.deb
 
 # Or via Pop!_Shop (search for "Pinepods")
@@ -147,9 +151,10 @@ yay -S pinepods
 
 Perfect for any Linux distribution or when you don't have admin privileges:
 
+Dowmload the latest appimage (here)[https://github.com/madeofpendletonwool/PinePods/releases]
+
+
 ```bash
-# Download the AppImage
-wget https://github.com/madeofpendletonwool/PinePods/releases/latest/download/pinepods.appimage
 
 # Make it executable
 chmod +x pinepods.appimage
@@ -179,33 +184,19 @@ Once installed through any method:
    - **Password:** Your Pinepods password
 3. **Sign in** and start enjoying your podcasts!
 
-#### Troubleshooting
-
-**Common Issues:**
-
-- **"Command not found"**: Try running with the full path or restart your terminal
-- **Permission denied**: Ensure the AppImage is executable (`chmod +x pinepods.appimage`)
-- **Missing dependencies**: Use your package manager to install any missing libraries
-- **Flatpak issues**: Ensure Flathub is added as a remote repository
-
-**Getting Help:**
-- 📚 Check our **Troubleshooting** section in the docs sidebar
-- 💬 Join our [Discord community](https://discord.com/invite/bKzHRa4GNc)
-- 🐛 Report issues on [GitHub](https://github.com/madeofpendletonwool/PinePods/issues)
-
 ### Windows Client Install :computer:
 
 Any of the client additions are super easy to get going. First head over to the releases page on Github
 
 https://github.com/madeofpendletonwool/PinePods/releases
 
-There's a exe and msi windows install file. 
+There's a exe and msi windows install file.
 
-The exe will actually start an install window and allow you to properly install the program to your computer. 
+The exe will actually start an install window and allow you to properly install the program to your computer.
 
 The msi will simply run a portable version of the app.
 
-Either one does the same thing ultimately and will work just fine. 
+Either one does the same thing ultimately and will work just fine.
 
 Once started you'll be able to sign in with your username and password. The server name is simply the url you browse to to access the server.
 
@@ -215,17 +206,17 @@ Any of the client additions are super easy to get going. First head over to the 
 
 https://github.com/madeofpendletonwool/PinePods/releases
 
-There's a dmg and pinepods_mac file. 
+There's a dmg and pinepods_mac file.
 
 Simply extract, and then go into Contents/MacOS. From there you can run the app.
 
-The dmg file will prompt you to install the Pinepods client into your applications fileter while the _mac file will just run a portable version of the app. 
+The dmg file will prompt you to install the Pinepods client into your applications fileter while the _mac file will just run a portable version of the app.
 
 Once started you'll be able to sign in with your username and password. The server name is simply the url you browse to to access the server.
 
 ### Android Install :iphone:
 
-The Android client is currently in **internal testing**! 
+The Android client is currently in **internal testing**!
 
 📱 [Join the Beta Testing Program](/internal-testing) to get early access to the native Android app.
 
@@ -242,3 +233,11 @@ The web app works great for phones and can be added to your home screen for a na
 ### Firewood (CLI TUI player)
 
 Pinepods also includes a terminal-based client called Firewood. See the **Firewood** section in the documentation sidebar for detailed installation and usage instructions.
+
+
+#### Troubleshooting
+
+**Getting Help:**
+- 📚 Check our **Troubleshooting** section in the docs sidebar
+- 💬 Join our [Discord community](https://discord.com/invite/bKzHRa4GNc)
+- 🐛 Report issues on [GitHub](https://github.com/madeofpendletonwool/PinePods/issues)

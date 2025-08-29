@@ -28,7 +28,7 @@ Smart playlists in PinePods are dynamic collections of episodes that are automat
 
 ### Filter by Podcasts (Optional)
 - **Purpose**: Limit episodes to specific podcasts in your collection
-- **Options**: 
+- **Options**:
   - None selected = Include episodes from ALL podcasts
   - Select specific podcasts = Only include episodes from those podcasts
 - **Effect**: Acts as a primary filter - only episodes from selected podcasts will be considered for other criteria
@@ -41,7 +41,7 @@ Smart playlists in PinePods are dynamic collections of episodes that are automat
 - **Criteria**: Episodes with no listening history OR listen duration = 0
 - **Effect**: Adds fresh, new episodes to your playlist
 
-#### Include Partially Played  
+#### Include Partially Played
 - **Default**: `true` (enabled)
 - **Purpose**: Include episodes you've started but not finished
 - **Criteria**: Episodes with listen duration > 0 AND not marked as completed
@@ -59,7 +59,7 @@ Smart playlists in PinePods are dynamic collections of episodes that are automat
 ### Duration Range (Minutes)
 - **Min Duration**: Only include episodes longer than X minutes
 - **Max Duration**: Only include episodes shorter than X minutes
-- **Effect**: 
+- **Effect**:
   - Setting Min=30 excludes short clips and trailers
   - Setting Max=60 excludes very long episodes
   - Use both to target specific episode lengths (e.g., 20-45 minutes for commute listening)
@@ -92,7 +92,7 @@ Determines the order episodes appear in your playlist:
 - **Newest First** (`date_desc`): Latest episodes at the top
 - **Oldest First** (`date_asc`): Earliest episodes at the top
 
-#### By Duration  
+#### By Duration
 - **Longest First** (`duration_desc`): Longest episodes at the top
 - **Shortest First** (`duration_asc`): Shortest episodes at the top
 
@@ -130,7 +130,7 @@ Determines the order episodes appear in your playlist:
 - **Max Episodes**: 20
 - **Result**: Recent episodes of good commute length, excluding barely-started and almost-finished episodes
 
-### "Catch Up on Long Episodes" Playlist  
+### "Catch Up on Long Episodes" Playlist
 - **Duration**: 60+ minutes
 - **Include**: Unplayed only
 - **Sort**: Oldest First
@@ -157,7 +157,7 @@ Determines the order episodes appear in your playlist:
 ## Tips for Effective Playlists
 
 1. **Start Simple**: Begin with basic filters and add complexity as needed
-2. **Use Max Episodes**: Prevents overwhelming playlists and improves performance
+2. **Use Max Episodes**: Prevents overwhelming playlists and improves performance. It will select the most relevant episodes to what you select first. For example, if you set filtering to longest first, it will pick the longest ones first for the playlist.
 3. **Group by Podcast**: Essential when following many active podcasts
 4. **Combine State Filters**: Mix unplayed and partially played for variety
 5. **Time + Duration**: Combine for targeted content (e.g., "This week's short episodes")
@@ -168,7 +168,7 @@ Determines the order episodes appear in your playlist:
 PinePods includes seven built-in system playlists that demonstrate advanced filtering and provide ready-to-use collections:
 
 - **Fresh Releases**: Latest episodes from the last 24 hours using time filtering
-- **Currently Listening**: Episodes you've started but haven't finished using progress filtering  
+- **Currently Listening**: Episodes you've started but haven't finished using progress filtering
 - **Almost Done**: Episodes you're close to finishing (75%+ complete) using high progress thresholds
 - **Quick Listens**: Short episodes under 15 minutes, perfect for quick breaks using duration filtering
 - **Commuter Mix**: Episodes between 20-40 minutes, ideal for average commute times using duration range

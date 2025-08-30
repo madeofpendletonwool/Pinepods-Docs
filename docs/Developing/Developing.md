@@ -18,7 +18,7 @@ This article outlines how to get Pinepods running in a development environment, 
 
 ### Prerequisites
 
-You will need either the latest version of **[Rust](https://www.rust-lang.org/tools/install)**. You'll also need the latest version of **[Trunk](https://trunkrs.dev/)** to build and serve the application. Finally **[Git](https://git-scm.com/downloads)** to easily fetch the code, and push any changes. If you plan on running or deploying the container, you'll also need **[Docker](https://docs.docker.com/get-docker/)**. 
+You will need either the latest version of **[Rust](https://www.rust-lang.org/tools/install)**. You'll also need the latest version of **[Trunk](https://trunkrs.dev/)** to build and serve the application. Finally **[Git](https://git-scm.com/downloads)** to easily fetch the code, and push any changes. If you plan on running or deploying the container, you'll also need **[Docker](https://docs.docker.com/get-docker/)**.
 
 With all this installed you also need the compilation target for wasm
 
@@ -32,9 +32,9 @@ rustup target add wasm32-unknown-unknown
 2. Navigate into the directory: `cd web`
 4. Start dev server: `RUSTFLAGS="--cfg=web_sys_unstable_apis" trunk serve --features server_build --release`
 
-Pinepods should now be being served on <http://localhost:8080/>. Hot reload is enabled, so making changes to any of the files and saving will trigger them to be rebuilt and the page refreshed.
+Pinepods should now be being served on [Localhost Port 8080](http://localhost:8080/). Hot reload is enabled, so making changes to any of the files and saving will trigger them to be rebuilt and the page refreshed.
 
-Now, what you've just done is run the web frontend of the project. The backend is not running currently, meaning, unless you connect to an external Pinepods server you will not be able to sign in. To sign in you need the backend running. To run the backend you can either just pull the Pinepods docker image form docker hub or you can build it yourself. You can build it with this command after navigating to the base repo directory: 
+Now, what you've just done is run the web frontend of the project. The backend is not running currently, meaning, unless you connect to an external Pinepods server you will not be able to sign in. To sign in you need the backend running. To run the backend you can either just pull the Pinepods docker image form docker hub or you can build it yourself. You can build it with this command after navigating to the base repo directory:
 
 ```
 cd Pinepods/
@@ -49,7 +49,7 @@ And then enter the server url in the server name: http://localhost:8040 by defau
 
 ### Notes
 
-- You'll notice above we're using the server_build feature. This is because when compiling without that feature it builds the project for the client version which builds on Tauri. 
+- You'll notice above we're using the server_build feature. This is because when compiling without that feature it builds the project for the client version which builds on Tauri.
 
 ---
 

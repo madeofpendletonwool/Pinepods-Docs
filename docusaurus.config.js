@@ -73,6 +73,7 @@ module.exports = {
           },
           { to: "/contact", label: "Contact", position: "left" },
           { to: "/internal-testing", label: "Beta Testing", position: "left" },
+          { to: "/feedback", label: "Feedback", position: "left" },
           {
             href: "https://discord.com/invite/bKzHRa4GNc",
             label: "Discord",
@@ -93,6 +94,7 @@ module.exports = {
             items: [
               { label: "Docs", to: "/docs/intro" },
               { label: "Beta Testing", to: "/internal-testing" },
+              { label: "Feedback", to: "/feedback" },
             ],
           },
           {

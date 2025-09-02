@@ -44,9 +44,13 @@ export default function InternalTesting() {
       });
 
       if (response.ok) {
+        const platformMessage = formData.platform === 'ios' 
+          ? 'Successfully signed up for internal testing! You\'ll receive a TestFlight invitation email immediately.' 
+          : 'Successfully signed up for internal testing! You\'ll receive an invitation email from Google Play Console within 24 hours.';
+        
         setStatus({
           type: 'success',
-          message: 'Successfully signed up for internal testing! You\'ll receive an invitation email from Google Play Console within 24 hours.'
+          message: platformMessage
         });
         setFormData({ name: '', email: '', platform: 'android', wantsNews: false, newsEmail: '' });
       } else {
@@ -255,7 +259,11 @@ export default function InternalTesting() {
               <div style={{ marginTop: '24px', padding: '16px', backgroundColor: 'var(--ifm-background-surface-color)', border: '1px solid var(--ifm-color-emphasis-200)', borderRadius: '6px', color: 'var(--ifm-color-content)' }}>
                 <h4>What to expect:</h4>
                 <ul style={{ textAlign: 'left', marginBottom: 0 }}>
-                  <li>You'll receive a Google Play Console invitation within 24 hours</li>
+                  {formData.platform === 'ios' ? (
+                    <li>You'll receive a TestFlight invitation email immediately</li>
+                  ) : (
+                    <li>You'll receive a Google Play Console invitation within 24 hours</li>
+                  )}
                   <li>Access to beta versions before public release</li>
                   <li>Direct feedback channel to the development team</li>
                   <li>Early access to new features and improvements</li>

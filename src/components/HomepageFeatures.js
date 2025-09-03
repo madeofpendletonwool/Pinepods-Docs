@@ -415,7 +415,7 @@ const CTASection = () => {
       <div className="container">
         <div className={styles.ctaContent}>
           <h2>Ready to Own Your Podcast Experience?</h2>
-          <p>Join thousands of users who've taken control of their podcast ecosystem with the most feature-complete self-hosted solution available.</p>
+          <p>Join tons of users who've taken control of their podcast ecosystem with the most feature-complete self-hosted solution available.</p>
           <div className={styles.ctaButtons}>
             <a href="/docs/intro" className={styles.ctaButton}>
               Start Self-Hosting

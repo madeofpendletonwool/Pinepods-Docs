@@ -92,11 +92,8 @@
 
 .brandName {
   font-size: 5rem;
-  background: linear-gradient(45deg, #64539e, #8a7cb8);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: none;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .taglinePart {

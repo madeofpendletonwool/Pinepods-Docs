@@ -516,11 +516,11 @@ Once started you'll be able to sign in with your username and password. The serv
 
 #### Android Install :iphone:
 
-For now, it's a manual install and there are some issues with the app. Check the releases page for the latest apk.
+In beta currently. Feel free to sign up for the beta testing to get access!
 
 #### ios Install :iphone:
 
-Coming Soon - The web app works great for phones.
+In beta currently. Feel free to sign up for the beta testing to get access!
 
 ## PodPeople DB
 

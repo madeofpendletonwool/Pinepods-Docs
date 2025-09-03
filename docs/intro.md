@@ -27,10 +27,22 @@ You can also choose to use MySQL/MariaDB or Postgres as your database. Examples 
 
 ### Docker Compose
 
+#### User Permissions
+Pinepods can run with specific user permissions to ensure downloaded files are accessible on the host system. This is controlled through two environment variables:
+- `PUID`: Process User ID (defaults to 1000 if not set)
+- `PGID`: Process Group ID (defaults to 1000 if not set)
+
+To find your user's UID and GID, run:
+```bash
+id -u   # Your UID
+id -g   # Your GID
+```
+
 #### Compose File - PostgreSQL (Recommended)
 ```yaml
 services:
   db:
+    container_name: db
     image: postgres:latest
     environment:
       POSTGRES_DB: pinepods_database
@@ -56,6 +68,7 @@ services:
       # Basic Server Info
       SEARCH_API_URL: 'https://search.pinepods.online/api/search'
       PEOPLE_API_URL: 'https://people.pinepods.online'
+      HOSTNAME: 'http://localhost:8040'
       # Default Admin User Information
       USERNAME: myadminuser01
       PASSWORD: myS3curepass
@@ -73,10 +86,17 @@ services:
       VALKEY_PORT: 6379
       # Enable or Disable Debug Mode for additional Printing
       DEBUG_MODE: false
+      PUID: ${UID:-911}
+      PGID: ${GID:-911}
+      # Add timezone configuration
+      TZ: "America/New_York"
     volumes:
       # Mount the download and backup locations on the server
       - /home/user/pinepods/downloads:/opt/pinepods/downloads
       - /home/user/pinepods/backups:/opt/pinepods/backups
+      # Timezone volumes, HIGHLY optional. Read the timezone notes below
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     depends_on:
       - db
       - valkey
@@ -86,6 +106,7 @@ services:
 ```yaml
 services:
   db:
+    container_name: db
     image: mariadb:latest
     command: --wait_timeout=1800
     environment:
@@ -114,6 +135,7 @@ services:
       # Basic Server Info
       SEARCH_API_URL: 'https://search.pinepods.online/api/search'
       PEOPLE_API_URL: 'https://people.pinepods.online'
+      HOSTNAME: 'http://localhost:8040'
       # Default Admin User Information
       USERNAME: myadminuser01
       PASSWORD: myS3curepass
@@ -131,10 +153,18 @@ services:
       VALKEY_PORT: 6379
       # Enable or Disable Debug Mode for additional Printing
       DEBUG_MODE: false
+      PUID: ${UID:-911}
+      PGID: ${GID:-911}
+      # Add timezone configuration
+      TZ: "America/New_York"
+
     volumes:
       # Mount the download and backup locations on the server
       - /home/user/pinepods/downloads:/opt/pinepods/downloads
       - /home/user/pinepods/backups:/opt/pinepods/backups
+      # Timezone volumes, HIGHLY optional. Read the timezone notes below
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     depends_on:
       - db
       - valkey
@@ -143,6 +173,9 @@ services:
 Make sure you change these variables to variables specific to yourself at a minimum.
 
 ```
+      # The url you hit the site at. Only used for sharing rss feeds
+      HOSTNAME: 'http://localhost:8040'
+      # These next 4 are optional. They allow you to set an admin without setting on the first boot
       USERNAME: pinepods
       PASSWORD: password
       FULLNAME: John Pinepods
@@ -175,6 +208,70 @@ Above is an api that I maintain. I do not guarantee 100% uptime on this api thou
 
 https://www.pinepods.online/docs/API/search_api
 
+#### Timezone Configuration
+
+PinePods supports displaying timestamps in your local timezone instead of UTC. This helps improve readability and prevents confusion when viewing timestamps such as "last sync" times in the gpodder API. Note that this configuration is specifically for logs. Each user sets their own timezone settings on first login. That is seperate from this server timezone config.
+
+##### Setting the Timezone
+
+You have two main options for configuring the timezone in PinePods:
+
+##### Option 1: Using the TZ Environment Variable (Recommended)
+
+Add the `TZ` environment variable to your docker-compose.yml file:
+
+```yaml
+services:
+  pinepods:
+    image: madeofpendletonwool/pinepods:latest
+    environment:
+      # Other environment variables...
+      TZ: "America/Chicago"  # Set your preferred timezone
+```
+
+This method works consistently across all operating systems (Linux, macOS, Windows) and is the recommended approach.
+
+##### Option 2: Mounting Host Timezone Files (Linux Only)
+
+On Linux systems, you can mount the host's timezone files:
+
+```yaml
+services:
+  pinepods:
+    image: madeofpendletonwool/pinepods:latest
+    volumes:
+      # Other volumes...
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+```
+
+**Note**: This method only works reliably on Linux hosts. For macOS and Windows users, please use the TZ environment variable (Option 1).
+
+##### Priority
+
+If both methods are used:
+1. The TZ environment variable takes precedence
+2. Mounted timezone files are used as a fallback
+
+##### Common Timezone Values
+
+Here are some common timezone identifiers:
+- `America/New_York` - Eastern Time
+- `America/Chicago` - Central Time
+- `America/Denver` - Mountain Time
+- `America/Los_Angeles` - Pacific Time
+- `Europe/London` - United Kingdom
+- `Europe/Berlin` - Central Europe
+- `Asia/Tokyo` - Japan
+- `Australia/Sydney` - Australia Eastern
+
+For a complete list of valid timezone identifiers, see the [IANA Time Zone Database](https://www.iana.org/time-zones).
+
+##### Troubleshooting Timezones
+
+**I'm on macOS and timezone settings aren't working**
+
+macOS uses a different timezone file format than Linux. You must use the TZ environment variable method on macOS.
 
 #### Start it up!
 
@@ -190,171 +287,150 @@ To pull the container images and get started. Once fully started up you'll be ab
 ### Helm Deployment
 
 Alternatively, you can deploy Pinepods using Helm on a Kubernetes cluster. Helm is a package manager for Kubernetes that simplifies deployment.
-Adding the Helm Repository
+
+#### Adding the Helm Repository
 
 First, add the Pinepods Helm repository:
 
-```
-helm repo add pinepods http://helm.pinepods.online/PinePods
+```bash
+helm repo add pinepods http://helm.pinepods.online
 helm repo update
 ```
 #### Installing the Chart
 
-To install the Pinepods Helm chart, run:
+To install the Pinepods Helm chart with default values:
 
+```bash
+helm install pinepods pinepods/pinepods --namespace pinepods-namespace --create-namespace
 ```
-helm install pinepods pinepods/pinepods -f my-values.yaml --namespace pinepods-namespace
-```
-#### Customizing Values
 
-Create a my-values.yaml file to override default values - Any value with `{{  }}` are things you need to set yourself.:
+Or with custom values:
 
+```bash
+helm install pinepods pinepods/pinepods -f my-values.yaml --namespace pinepods-namespace --create-namespace
 ```
-## Container image configuration
+#### Configuration Options
+
+The Helm chart supports extensive configuration. Key areas include:
+
+**Main Application:**
+- Image repository and tag configuration
+- Service type and port settings
+- Ingress configuration with TLS support
+- Persistent storage for downloads and backups
+- Resource limits and requests
+- Security contexts and pod placement
+
+**Dependencies:**
+- PostgreSQL database (can be disabled for external database)
+- Valkey/Redis for caching (can be disabled)
+- Optional backend API deployment for self-hosted search
+- Optional PodPeople database for podcast host information
+
+**Example values.yaml:**
+
+```yaml
+# Main application configuration
 image:
   repository: madeofpendletonwool/pinepods
   tag: latest
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
   port: 8040
 
-
 ingress:
   enabled: true
   className: ""
   annotations:
-    annotations:
-      # Whatever you need to set here
+    traefik.ingress.kubernetes.io/router.entrypoints: web
   hosts:
-    - host: {{ pinepods_domain }}
+    - host: pinepods.example.com
       paths:
         - path: /
           pathType: Prefix
+  tls: []
 
-
+# Persistent storage
 persistence:
   enabled: true
   downloads:
-    storageClass: {{ storage_class }}
-    accessMode: ReadWriteOnce
-    size: {{ downloads_size }}
+    storageClass: ""  # Use default storage class
+    size: 5Gi
   backups:
-    storageClass: {{ storage_class }}
-    accessMode: ReadWriteOnce
-    size: {{ backups_size }}
+    storageClass: ""
+    size: 2Gi
 
+# Database configuration
 postgresql:
   enabled: true
   auth:
     username: postgres
-    password: {{ postgres_password }}
+    password: "changeme"
     database: pinepods_database
   persistence:
     enabled: true
-    storageClass: {{ storage_class }}
-    size: {{ postgres_size }}
+    size: 3Gi
 
+# Valkey/Redis configuration
 valkey:
   enabled: true
   architecture: standalone
   auth:
     enabled: false
-  replica:
-    replicaCount: 0
-  primary:
-    persistence:
-      enabled: false
-  service:
-    port: 6379
 
-env:
-  SEARCH_API_URL: "https://search.pinepods.online/api/search"
-  PEOPLE_API_URL: "https://people.pinepods.online"
-  USERNAME: {{ admin_username }}
-  PASSWORD: {{ admin_password }}
-  FULLNAME: {{ admin_fullname }}
-  EMAIL: {{ admin_email }}
-  DB_TYPE: "postgresql"
-  DB_USER: "postgres"
-  DB_NAME: "pinepods_database"
-  DB_PORT: "5432"
-  DEBUG_MODE: "false"
-
-# Backend and Podpeople can be disabled (set to false) if you plan to use the ones I maintain.
-# To do that set to false and simply keep the SEARCH_API_URL and PEOPLE_API_URL above as their defaults
+# Optional backend API (self-hosted search)
 backend:
-  enabled: true
-  image:
-    repository: madeofpendletonwool/pinepods_backend
-    tag: latest
-    pullPolicy: Always
-  service:
-    type: ClusterIP
-    port: 5000
+  enabled: false
   secrets:
-    apiKey: {{ backend_api_key }}
-    apiSecret: {{ backend_api_secret }}
-# This ingress is specific to pinepods backend. If you don't use that change to disabled.
-  ingress:
-    enabled: true
-    className: ""
-    annotations:
-      # Whatever you need to set here
-    hosts:
-      - host: {{ backend_domain }}
-        paths:
-          - path: /
-            pathType: Prefix
+    apiKey: "YOUR_PODCAST_INDEX_KEY"
+    apiSecret: "YOUR_PODCAST_INDEX_SECRET"
 
+# Optional PodPeople database
 podpeople:
-  enabled: true
-  image:
-    repository: madeofpendletonwool/podpeople_db
-    tag: latest
-    pullPolicy: Always
-  service:
-    type: ClusterIP
-    port: 8085
-  persistence:
-    enabled: true
-    storageClass: {{ storage_class }}
-    size: {{ podpeople_size }}
-    accessMode: ReadWriteOnce
-  auth:
-    adminUsername: {{ admin_username }}
-    adminPassword: {{ admin_password }}
-  environment:
-    ntfyUrl: {{ ntfy_url }}
-    ntfyTopic: {{ ntfy_topic }}
-    searchApiUrl: {{ search_api_url }}
-    baseurl: {{ pod_people_base_url }}
-# This ingress is specific to podpeople db. If you don't use that change to disabled.
-  ingress:
-    enabled: true
-    className: ""
-    annotations:
-      # Whatever you need to set here
-    hosts:
-      - host: {{ podpeople_domain }}
-        paths:
-          - path: /
-            pathType: Prefix
+  enabled: false
+
+# Application environment
+env:
+  USERNAME: "admin"
+  PASSWORD: "password"
+  FULLNAME: "Admin User"
+  EMAIL: "admin@example.com"
+  DEBUG_MODE: "false"
+  HOSTNAME: 'http://localhost:8040'
 ```
 
-#### Create a namespace for Pinepods:
+#### External Database Configuration
+
+To use an external database instead of the included PostgreSQL:
+
+```yaml
+postgresql:
+  enabled: false
+
+externalDatabase:
+  host: "your-postgres-host"
+  port: 5432
+  user: postgres
+  password: "your-password"
+  database: pinepods_database
+```
+
+#### Create a Namespace for Pinepods
 
 Create a namespace to hold the deployment:
-```
+
+```bash
 kubectl create namespace pinepods-namespace
 ```
 
 #### Starting Helm
 
 Once you have everything set up, install the Helm chart:
-```
-helm install pinepods pinepods/Pinepods -f my-values.yaml
+
+```bash
+helm install pinepods pinepods/pinepods -f my-values.yaml --namespace pinepods-namespace --create-namespace
 ```
 This will deploy Pinepods on your Kubernetes cluster with a postgres database. MySQL/MariaDB is not supported with the kubernetes setup. The service will be accessible at the specified NodePort.
 
@@ -398,17 +474,15 @@ paru -S pinepods
 
 You can search for Pinepods in your favorite flatpak installer gui app such as Gnome Software.
 
+Flathub page can be found [here](https://flathub.org/apps/com.gooseberrydevelopment.pinepods)
+
 ```
-Flathub link and install command will be here soon (post 0.7.0 launch and compile)
+flatpak install flathub com.gooseberrydevelopment.pinepods
 ```
 
 #### Snap
 
-Quick snap install away!
-
-```
-snap install pinepods
-```
+I have had such a nightmare trying to make the snap client work. Pass, use the flatpak. They're better anyway. I'll test it again in the future and see if Canonical has gotten it together. If you really want a snap version of the client please reach out and tell me you're interested in the first place.
 
 #### Windows Client Install :computer:
 

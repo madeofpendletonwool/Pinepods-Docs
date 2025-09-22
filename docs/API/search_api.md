@@ -17,11 +17,38 @@ The PinePods Search API is a high-performance Rust-based Actix Web application t
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### Getting Required API Keys
 
-- **PodcastIndex API** (Recommended): [Get free API credentials](https://api.podcastindex.org/)
-- **YouTube Data API v3** (Optional): [Get API key](https://developers.google.com/youtube/v3/getting-started)
-- **Docker**: For containerized deployment
+Before setting up the search API container, you'll need to obtain API keys from both services:
+
+#### Podcast Index API Key
+
+1. Visit [https://api.podcastindex.org/signup](https://api.podcastindex.org/signup)
+2. Fill out the signup form with:
+   - Your email address
+   - A description of your intended use (e.g., "Self-hosted podcast management with Pinepods")
+3. Submit the form and wait for approval (usually within 24-48 hours)
+4. Once approved, you'll receive an email with your API Key and API Secret
+5. Keep these credentials secure
+
+#### YouTube Data API v3 Key
+
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select an existing one:
+   - Click "Select a project" at the top
+   - Click "New Project"
+   - Enter a project name (e.g., "Pinepods Search API")
+   - Click "Create"
+3. Enable the YouTube Data API v3:
+   - In the left sidebar, go to "APIs & Services" → "Library"
+   - Search for "YouTube Data API v3"
+   - Click on it and press "Enable"
+4. Create API credentials:
+   - Go to "APIs & Services" → "Credentials"
+   - Click "+ CREATE CREDENTIALS" → "API key"
+   - Your API key will be generated
+   - (Optional) Click "Restrict Key" to limit usage to YouTube Data API v3 for security
+5. Copy the API key for use in your configuration
 
 ### Environment Configuration
 

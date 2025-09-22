@@ -33,7 +33,7 @@ paru -S pinepods
 #### Flatpak
 
 <a href="https://flathub.org/en/apps/com.gooseberrydevelopment.pinepods">
-  <img src="https://flathub.org/api/badge?locale=en" alt="Get it on Flathub" width="240">
+  <img src="https://flathub.org/api/badge?locale=en" alt="Get it on Flathub" width="240" />
 </a>
 
 You can search for Pinepods in your favorite flatpak installer gui app such as Gnome Software.
@@ -73,11 +73,11 @@ Once started you'll be able to sign in with your username and password. The serv
 ### Android Install :iphone:
 
 <a href="https://apt.izzysoft.de/fdroid/index/apk/com.gooseberrydevelopment.pinepods">
-  <img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" width="200">
+  <img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" alt="Get it on IzzyOnDroid" width="200" />
 </a>
 
 <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/%7B%22id%22%3A%22com.gooseberrydevelopment.pinepods%22%2C%22url%22%3A%22https%3A//github.com/madeofpendletonwool/PinePods%22%2C%22author%22%3A%22madeofpendletonwool%22%2C%22name%22%3A%22PinePods%22%2C%22installerUrl%22%3A%22https%3A//github.com/madeofpendletonwool/PinePods/releases/latest%22%7D">
-  <img src="/img/badge_obtainium.png" alt="Get it on Obtainium" width="200">
+  <img src="/img/badge_obtainium.png" alt="Get it on Obtainium" width="200" />
 </a>
 
 The web app works great for phones as well. If you sync using Nextcloud you can use the AntennaPods app and your podcasts will sync between Antennapod and Pinepods.
@@ -85,7 +85,7 @@ The web app works great for phones as well. If you sync using Nextcloud you can 
 ### iOS Install :iphone:
 
 <a href="https://apps.apple.com/us/app/pinepods/id6751441116">
-  <img src="/img/Download_on_the_App_Store_Badge_US-UK_RGB_blk_092917.svg" alt="Download on the App Store" width="200">
+  <img src="/img/Download_on_the_App_Store_Badge_US-UK_RGB_blk_092917.svg" alt="Download on the App Store" width="200" />
 </a>
 
 The web app works great for phones as well.

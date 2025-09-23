@@ -17,13 +17,12 @@ Firewood provides a tabbed interface with multiple sections for managing and lis
 
 **Global Controls:**
 - `Space` - Global play/pause toggle (works from any tab)
-- `r` - Refresh current page/content
+- `Ctrl+R` - Refresh current page/content
 - `Esc` - Return to previous screen or cancel actions
 
 ## Tab-by-Tab Guide
 
 ### 🏠 Home Tab (1)
-*Status: Implemented*
 
 Your dashboard for quick access to recent content and recommendations.
 
@@ -38,52 +37,7 @@ Your dashboard for quick access to recent content and recommendations.
 - Press `Enter` to start playing an episode
 - Episodes show title, podcast name, and publication date
 
-### 🎙️ Podcasts Tab (2)
-*Status: Implemented*
-
-Browse your podcast subscriptions with a dual-panel interface.
-
-**Layout:**
-- **Left Panel**: List of subscribed podcasts
-- **Right Panel**: Episodes from the selected podcast
-
-**Navigation:**
-- `Tab` - Switch between left and right panels
-- `↑/↓` or `j/k` - Navigate podcast list
-- `Enter` - Select podcast (loads episodes in right panel)
-- In episodes panel: `↑/↓` to browse, `Enter` to play
-
-**Features:**
-- View all your podcast subscriptions organized alphabetically
-- See episode counts and latest episode information
-- Quick access to specific podcast episodes
-- Podcast artwork and descriptions (when available)
-
-### 📻 Episodes Tab (3)
-*Status: Implemented*
-
-Comprehensive episode management with filtering and search capabilities.
-
-**Content Views:**
-- **All Episodes**: Complete feed of recent episodes from all subscriptions
-- **In Progress**: Episodes you've started but haven't finished
-- **Completed**: Episodes you've finished listening to
-
-**Features:**
-- **Auto-loading**: Episodes load automatically as you scroll
-- **Real-time Search**: Filter episodes by title or podcast name
-- **Status Tracking**: Visual indicators for play status and progress
-- **Batch Actions**: Mark multiple episodes as played/unplayed
-
-**Navigation:**
-- `↑/↓` - Browse episode list
-- `Enter` - Play selected episode
-- `Space` - Quick play/pause
-- `/` - Activate search mode
-- `Esc` - Clear search filter
-
-### 🎵 Player Tab (4)
-*Status: Implemented*
+### 🎵 Player Tab (2)
 
 Full-screen audio player with comprehensive playback controls.
 
@@ -108,66 +62,132 @@ Full-screen audio player with comprehensive playback controls.
 - **Smart Skip**: Respects podcast chapter markers when available
 - **Background Play**: Continues playing while you browse other tabs
 
+### 📻 Episodes Tab (3)
+
+Comprehensive episode management with filtering and search capabilities.
+
+**Content Views:**
+- **All Episodes**: Complete feed of recent episodes from all subscriptions
+- **In Progress**: Episodes you've started but haven't finished
+- **Completed**: Episodes you've finished listening to
+
+**Features:**
+- **Auto-loading**: Episodes load automatically as you scroll
+- **Real-time Search**: Filter episodes by title or podcast name
+- **Status Tracking**: Visual indicators for play status and progress
+- **Batch Actions**: Mark multiple episodes as played/unplayed
+
+**Navigation:**
+- `↑/↓` - Browse episode list
+- `Enter` - Play selected episode
+- `Space` - Quick play/pause
+- `/` - Activate search mode
+- `Esc` - Clear search filter
+
+### 🎙️ Podcasts Tab (4)
+
+Browse your podcast subscriptions with a dual-panel interface.
+
+**Layout:**
+- **Left Panel**: List of subscribed podcasts
+- **Right Panel**: Episodes from the selected podcast
+
+**Navigation:**
+- `Tab` - Switch between left and right panels
+- `↑/↓` or `j/k` - Navigate podcast list
+- `Enter` - Select podcast (loads episodes in right panel)
+- In episodes panel: `↑/↓` to browse, `Enter` to play
+
+**Features:**
+- View all your podcast subscriptions organized alphabetically
+- See episode counts and latest episode information
+- Quick access to specific podcast episodes
+- Podcast artwork and descriptions (when available)
+
 ### 📝 Queue Tab (5)
-*Status: Planned*
 
 Manage your episode queue and listening order.
 
-**Planned Features:**
+**Features:**
 - **Queue Management**: Add, remove, and reorder episodes
-- **Auto-queue**: Automatically add next episodes from subscriptions
-- **Drag-and-drop**: Reorder episodes with intuitive controls
-- **Queue Actions**: Clear queue, shuffle, repeat modes
-- **Smart Queue**: Recommendations based on listening history
+- **Queue Display**: View your current listening queue
+- **Episode Controls**: Play episodes directly from queue
+- **Queue Actions**: Clear queue and manage playback order
+
+**Navigation:**
+- `↑/↓` - Browse queue items
+- `Enter` - Play selected episode
+- `d` / `Delete` - Remove from queue
+- `c` - Clear entire queue
 
 ### ⭐ Saved Tab (6)
-*Status: Planned*
 
 Access your bookmarked and favorite episodes.
 
-**Planned Features:**
+**Features:**
 - **Bookmarks**: Episodes you've marked for later
 - **Favorites**: Your starred episodes and podcasts
 - **Collections**: Custom groups of related episodes
 - **Quick Access**: Fast filtering and search within saved content
 - **Sync**: Saved items sync across all your devices
 
+**Navigation:**
+- `↑/↓` - Browse saved episodes
+- `Enter` - Play selected episode
+- `r` - Remove from saved
+- `/` - Search saved content
+
 ### 📥 Downloads Tab (7)
-*Status: Planned*
 
 Manage offline episode downloads for listening without internet.
 
-**Planned Features:**
+**Features:**
 - **Download Management**: Queue, pause, cancel downloads
 - **Offline Library**: Browse downloaded episodes
 - **Storage Monitoring**: Track disk usage and manage space
 - **Auto-download**: Set rules for automatic episode downloads
 - **Quality Settings**: Choose download quality and format
 
+**Navigation:**
+- `↑/↓` - Browse downloaded episodes
+- `Enter` - Play downloaded episode
+- `d` / `Delete` - Delete download
+- `p` - Pause/resume download
+
 ### 🔍 Search Tab (8)
-*Status: Planned*
 
 Discover new content and find specific episodes or podcasts.
 
-**Planned Features:**
+**Features:**
 - **Global Search**: Find episodes across all your subscriptions
 - **Podcast Discovery**: Browse and subscribe to new podcasts
 - **Advanced Filters**: Filter by date, duration, podcast, etc.
 - **Search History**: Quick access to previous searches
 - **Trending**: See popular and recommended content
 
+**Navigation:**
+- `/` - Enter search query
+- `↑/↓` - Browse search results
+- `Enter` - Play or subscribe to result
+- `Esc` - Clear search
+
 ### ⚙️ Settings Tab (9)
-*Status: Planned*
 
 Configure Firewood to match your preferences and setup.
 
-**Planned Features:**
+**Features:**
 - **Audio Settings**: Output device, volume levels, equalizer
 - **Remote Control**: Configure network settings and port
 - **Appearance**: Themes, colors, and layout customization
 - **Keyboard Shortcuts**: Customize key bindings
 - **Sync Settings**: Server connection and sync preferences
 - **Advanced Options**: Debug settings and performance tuning
+
+**Navigation:**
+- `↑/↓` - Browse settings categories
+- `Enter` - Modify setting
+- `Esc` - Cancel changes
+- `s` - Save settings
 
 ## Micro-Player Controls
 
@@ -284,7 +304,7 @@ Firewood supports all major podcast audio formats:
 | `Space` | Play/pause |
 | `q` | Quit |
 | `Ctrl+C` | Force quit |
-| `r` | Refresh |
+| `Ctrl+R` | Refresh |
 
 ### Navigation
 | Key | Action |

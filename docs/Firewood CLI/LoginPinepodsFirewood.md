@@ -8,12 +8,7 @@ A comprehensive guide to getting started with PinePods Firewood - your terminal-
 
 ### Setting Up PinePods Server
 
-If you don't have a PinePods server yet, visit **[pinepods.online](https://pinepods.online)** for complete installation instructions. PinePods can be deployed via:
-
-- Docker (recommended)
-- Native installation
-- Cloud hosting services
-- Self-hosted solutions
+If you don't have a PinePods server yet, visit **[pinepods.online](https://pinepods.online)** for complete installation instructions.
 
 **Note**: Make sure your PinePods server is accessible from the device where you'll run Firewood.
 
@@ -43,8 +38,6 @@ yay -S pinepods-firewood
 **Manual Download:**
 - Download pre-built binaries from [GitHub Releases](https://github.com/madeofpendletonwool/pinepods-firewood/releases/latest)
 - Extract and place in your PATH
-
-For detailed installation instructions, see [INSTALLATION.md](INSTALLATION.md).
 
 ## First Launch Setup
 
@@ -161,13 +154,12 @@ Once logged in successfully:
 3. **Recent Episodes**: View latest content in the Episodes tab
 4. **Start Listening**: Select an episode and press Enter to play
 
-For detailed usage instructions, see the [User Guide](USER_GUIDE.md).
-
 ## Quick Reference
 
 **Navigation:**
 - `Tab` - Switch between tabs
-- `1-9` - Jump to specific tabs
+- `1-9` - Jump to specific tabs by number
+- `Ctrl+R` - Refresh current page
 - `q` - Quit application
 - `Ctrl+C` - Force quit
 

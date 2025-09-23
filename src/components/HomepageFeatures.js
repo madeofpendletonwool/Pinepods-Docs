@@ -354,6 +354,7 @@ const ScreenshotsSection = () => {
               <div className={styles.screenshotInfo}>
                 <h3>Web Interface (WASM)</h3>
                 <p>Lightning-fast Rust WebAssembly frontend</p>
+                <a href="https://github.com/madeofpendletonwool/PinePods/releases" className={styles.downloadLink}>Download from Releases</a>
               </div>
             </div>
             <div className={styles.screenshotCard}>
@@ -365,17 +366,19 @@ const ScreenshotsSection = () => {
               <div className={styles.screenshotInfo}>
                 <h3>Android App</h3>
                 <p>Native Android experience with offline support</p>
+                <a href="https://apt.izzysoft.de/fdroid/index/apk/com.gooseberrydevelopment.pinepods" className={styles.downloadLink}>Download from IzzyOnDroid</a>
               </div>
             </div>
             <div className={styles.screenshotCard}>
               <img 
-                src="/img/screenshots/ios-app.png" 
+                src="/img/screenshots/android-app.png" 
                 alt="PinePods iOS App" 
                 className={styles.screenshotImage}
               />
               <div className={styles.screenshotInfo}>
                 <h3>iOS App</h3>
                 <p>Beautiful native iOS interface</p>
+                <a href="https://apps.apple.com/us/app/pinepods/id6751441116" className={styles.downloadLink}>Download on App Store</a>
               </div>
             </div>
             <div className={styles.screenshotCard}>
@@ -387,6 +390,7 @@ const ScreenshotsSection = () => {
               <div className={styles.screenshotInfo}>
                 <h3>Desktop App</h3>
                 <p>Cross-platform desktop application</p>
+                <a href="https://github.com/madeofpendletonwool/PinePods/releases" className={styles.downloadLink}>Download from Releases</a>
               </div>
             </div>
             <div className={styles.screenshotCard}>
@@ -398,6 +402,7 @@ const ScreenshotsSection = () => {
               <div className={styles.screenshotInfo}>
                 <h3>CLI TUI (Firewood)</h3>
                 <p>Beautiful terminal interface for power users</p>
+                <a href="https://github.com/madeofpendletonwool/pinepods-firewood" className={styles.downloadLink}>Download Firewood</a>
               </div>
             </div>
           </div>

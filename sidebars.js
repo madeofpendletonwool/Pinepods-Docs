@@ -69,7 +69,9 @@ module.exports = {
       type: 'category',
       label: 'Firewood',
       items: [
-        'Firewood (CLI)/UsingPinepodsFirewood',
+        'Firewood CLI/LoginPinepodsFirewood',
+        'Firewood CLI/UsingPinepodsFirewood',
+        'Firewood CLI/Beaming',
       ],
     },
     {

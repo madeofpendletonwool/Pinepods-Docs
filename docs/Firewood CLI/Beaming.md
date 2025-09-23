@@ -1,4 +1,4 @@
-# 🎵 Firewood Episode Beaming Guide
+# Firewood Episode Beaming Guide
 
 Complete guide to Firewood's remote control and episode beaming functionality - send episodes from any device to your Firewood players across your network.
 

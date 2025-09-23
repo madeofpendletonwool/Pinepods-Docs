@@ -71,6 +71,7 @@ module.exports = {
       items: [
         'Firewood CLI/LoginPinepodsFirewood',
         'Firewood CLI/UsingPinepodsFirewood',
+        'Firewood CLI/Beaming',
       ],
     },
     {

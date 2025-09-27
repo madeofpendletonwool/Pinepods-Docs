@@ -35,7 +35,6 @@ The simplest and most reliable solution is to specify PostgreSQL 17 in your Dock
 services:
   postgres:
     image: postgres:17
-    # or more specifically: postgres:17.6
     volumes:
       - ./data/database:/var/lib/postgresql/data
     environment:
@@ -55,7 +54,7 @@ services:
   postgres:
     image: postgres:18
     volumes:
-      - ./data/database:/var/lib/postgresql/
+      - ./data/database:/var/lib/postgresql
     environment:
       POSTGRES_DB: pinepods
       POSTGRES_USER: postgres
@@ -111,42 +110,9 @@ Be aware that PostgreSQL 18 uses a different directory structure:
 - **PostgreSQL 17:** Data stored directly in mounted volume
 - **PostgreSQL 18:** Data stored in versioned subdirectory (e.g., `18/docker/`)
 
-## Technical Background
-
-This change was implemented in [PostgreSQL Docker issue #1259](https://github.com/docker-library/postgres/issues/1259) to:
-- Align with upstream PostgreSQL directory conventions
-- Facilitate easier major version upgrades
-- Improve overall container architecture
-
-The Docker maintainers intentionally waited for a major version release to implement this breaking change, but it has caused significant disruption for many users relying on the `latest` tag or automatic updates.
-
-## Community Response
-
-The PostgreSQL Docker community has been divided on this change:
-- Some users appreciate the long-term benefits for version management
-- Others criticize the breaking change for production deployments
-- There's ongoing discussion about removing the `latest` tag entirely
-
-## Best Practices
-
-1. **Pin your PostgreSQL version** explicitly instead of using `latest`
-2. **Test upgrades in development** before applying to production
-3. **Maintain regular backups** before any major version changes
-4. **Monitor PostgreSQL Docker release notes** for breaking changes
-
 ## Related Links
 
 - [Official PostgreSQL Docker Issue #1363](https://github.com/docker-library/postgres/issues/1363)
-- [PGDATA Documentation Changes](https://github.com/docker-library/docs/tree/master/postgres#pgdata)
-- [PostgreSQL Docker Hub](https://hub.docker.com/_/postgres)
-
-## Support
-
-If you encounter issues with PostgreSQL configuration in Pinepods:
-
-1. First try using PostgreSQL 17 as recommended
-2. Check the [Pinepods GitHub Issues](https://github.com/madeofpendletonwool/PinePods/issues)
-3. Consult the PostgreSQL Docker community for container-specific issues
 
 ---
 

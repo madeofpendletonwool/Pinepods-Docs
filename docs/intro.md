@@ -43,7 +43,7 @@ id -g   # Your GID
 services:
   db:
     container_name: db
-    image: postgres:latest
+    image: postgres:17
     environment:
       POSTGRES_DB: pinepods_database
       POSTGRES_USER: postgres
@@ -51,14 +51,11 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - /home/user/pinepods/pgdata:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
     restart: always
 
   valkey:
     image: valkey/valkey:8-alpine
-    ports:
-      - "6379:6379"
+    restart: always
 
   pinepods:
     image: madeofpendletonwool/pinepods:latest
@@ -69,11 +66,6 @@ services:
       SEARCH_API_URL: 'https://search.pinepods.online/api/search'
       PEOPLE_API_URL: 'https://people.pinepods.online'
       HOSTNAME: 'http://localhost:8040'
-      # Default Admin User Information
-      USERNAME: myadminuser01
-      PASSWORD: myS3curepass
-      FULLNAME: Pinepods Admin
-      EMAIL: user@pinepods.online
       # Database Vars
       DB_TYPE: postgresql
       DB_HOST: db
@@ -97,6 +89,7 @@ services:
       # Timezone volumes, HIGHLY optional. Read the timezone notes below
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+    restart: always
     depends_on:
       - db
       - valkey
@@ -107,7 +100,7 @@ services:
 services:
   db:
     container_name: db
-    image: mariadb:latest
+    image: mariadb:12
     command: --wait_timeout=1800
     environment:
       MYSQL_TCP_PORT: 3306
@@ -118,14 +111,10 @@ services:
       MYSQL_INIT_CONNECT: 'SET @@GLOBAL.max_allowed_packet=64*1024*1024;'
     volumes:
       - /home/user/pinepods/sql:/var/lib/mysql
-    ports:
-      - "3306:3306"
     restart: always
 
   valkey:
     image: valkey/valkey:8-alpine
-    ports:
-      - "6379:6379"
 
   pinepods:
     image: madeofpendletonwool/pinepods:latest
@@ -136,11 +125,6 @@ services:
       SEARCH_API_URL: 'https://search.pinepods.online/api/search'
       PEOPLE_API_URL: 'https://people.pinepods.online'
       HOSTNAME: 'http://localhost:8040'
-      # Default Admin User Information
-      USERNAME: myadminuser01
-      PASSWORD: myS3curepass
-      FULLNAME: Pinepods Admin
-      EMAIL: user@pinepods.online
       # Database Vars
       DB_TYPE: mariadb
       DB_HOST: db

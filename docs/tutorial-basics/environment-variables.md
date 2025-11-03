@@ -29,6 +29,7 @@ Below are all the environment variables supported by PinePods. These should be c
 |----------|---------------|----------|-------------|
 | `VALKEY_HOST` | `valkey` | **Yes** | Valkey/Redis host for caching and sessions |
 | `VALKEY_PORT` | `6379` | **Yes** | Valkey/Redis port |
+| `VALKEY_PASSWORD` | `ValkeySecurePassword123!` | **No** | Valkey/Redis Password if it's setup. Only required with external custom valkey servers |
 
 ## OIDC (OpenID Connect) Configuration
 

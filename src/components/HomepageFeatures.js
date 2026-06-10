@@ -346,58 +346,58 @@ const ScreenshotsSection = () => {
           </p>
           <div className={styles.screenshotGrid}>
             <div className={styles.screenshotCard}>
-              <img 
-                src="/img/screenshots/web-interface.png" 
-                alt="PinePods Web Interface" 
+              <img
+                src="/img/screenshots/pp-web.png"
+                alt="PinePods Web Interface"
                 className={styles.screenshotImage}
               />
               <div className={styles.screenshotInfo}>
                 <h3>Web Interface (WASM)</h3>
-                <p>Lightning-fast Rust WebAssembly frontend</p>
+                <p>A lightning-fast Rust WebAssembly frontend that feels native in the browser.</p>
               </div>
             </div>
             <div className={styles.screenshotCard}>
-              <img 
-                src="/img/screenshots/android-app.png" 
-                alt="PinePods Android App" 
+              <img
+                src="/img/screenshots/pp-detail.png"
+                alt="PinePods podcast detail view"
                 className={styles.screenshotImage}
               />
               <div className={styles.screenshotInfo}>
-                <h3>Android App</h3>
-                <p>Native Android experience with offline support</p>
+                <h3>Rich Podcast Pages</h3>
+                <p>Chapters, transcripts, people, and funding info &mdash; all in one place.</p>
               </div>
             </div>
             <div className={styles.screenshotCard}>
-              <img 
-                src="/img/screenshots/ios-app.png" 
-                alt="PinePods iOS App" 
+              <img
+                src="/img/screenshots/android-app.png"
+                alt="PinePods Android App"
                 className={styles.screenshotImage}
               />
               <div className={styles.screenshotInfo}>
-                <h3>iOS App</h3>
-                <p>Beautiful native iOS interface</p>
+                <h3>Mobile Apps</h3>
+                <p>Native iOS and Android clients with background playback and offline support.</p>
               </div>
             </div>
             <div className={styles.screenshotCard}>
-              <img 
-                src="/img/screenshots/desktop-app.png" 
-                alt="PinePods Desktop App" 
+              <img
+                src="/img/screenshots/pp-desktop.png"
+                alt="PinePods Desktop App"
                 className={styles.screenshotImage}
               />
               <div className={styles.screenshotInfo}>
                 <h3>Desktop App</h3>
-                <p>Cross-platform desktop application</p>
+                <p>Cross-platform desktop apps for Windows, macOS, and Linux.</p>
               </div>
             </div>
             <div className={styles.screenshotCard}>
-              <img 
-                src="/img/screenshots/cli-tui.png" 
-                alt="PinePods CLI TUI - Firewood" 
+              <img
+                src="/img/screenshots/cli-tui.png"
+                alt="PinePods CLI TUI - Firewood"
                 className={styles.screenshotImage}
               />
               <div className={styles.screenshotInfo}>
                 <h3>CLI TUI (Firewood)</h3>
-                <p>Beautiful terminal interface for power users</p>
+                <p>A beautiful terminal interface for power users who live in the shell.</p>
               </div>
             </div>
           </div>

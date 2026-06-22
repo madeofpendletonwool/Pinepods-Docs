@@ -17,6 +17,18 @@ This occurs when:
 
 **Impact:** This is generally harmless but causes log spam and may cause minor performance issues with text sorting/indexing operations.
 
+> **After a major upgrade?** If you just changed PostgreSQL major versions (e.g.
+> 17 → 18), the underlying `glibc` collation rules genuinely changed, which can affect
+> text and unique indexes. In that case rebuild your indexes **before** refreshing the
+> version flag:
+>
+> ```bash
+> docker compose exec db psql -U postgres -d pinepods_database -c "REINDEX DATABASE pinepods_database;"
+> ```
+>
+> Then run the `REFRESH COLLATION VERSION` commands below. See
+> [Upgrading PostgreSQL](./PostgresMajorUpgrade.md) for the full upgrade flow.
+
 ## Solution
 
 ### For Default Docker Setup (PostgreSQL Container)
@@ -89,8 +101,9 @@ If you're using Docker Compose, you can run:
 # Fix the main PinePods database
 docker compose exec db psql -U postgres -d pinepods_database -c "ALTER DATABASE pinepods_database REFRESH COLLATION VERSION;"
 
-# Fix the postgres database if needed
+# Fix the postgres and template1 system databases if needed
 docker compose exec db psql -U postgres -d postgres -c "ALTER DATABASE postgres REFRESH COLLATION VERSION;"
+docker compose exec db psql -U postgres -d template1 -c "ALTER DATABASE template1 REFRESH COLLATION VERSION;"
 ```
 
 Replace `db` with your PostgreSQL service name from your `docker-compose.yml` file.

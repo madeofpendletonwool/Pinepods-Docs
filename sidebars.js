@@ -86,6 +86,7 @@ module.exports = {
       label: 'Troubleshooting',
       items: [
         'Troubleshooting/CollationVersionMismatchFix',
+        'Troubleshooting/PostgresMajorUpgrade',
       ],
     },
     {

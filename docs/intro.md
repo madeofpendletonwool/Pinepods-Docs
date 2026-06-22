@@ -43,7 +43,7 @@ id -g   # Your GID
 services:
   db:
     container_name: db
-    image: postgres:latest
+    image: postgres:18
     environment:
       POSTGRES_DB: pinepods_database
       POSTGRES_USER: postgres

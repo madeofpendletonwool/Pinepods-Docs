@@ -538,7 +538,9 @@ Once started you'll be able to sign in with your username and password. The serv
 
 #### Android Install :iphone:
 
-The Android app is available now! Grab it from
+The Android app is available now on the
+[Google Play Store](https://play.google.com/store/apps/details?id=com.gooseberrydevelopment.pinepods)!
+You can also install it from
 [IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/com.gooseberrydevelopment.pinepods)
 or via [Obtainium](https://github.com/madeofpendletonwool/PinePods/releases) for direct
 updates from GitHub Releases. Android Auto is supported.

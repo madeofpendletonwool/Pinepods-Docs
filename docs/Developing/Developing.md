@@ -1,6 +1,6 @@
 # Developing
 
-First of all, thanks for considering contributing on Pinepods! Pinepods is a rust project frontend that uses the Yew framework to build a wasm application. On the backend we use fastapi to call data needed from the database of the users choice.
+First of all, thanks for considering contributing on Pinepods! Pinepods is a Rust project — the frontend uses the Yew framework to build a WASM application, and the backend is a Rust (Axum) API that serves data from the database of the user's choice. A separate Go service provides gpodder.net sync. For a deeper look at how the pieces fit together at runtime, see [Container Fundamentals](./Container-Fundamentals.md).
 
 This article outlines how to get Pinepods running in a development environment, and outlines the basics of the architecture.
 
@@ -96,11 +96,12 @@ When you submit your PR, include some required info. Including:
 
 ## Resources for Beginners
 
-New to Rust Web Development or Python Backend? Glad you're here! The following articles should point you in the right direction for getting up to speed with the technologies used in this project:
+New to Rust web development? Glad you're here! The following articles should point you in the right direction for getting up to speed with the technologies used in this project:
 
 - [Open Source for Beginners](https://opensource.guide/how-to-contribute/)
 - [Tutorial for Yew](https://yew.rs/docs/tutorial)
-- [FastAPI Walkthrough](https://fastapi.tiangolo.com/tutorial/first-steps/)
+- [The Rust Book](https://doc.rust-lang.org/book/)
+- [Axum (backend web framework)](https://docs.rs/axum/latest/axum/)
 - [Complete beginners guide to Docker](https://docker-curriculum.com/)
 - [Docker Classroom - Interactive Tutorials](https://training.play-with-docker.com/)
 - [Git cheat sheet](http://git-cheatsheet.com/)

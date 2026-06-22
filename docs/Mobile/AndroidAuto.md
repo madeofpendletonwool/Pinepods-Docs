@@ -5,8 +5,9 @@ from your car's display while keeping your hands on the wheel.
 
 ## Requirements
 
-- The PinePods Android app installed (from
-  [IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/com.gooseberrydevelopment.pinepods)
+- The PinePods Android app installed (from the
+  [Google Play Store](https://play.google.com/store/apps/details?id=com.gooseberrydevelopment.pinepods),
+  [IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/com.gooseberrydevelopment.pinepods),
   or [Obtainium](https://github.com/madeofpendletonwool/PinePods/releases)) and signed in
   to your server.
 - An Android Auto-compatible vehicle or head unit.

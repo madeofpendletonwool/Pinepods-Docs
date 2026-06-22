@@ -218,6 +218,7 @@ Once started you'll be able to sign in with your username and password. The serv
 
 The native Android app is available now, with Android Auto support!
 
+- ▶️ [Google Play Store](https://play.google.com/store/apps/details?id=com.gooseberrydevelopment.pinepods) — the easiest way to install and stay updated
 - 📱 [IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/com.gooseberrydevelopment.pinepods) — install and update through the IzzyOnDroid F-Droid repo
 - 🔄 [Obtainium](https://github.com/madeofpendletonwool/PinePods/releases) — track GitHub Releases for automatic updates
 - 📦 Direct APK from [GitHub Releases](https://github.com/madeofpendletonwool/PinePods/releases)

@@ -347,7 +347,7 @@ const ScreenshotsSection = () => {
           <div className={styles.screenshotGrid}>
             <div className={styles.screenshotCard}>
               <img
-                src="/img/screenshots/pp-web.png"
+                src="/img/screenshots/homepage.png"
                 alt="PinePods Web Interface"
                 className={styles.screenshotImage}
               />
@@ -358,7 +358,7 @@ const ScreenshotsSection = () => {
             </div>
             <div className={styles.screenshotCard}>
               <img
-                src="/img/screenshots/pp-detail.png"
+                src="/img/screenshots/singlepodcastpage.png"
                 alt="PinePods podcast detail view"
                 className={styles.screenshotImage}
               />

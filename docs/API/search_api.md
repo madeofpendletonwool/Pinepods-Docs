@@ -6,7 +6,7 @@ The PinePods Search API is a high-performance Rust-based Actix Web application t
 
 ### ✨ Key Features
 
-- **Multi-Provider Search**: PodcastIndex, iTunes, and YouTube Data API v3 support
+- **Multi-Provider Search**: PodcastIndex, iTunes, and YouTube (YouTube is powered by a bundled `yt-dlp` — **no Google/YouTube API key or quota required**)
 - **Flexible Search Types**: Search by podcast title, person/host, or YouTube channels
 - **Real-time Statistics**: Built-in usage tracking and analytics
 - **High Performance**: Rust-based with async processing
@@ -20,24 +20,31 @@ The PinePods Search API is a high-performance Rust-based Actix Web application t
 ### Prerequisites
 
 - **PodcastIndex API** (Recommended): [Get free API credentials](https://api.podcastindex.org/)
-- **YouTube Data API v3** (Optional): [Get API key](https://developers.google.com/youtube/v3/getting-started)
 - **Docker**: For containerized deployment
+
+YouTube search needs **no API key** — the container bundles `yt-dlp`, which queries
+YouTube directly. iTunes search also requires no key.
 
 ### Environment Configuration
 
 Create an environment file with your API credentials:
 
 ```bash
-# Required for PodcastIndex searches
+# Required for PodcastIndex searches (iTunes and YouTube need no keys)
 API_KEY=your_podcastindex_api_key
 API_SECRET=your_podcastindex_api_secret
-
-# Optional for YouTube channel searches
-YOUTUBE_API_KEY=your_youtube_api_key
 
 # Optional: Logging level
 RUST_LOG=info
 ```
+
+:::info YouTube uses yt-dlp, not the Google API
+Earlier versions of this API used the YouTube Data API v3 and a `YOUTUBE_API_KEY`. That
+is **no longer the case** — YouTube search and channel lookups now shell out to `yt-dlp`,
+which the Docker image installs automatically. There is no API key to manage and no daily
+quota to hit. If you build a custom image, make sure `yt-dlp` is on the `PATH` or YouTube
+features will return a `yt-dlp not available` error.
+:::
 
 ### Docker Deployment
 
@@ -116,9 +123,10 @@ The API handles authentication automatically using configured environment variab
 - **Limited Metadata**: Standard iTunes podcast data
 
 ##### YouTube
-- **Channel Search**: Discover YouTube channels
-- **Rich Media**: Thumbnails, subscriber counts, recent videos
-- **Real-time Data**: Live statistics and content
+- **Channel Search**: Discover YouTube channels (results are deduplicated by channel, up to ~25)
+- **Powered by yt-dlp**: No API key or quota required
+- **Thumbnails & recent videos**: Channel details include the most recent videos (see the
+  `/api/youtube/channel` endpoint)
 
 #### Example Requests
 
@@ -166,13 +174,21 @@ curl -X GET 'http://localhost:5000/api/podcast?id=920666'
 
 **Endpoint:** `GET /api/youtube/channel`
 
-**Description:** Get comprehensive YouTube channel information including statistics and recent videos
+**Description:** Get YouTube channel information and its most recent videos (up to 15),
+fetched via `yt-dlp`.
 
 #### Parameters
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `id` | string | Yes | YouTube Channel ID |
+
+:::note
+`subscriberCount` and `videoCount` are part of the response shape but are **not currently
+populated** by the `yt-dlp` flat fetch — they are returned as `null`. The
+`recentVideos` array (id, title, description, url, thumbnail, `publishedAt`, and a
+`PT#M#S` ISO-8601 `duration`) is the data PinePods actually uses.
+:::
 
 #### Example Request
 
@@ -346,20 +362,21 @@ curl -X GET 'http://localhost:5000/api/stats'
 
 ### Error Response Format
 
-```json
-{
-  "error": "API_KEY not set",
-  "status": 500,
-  "timestamp": "2024-01-15T14:30:00.000Z"
-}
+Errors are returned as a **plain-text body** with the relevant HTTP status code (most
+failures are `500`), not as a JSON envelope. For example:
+
+```
+API_KEY not set
 ```
 
 ### Common Error Messages
 
 - `"API_KEY not set"` - PodcastIndex API key missing
-- `"API_SECRET not set"` - PodcastIndex API secret missing  
-- `"YouTube API key not configured"` - YouTube API key missing
-- `"Channel not found"` - YouTube channel ID invalid
+- `"API_SECRET not set"` - PodcastIndex API secret missing
+- `"yt-dlp not available"` - `yt-dlp` is not installed / not on the `PATH`
+- `"yt-dlp search failed"` - YouTube channel search via `yt-dlp` failed
+- `"yt-dlp channel fetch failed"` - Fetching a channel's videos via `yt-dlp` failed
+- `"Channel not found or has no videos"` - YouTube channel ID invalid or empty
 - `"Failed to parse response body"` - External API returned invalid data
 
 ---
@@ -372,8 +389,10 @@ curl -X GET 'http://localhost:5000/api/stats'
 |----------|----------|---------|-------------|
 | `API_KEY` | Yes (for PodcastIndex) | - | PodcastIndex API Key |
 | `API_SECRET` | Yes (for PodcastIndex) | - | PodcastIndex API Secret |
-| `YOUTUBE_API_KEY` | No | - | YouTube Data API v3 Key |
 | `RUST_LOG` | No | `info` | Logging level (`error`, `warn`, `info`, `debug`, `trace`) |
+
+iTunes and YouTube require no environment configuration — iTunes is keyless and YouTube
+is served by the bundled `yt-dlp`.
 
 ### Network Configuration
 
@@ -404,14 +423,14 @@ curl -X GET 'http://localhost:5000/api/stats'
 
 3. **YouTube**
    - ✅ Video content discovery
-   - ✅ Real-time statistics
-   - ✅ Rich media thumbnails
-   - ❌ Requires API key with quotas
+   - ✅ No API key required (uses bundled `yt-dlp`)
+   - ✅ Rich media thumbnails and recent videos
+   - ❌ Subject to YouTube's own rate limiting / anti-bot measures; keep `yt-dlp` updated
 
 ### Performance Optimization
 
 - **Caching**: Implement client-side caching for frequently accessed content
-- **Rate Limiting**: Respect external API rate limits (PodcastIndex: no limit, YouTube: quota-based)
+- **Rate Limiting**: Respect external rate limits (PodcastIndex: no limit; YouTube: no API quota, but YouTube may throttle scraping — keep `yt-dlp` current)
 - **Batch Requests**: Use appropriate search result limits (max 25-50 results)
 - **Error Handling**: Implement retry logic with exponential backoff
 
@@ -449,10 +468,15 @@ curl -v "http://localhost:5000/api/search?query=test&index=podcastindex"
 
 #### YouTube Search Not Working
 ```bash
-# Verify YouTube API key
+# Test a YouTube search
 curl -v "http://localhost:5000/api/search?query=test&index=youtube"
 
-# Check YouTube API quota in Google Cloud Console
+# Confirm yt-dlp is installed and on PATH inside the container
+docker exec -it pinepods-search-api yt-dlp --version
+
+# A "yt-dlp not available" response means yt-dlp is missing from the image.
+# Persistent failures usually mean yt-dlp is out of date — update it:
+docker exec -it pinepods-search-api yt-dlp -U
 ```
 
 ### Logging and Monitoring

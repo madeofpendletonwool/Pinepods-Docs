@@ -216,19 +216,17 @@ Once started you'll be able to sign in with your username and password. The serv
 
 ### Android Install :iphone:
 
-The Android client is currently in **internal testing**!
+The native Android app is available now, with Android Auto support!
 
-📱 [Join the Beta Testing Program](/internal-testing) to get early access to the native Android app.
-
-In the meantime, the web app works great for phones. Otherwise, if you sync using Nextcloud you can use the AntennaPods app and your podcasts will sync between AntennaPod and Pinepods.
+- 📱 [IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/com.gooseberrydevelopment.pinepods) — install and update through the IzzyOnDroid F-Droid repo
+- 🔄 [Obtainium](https://github.com/madeofpendletonwool/PinePods/releases) — track GitHub Releases for automatic updates
+- 📦 Direct APK from [GitHub Releases](https://github.com/madeofpendletonwool/PinePods/releases)
 
 ### iOS Install :iphone:
 
-The iOS client is currently in **internal testing**!
+The native iOS app is on the [App Store](https://apps.apple.com/us/app/pinepods/id6751441116), with CarPlay support!
 
-🍎 [Join the Beta Testing Program](/internal-testing) to get early access to the native iOS app via TestFlight.
-
-The web app works great for phones and can be added to your home screen for a native-like experience.
+Search for "Pinepods" in the App Store or use the link above to install.
 
 ### Firewood (CLI TUI player)
 

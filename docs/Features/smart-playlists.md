@@ -6,6 +6,8 @@ This document explains all the available options when creating smart playlists i
 
 Smart playlists in PinePods are dynamic collections of episodes that are automatically populated based on a set of criteria you define. The playlist content is updated periodically to match your criteria, ensuring fresh and relevant episodes are always available.
 
+![Creating a smart playlist in PinePods](/img/screenshots/playlistcreator.png)
+
 ## Basic Information
 
 ### Name (Required)
@@ -176,3 +178,5 @@ PinePods includes seven built-in system playlists that demonstrate advanced filt
 - **Weekend Marathon**: Longer episodes (30+ minutes) perfect for weekend listening using duration filtering
 
 These system playlists cannot be deleted but serve as examples of effective playlist configurations and provide immediate value for different listening scenarios.
+
+![The Commuter Mix smart playlist populated with episodes](/img/screenshots/playlistpage.png)

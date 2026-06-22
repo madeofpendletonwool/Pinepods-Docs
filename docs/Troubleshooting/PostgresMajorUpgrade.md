@@ -75,8 +75,8 @@ Follow its prompts, then continue with [After the Upgrade](#after-the-upgrade) b
    ```
 
 2. **Temporarily** point the `db` service at `pgautoupgrade` and tell it to upgrade
-   then exit. Keep the **same** volume, `PGDATA`, and `POSTGRES_*` values you already
-   use:
+   then exit. Keep the **same host path** and `POSTGRES_*` values you already use, but
+   move the mount and `PGDATA` to `/var/lib/pgdata` (see the note below):
 
    ```yaml
    services:
@@ -87,11 +87,19 @@ Follow its prompts, then continue with [After the Upgrade](#after-the-upgrade) b
          POSTGRES_DB: pinepods_database
          POSTGRES_USER: postgres
          POSTGRES_PASSWORD: myS3curepass
-         PGDATA: /var/lib/postgresql/data/pgdata
+         PGDATA: /var/lib/pgdata/pgdata
          PGAUTO_ONESHOT: "yes"                         # upgrade, then exit
        volumes:
-         - /home/user/pinepods/pgdata:/var/lib/postgresql/data
+         - /home/user/pinepods/pgdata:/var/lib/pgdata
    ```
+
+   > **Why the path changes from `/var/lib/postgresql/data` to `/var/lib/pgdata`:** the
+   > `postgres:18` image (which `pgautoupgrade:18-trixie` is based on) declares
+   > `/var/lib/postgresql` as a `VOLUME`. Bind-mounting *under* it can fail on some
+   > Linux/overlay2 hosts with `change mount propagation ... no such file or directory`
+   > ([docker-library/postgres#1363](https://github.com/docker-library/postgres/issues/1363)).
+   > Mounting at `/var/lib/pgdata` sidesteps this. Your **host** path is unchanged, so
+   > no files move on disk — the cluster still lives at `/home/user/pinepods/pgdata/pgdata`.
 
 3. **Run only the database** and let it upgrade. With `PGAUTO_ONESHOT=yes` the
    container performs the upgrade and exits cleanly (exit code 0):
@@ -103,14 +111,22 @@ Follow its prompts, then continue with [After the Upgrade](#after-the-upgrade) b
    Watch the logs — you should see it detect the old version and run `pg_upgrade`
    successfully, then stop.
 
-4. **Switch back to the stock image** and remove the one-shot variable. Your data
-   directory is now version 18:
+4. **Switch back to the stock image** and remove the one-shot variable. Keep the
+   `/var/lib/pgdata` mount and `PGDATA` from step 2. Your data directory is now
+   version 18:
 
    ```yaml
    services:
      db:
-       image: postgres:18
-       # remove PGAUTO_ONESHOT
+       image: postgres:18                              # was pgautoupgrade
+       environment:
+         POSTGRES_DB: pinepods_database
+         POSTGRES_USER: postgres
+         POSTGRES_PASSWORD: myS3curepass
+         PGDATA: /var/lib/pgdata/pgdata
+         # PGAUTO_ONESHOT removed
+       volumes:
+         - /home/user/pinepods/pgdata:/var/lib/pgdata
    ```
 
 5. **Start everything normally:**
@@ -178,7 +194,9 @@ version-independent:
    ```
 
 2. Stop the stack, move the old data directory aside, and point the volume at a new
-   empty directory. Set the `db` image to `postgres:18`.
+   empty directory. Set the `db` image to `postgres:18` and use the `VOLUME`-safe mount
+   from the [recommended path](#option-2--manual-with-your-existing-compose-file)
+   (`PGDATA: /var/lib/pgdata/pgdata`, mounted at `/var/lib/pgdata`).
 3. Start only `db` so version 18 initializes a fresh data directory, then restore:
 
    ```bash

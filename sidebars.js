@@ -50,6 +50,16 @@ module.exports = {
       label: 'Features',
       items: [
         'Features/smart-playlists',
+        'Features/Queue',
+        'Features/Downloads',
+        'Features/AutoDownload',
+        'Features/SerialPodcasts',
+        'Features/Video',
+        'Features/LocalPodcasts',
+        'Features/Favorites',
+        'Features/SharedLinks',
+        'Features/Statistics',
+        'Features/CustomThemes',
         'Features/gpodder-sync',
         'Features/Search',
         'Features/Chapters',
@@ -63,6 +73,9 @@ module.exports = {
       label: 'Mobile',
       items: [
         'Mobile/SettingUpMobileApp',
+        'Mobile/CarPlay',
+        'Mobile/AndroidAuto',
+        'Mobile/OfflineQueue',
       ],
     },
     {

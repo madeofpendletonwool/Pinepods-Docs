@@ -30,12 +30,19 @@ The Pinepods mobile app is a Flutter-based application that connects to your Pin
 
 ### Android Installation
 
-#### Google Play Store Download
-1. **Open Play Store**: Launch Google Play Store on your Android device
-2. **Search Application**: Search for "Pinepods" in the store
-3. **Official App**: Select the official Pinepods application
-4. **Install**: Tap "Install" to begin the download process
-5. **Complete Installation**: Wait for the app to finish installing
+The Android app is distributed through the IzzyOnDroid F-Droid repository, Obtainium,
+and direct APK download — not the Google Play Store.
+
+#### IzzyOnDroid (Recommended)
+1. **Add the IzzyOnDroid repo**: Follow the setup at [apt.izzysoft.de](https://apt.izzysoft.de/fdroid/index/apk/com.gooseberrydevelopment.pinepods)
+2. **Search Application**: Search for "Pinepods" in your F-Droid client
+3. **Install**: Tap "Install" to begin the download process
+4. **Updates**: Updates arrive automatically through the IzzyOnDroid repo
+
+#### Obtainium
+For direct updates from GitHub Releases, add PinePods to
+[Obtainium](https://github.com/madeofpendletonwool/PinePods/releases) and it will track
+new releases automatically.
 
 #### System Requirements
 - **Android Version**: Android 6.0 (API level 23) or higher

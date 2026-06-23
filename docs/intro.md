@@ -458,7 +458,7 @@ This will deploy Pinepods on your Kubernetes cluster with a postgres database. M
 
 Check out the Tutorials on the documentation site for more information on how to do basic things.
 
-https://pinepods.online/tutorial-basic/sign-in-homescreen.md
+[Tutorial: Signing in & the home screen](/docs/tutorial-basics/sign-in-homescreen)
 
 ## Client Installs
 

@@ -1,0 +1,594 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "PinePods API",
+    "description": "HTTP API for the PinePods podcast server. Most endpoints require an `Api-Key` header tied to a user account; admin-only endpoints additionally require an admin (or web) key. This reference is generated directly from the backend source, so it stays in sync with the running code.",
+    "license": {
+      "name": "GPL-3.0-or-later"
+    },
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "This PinePods server (same origin as the API)"
+    }
+  ],
+  "paths": {
+    "/api/data/create_playlist": {
+      "post": {
+        "tags": [
+          "playlists"
+        ],
+        "summary": "Create a playlist",
+        "operationId": "create_playlist",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePlaylistRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Playlist created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatePlaylistResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid API key"
+          },
+          "403": {
+            "description": "Cannot create a playlist for another user"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/api/data/delete_playlist": {
+      "delete": {
+        "tags": [
+          "playlists"
+        ],
+        "summary": "Delete a playlist",
+        "operationId": "delete_playlist",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeletePlaylistRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Playlist deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletePlaylistResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid API key"
+          },
+          "403": {
+            "description": "Cannot delete another user's playlist"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/api/data/update_playlist": {
+      "patch": {
+        "tags": [
+          "playlists"
+        ],
+        "summary": "Update a playlist",
+        "operationId": "update_playlist",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePlaylistRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Playlist updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdatePlaylistResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid API key"
+          },
+          "403": {
+            "description": "Cannot edit another user's playlist"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/api/episodes/{episode_id}/download": {
+      "get": {
+        "tags": [
+          "episodes"
+        ],
+        "summary": "Download an episode media file",
+        "operationId": "download_episode_file",
+        "parameters": [
+          {
+            "name": "episode_id",
+            "in": "path",
+            "description": "Episode ID to download",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "api_key",
+            "in": "query",
+            "description": "API key (alternative to the Api-Key header)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Episode media file stream",
+            "content": {
+              "application/octet-stream": {}
+            }
+          },
+          "401": {
+            "description": "API key is required or invalid"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/api/health": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Health check endpoint with database and Redis status\nGET /api/health",
+        "operationId": "health_check",
+        "responses": {
+          "200": {
+            "description": "Database and Redis connectivity status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Service is unhealthy"
+          }
+        }
+      }
+    },
+    "/api/pinepods_check": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "PinePods instance check endpoint - matches Python API exactly\nGET /api/pinepods_check",
+        "operationId": "pinepods_check",
+        "responses": {
+          "200": {
+            "description": "Confirms this is a PinePods instance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PinepodsCheckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreatePlaylistRequest": {
+        "type": "object",
+        "required": [
+          "user_id",
+          "name",
+          "include_unplayed",
+          "include_partially_played",
+          "include_played",
+          "sort_order",
+          "group_by_podcast",
+          "icon_name"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "podcast_ids": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "include_unplayed": {
+            "type": "boolean"
+          },
+          "include_partially_played": {
+            "type": "boolean"
+          },
+          "include_played": {
+            "type": "boolean"
+          },
+          "play_progress_min": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          },
+          "play_progress_max": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          },
+          "time_filter_hours": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "min_duration": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "max_duration": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "sort_order": {
+            "type": "string"
+          },
+          "group_by_podcast": {
+            "type": "boolean"
+          },
+          "max_episodes": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "icon_name": {
+            "type": "string"
+          }
+        }
+      },
+      "CreatePlaylistResponse": {
+        "type": "object",
+        "required": [
+          "detail",
+          "playlist_id"
+        ],
+        "properties": {
+          "detail": {
+            "type": "string"
+          },
+          "playlist_id": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "DeletePlaylistRequest": {
+        "type": "object",
+        "required": [
+          "user_id",
+          "playlist_id"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "playlist_id": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "DeletePlaylistResponse": {
+        "type": "object",
+        "required": [
+          "detail"
+        ],
+        "properties": {
+          "detail": {
+            "type": "string"
+          }
+        }
+      },
+      "HealthResponse": {
+        "type": "object",
+        "required": [
+          "status",
+          "database",
+          "redis",
+          "timestamp"
+        ],
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "database": {
+            "type": "boolean"
+          },
+          "redis": {
+            "type": "boolean"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PinepodsCheckResponse": {
+        "type": "object",
+        "required": [
+          "status_code",
+          "pinepods_instance"
+        ],
+        "properties": {
+          "status_code": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "pinepods_instance": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UpdatePlaylistRequest": {
+        "type": "object",
+        "required": [
+          "user_id",
+          "playlist_id",
+          "name",
+          "include_unplayed",
+          "include_partially_played",
+          "include_played",
+          "sort_order",
+          "group_by_podcast",
+          "icon_name"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "playlist_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "podcast_ids": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "include_unplayed": {
+            "type": "boolean"
+          },
+          "include_partially_played": {
+            "type": "boolean"
+          },
+          "include_played": {
+            "type": "boolean"
+          },
+          "play_progress_min": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          },
+          "play_progress_max": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double"
+          },
+          "time_filter_hours": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "min_duration": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "max_duration": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "sort_order": {
+            "type": "string"
+          },
+          "group_by_podcast": {
+            "type": "boolean"
+          },
+          "max_episodes": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
+          },
+          "icon_name": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdatePlaylistResponse": {
+        "type": "object",
+        "required": [
+          "detail"
+        ],
+        "properties": {
+          "detail": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "api_key": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Api-Key"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "health",
+      "description": "Health and instance checks (no auth)"
+    },
+    {
+      "name": "auth",
+      "description": "Authentication, sessions, MFA, and OIDC"
+    },
+    {
+      "name": "podcasts",
+      "description": "Podcast subscriptions, episodes, queue, and playback"
+    },
+    {
+      "name": "episodes",
+      "description": "Episode actions: download, save, share, bulk ops"
+    },
+    {
+      "name": "playlists",
+      "description": "Smart and manual playlists"
+    },
+    {
+      "name": "settings",
+      "description": "User and server settings"
+    },
+    {
+      "name": "sync",
+      "description": "gpodder / Nextcloud synchronization"
+    },
+    {
+      "name": "tasks",
+      "description": "Background tasks and progress"
+    },
+    {
+      "name": "feed",
+      "description": "Public RSS feed generation"
+    },
+    {
+      "name": "proxy",
+      "description": "Media and image proxying"
+    },
+    {
+      "name": "local",
+      "description": "Local podcasts and media"
+    },
+    {
+      "name": "youtube",
+      "description": "YouTube channel integration"
+    }
+  ]
+}

@@ -8,6 +8,11 @@ The search API is used for finding new podcasts. In order for Pinepods to search
 
 ## Database API
 
-The database API is how the Pinepods clients (web, desktop, and mobile) interact with the database. It is the main **Rust (Axum) API** that runs inside the primary Pinepods container — not a separate Python/FastAPI service. All clients talk to it over the same HTTP API and authenticate with **API keys**: the web UI obtains a key automatically once you sign in, while the desktop and mobile apps require you to enter your server URL and credentials when you first connect. Internally it listens on its own port and is reached through the container's nginx reverse proxy. See the [Database Queries](./database_queries.md) page for details on working with it.
+The database API is how the Pinepods clients (web, desktop, and mobile) interact with the database. It is the main **Rust (Axum) API** that runs inside the primary Pinepods container — not a separate Python/FastAPI service. All clients talk to it over the same HTTP API and authenticate with **API keys**: the web UI obtains a key automatically once you sign in, while the desktop and mobile apps require you to enter your server URL and credentials when you first connect. Internally it listens on its own port and is reached through the container's nginx reverse proxy.
+
+The full endpoint reference is **generated directly from the backend source** (OpenAPI 3.1), so it stays in sync with the running code:
+
+- 📖 **[Interactive API Reference](/docs/API/reference/)** — browse every documented endpoint here.
+- 🧪 **Live docs on your own server** — visit `/api/docs` on your PinePods instance for an always-current interactive UI, or fetch the raw spec at `/api/openapi.json`.
 
 Continue on into the documentation pages for these APIs to get an understanding of how they work and how to access data over each of them.

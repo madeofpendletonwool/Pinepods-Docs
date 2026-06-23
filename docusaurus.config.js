@@ -32,6 +32,24 @@ module.exports = {
 
   presets: [
     [
+      "redocusaurus",
+      {
+        // Renders the auto-generated PinePods API spec as an interactive reference.
+        // The spec is generated from the Rust backend (rust-api/openapi.json) and
+        // synced here via scripts/sync-openapi.sh.
+        specs: [
+          {
+            id: "pinepods-api",
+            spec: "static/openapi.json",
+            route: "/docs/API/reference/",
+          },
+        ],
+        theme: {
+          primaryColor: "#2E7D32",
+        },
+      },
+    ],
+    [
       "@docusaurus/preset-classic",
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({

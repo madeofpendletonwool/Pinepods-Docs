@@ -90,6 +90,7 @@ module.exports = {
       label: 'API',
       items: [
         'API/api_intro',
+        { type: 'link', label: 'API Reference (interactive)', href: '/docs/API/reference/' },
         'API/database_queries',
         'API/search_api',
       ],

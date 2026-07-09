@@ -40,9 +40,11 @@ Already running Postgres 17? See [Upgrading PostgreSQL](/docs/Troubleshooting/Po
 :::
 
 #### User Permissions
-Pinepods can run with specific user permissions to ensure downloaded files are accessible on the host system. This is controlled through two environment variables:
-- `PUID`: Process User ID (defaults to 1000 if not set)
-- `PGID`: Process Group ID (defaults to 1000 if not set)
+Pinepods can run as a non-root user so downloaded files are accessible on the host system. This is controlled through two environment variables:
+- `PUID`: Process User ID — the host user the stack runs as
+- `PGID`: Process Group ID — the host group the stack runs as
+
+When `PUID`/`PGID` are set, `startup.sh` remaps the container's `pinepods` user to those IDs and drops privileges with `su-exec`, so the entire stack runs as your host user. The compose examples below pass `${UID:-911}`/`${GID:-911}`, so they fall back to `911` if `UID`/`GID` aren't exported in your shell. If `PUID`/`PGID` are left unset entirely, the container runs as root (legacy mode).
 
 To find your user's UID and GID, run:
 ```bash

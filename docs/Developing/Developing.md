@@ -43,7 +43,7 @@ sudo docker build -t madeofpendletonwool/pinepods:latest .
 
 Then once built you can run the container with **[Docker Compose](https://github.com/madeofpendletonwool/PinePods/tree/main/deployment/docker/compose-files)**. Once you have the backend running you can connect to the server and sign in with your development frontend. Go to the development server url: http://localhost:8080 by default. Click the connect to different server button:
 
-![Connect Different Server Button](../../static/img/diff-serv.png)
+![Connect Different Server Button](/img/diff-serv.png)
 
 And then enter the server url in the server name: http://localhost:8040 by default with the compose file linked above. You're now signed into a dev Pinepods server using a local backend!
 

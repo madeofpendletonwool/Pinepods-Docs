@@ -12,7 +12,7 @@ PodPeopleDB automatically imports host and guest information from podcast feeds 
 
 If you open up a podcast without hosts associated with it yet you'll see a link to submit hosts to the PodPeople page for that specific podcast. 
 
-![People Empty Podcast;](../../static/img/peopleempty.png)
+![People Empty Podcast;](/img/peopleempty.png)
 
 Clicking that link will present you with a page to for the podcast where you can enter host information.
 

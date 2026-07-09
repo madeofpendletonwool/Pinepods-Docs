@@ -70,6 +70,16 @@ module.exports = {
     },
     {
       type: 'category',
+      label: 'AI Features',
+      items: [
+        'AI/Overview',
+        'AI/Setup',
+        'AI/Transcription',
+        'AI/AdDetection',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Mobile',
       items: [
         'Mobile/SettingUpMobileApp',
@@ -109,6 +119,7 @@ module.exports = {
       items: [
         'Developing/Developing',
         'Developing/Container-Fundamentals',
+        'Developing/Versioning',
       ],
     },
   ],

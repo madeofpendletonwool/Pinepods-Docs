@@ -8,7 +8,7 @@ You can now setup OIDC logins in Pinepods to use either your own self-hosted OID
 
 Before we get started your OIDC provider may provider the option to upload an image of Pinepods to use as the App Image. You should be able to use the one below:
 
-![Pinepods App Image](../../static/img/favicon.png)
+![Pinepods App Image](/img/favicon.png)
 
 ### Using a self-hosted provider (Highly Recommended)
 
@@ -16,17 +16,17 @@ Seriously, since you're already self-hosted Pinepods you might as well self-host
 
 1. First head over to the settings page of Pinepods and open up the OIDC settings area
 
-![OIDC Settings](../../static/img/oidcsettings.png)
+![OIDC Settings](/img/oidcsettings.png)
 
 2. Now click Add Provider - On this page you'll need to fill out the options according to your provider.
 
 3. Create a new OIDC client in your provider. Enter the callback URL that you can copy from Pinepods into the OIDC provider where it's required. Should be something like this. Do not check public client or PKCE.
 
-![OIDC callback](../../static/img/oidccallback.png)
+![OIDC callback](/img/oidccallback.png)
 
 4. Now your provider should give you all the options that Pinepods needs to be setup
 
-![OIDC Options](../../static/img/oidcoptions.png)
+![OIDC Options](/img/oidcoptions.png)
 
 5. Go ahead and copy over everything from your provider into the correct fields in Pinepods (You probably won't use every option your provider gave you. That's fine, Pinepods only needs the auth token, and user info url. Along with the ID and secret)
 
@@ -46,7 +46,7 @@ Seriously, since you're already self-hosted Pinepods you might as well self-host
 
 11. Hit submit! Now go ahead and log out. From here you might need to refresh but you should now see the OIDC login button appear on the page for you. Go ahead and click it. It will route you outside Pinepods and then back in once you've authenticated where you'll setup your account.
 
-![OIDC Button](../../static/img/myoidcbutton.png)
+![OIDC Button](/img/myoidcbutton.png)
 
 
 ### Using a Nextcloud as your OIDC provider (Also works great)
@@ -55,13 +55,13 @@ This option is great is you already have a Nextcloud Server spun up.
 
 1. First head over to the settings page of Pinepods and open up the OIDC settings area
 
-![OIDC Settings](../../static/img/oidcsettings.png)
+![OIDC Settings](/img/oidcsettings.png)
 
 2. Now click Add Provider - On this page you'll need to fill out the options according to your provider.
 
 3. Install or ensure you have the Nextcloud OIDC Provider app. It's [this](https://github.com/H2CK/oidc). You should be able to search for and install this in Nextcloud
 
-![Nextcloud OIDC](../../static/img/nextcloud-oidc.png)
+![Nextcloud OIDC](/img/nextcloud-oidc.png)
 
 3. Create a new OIDC client in Nextcloud. Go to Admin Settings -> Security -> OpenID Connect clients. Create a new client. Call it something like 'Pinepods Login', enter the redirect URL from the Pinepods OIDC page, leave RS256 selected, and leave Confidential.
 
@@ -93,7 +93,7 @@ This option is great is you already have a Nextcloud Server spun up.
 
 11. Hit submit! Now go ahead and log out. From here you might need to refresh but you should now see the OIDC login button appear on the page for you. Go ahead and click it. It will route you outside Pinepods and then back in once you've authenticated where you'll setup your account.
 
-![OIDC Button](../../static/img/myoidcbutton.png)
+![OIDC Button](/img/myoidcbutton.png)
 
 
 ### Using Github As your OIDC Provider

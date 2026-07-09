@@ -195,7 +195,7 @@ The image is built in several stages and assembled into a small Alpine final ima
 ```bash
 # Database
 DB_TYPE=<postgresql|mysql>
-DB_HOST=<host>
+DB_HOST=<host or Unix socket directory>
 DB_PORT=<port>
 DB_USER=<user>
 DB_PASSWORD=<password>
@@ -242,6 +242,23 @@ To run PinePods natively you would reproduce what the container does:
    table above (UI on 8040).
 6. Optionally use a supervisor (the container uses Horust) to keep the three services
    running and ordered.
+
+:::tip Connecting over a Unix socket
+On a bare-metal install you can point PinePods at a local database over a Unix domain
+socket instead of TCP. Set `DB_HOST` to the socket **directory** (an absolute path
+beginning with `/`) rather than a hostname or IP:
+
+```bash
+# PostgreSQL default socket directory
+DB_HOST=/var/run/postgresql
+DB_PORT=5432
+```
+
+Keep `DB_PORT` set — PostgreSQL names its socket file `.s.PGSQL.<port>`, so the port
+still selects the right socket. Any `DB_HOST` value starting with `/` is treated as a
+socket path; anything else is treated as a TCP host. This works for both PostgreSQL and
+MySQL/MariaDB.
+:::
 
 ## Logging & Debug Mode
 

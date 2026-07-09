@@ -17,7 +17,7 @@ The PinePods Search API is a high-performance Rust-based Actix Web application t
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### Getting Required API Keys
 
 - **PodcastIndex API** (Recommended): [Get free API credentials](https://api.podcastindex.org/)
 - **Docker**: For containerized deployment

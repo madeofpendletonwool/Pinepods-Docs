@@ -21,6 +21,7 @@ module.exports = {
         'tutorial-basics/browsing-podcasts',
         'tutorial-basics/searching-and-adding',
         'tutorial-basics/settings',
+        'tutorial-basics/environment-variables',
         'tutorial-basics/adding-an-api-key',
         'tutorial-basics/Theming',
         'tutorial-basics/PlaybackSettings',
@@ -92,7 +93,9 @@ module.exports = {
       type: 'category',
       label: 'Firewood',
       items: [
-        'Firewood (CLI)/UsingPinepodsFirewood',
+        'Firewood CLI/UsingPinepodsFirewood',
+        'Firewood CLI/LoginPinepodsFirewood',
+        'Firewood CLI/Beaming',
       ],
     },
     {
@@ -111,6 +114,7 @@ module.exports = {
       items: [
         'Troubleshooting/CollationVersionMismatchFix',
         'Troubleshooting/PostgresMajorUpgrade',
+        'Troubleshooting/PostgreSQL-18-Docker-Issue',
       ],
     },
     {

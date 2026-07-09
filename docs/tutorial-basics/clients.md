@@ -1,5 +1,10 @@
 # Using Clients in Pinepods
 
+[![Discord](https://img.shields.io/badge/discord-join%20chat-5B5EA6)](https://discord.gg/bKzHRa4GNc)
+[![Chat on Matrix](https://matrix.to/img/matrix-badge.svg)](https://matrix.to/#/#pinepods:matrix.org)
+[![Docker Container Build](https://github.com/madeofpendletonwool/PinePods/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/madeofpendletonwool/PinePods/actions)
+[![GitHub Release](https://img.shields.io/github/v/release/madeofpendletonwool/pinepods)](https://github.com/madeofpendletonwool/PinePods/releases)
+
 *Client* in Pinepods refers to an external app that connects to your Pinepods server. The server being hosted via Docker and the client installed generally as an app on your device locally. In fact when you setup Pinepods via docker it technically comes pre-setup with a client. Which is the web version. This page is details on installing clients besides the web version should you choose to. (The mobile apps are HIGHLY recommended if you listen to podcasts on the go)
 
 There's client versions of Pinepods for Linux (Deb, Appimage, Flatpak, AUR, and RPM), Mac, Windows, Android, and iOS. Scroll down for install instructions.
@@ -60,7 +65,7 @@ makepkg -si
 
 Download and install the DEB package:
 
-Dowmload the latest deb (here)[https://github.com/madeofpendletonwool/PinePods/releases]
+Download the latest deb [here](https://github.com/madeofpendletonwool/PinePods/releases)
 
 ```bash
 
@@ -78,7 +83,7 @@ pinepods
 
 Download and install the RPM package:
 
-Dowmload the latest rpm (here)[https://github.com/madeofpendletonwool/PinePods/releases]
+Download the latest rpm [here](https://github.com/madeofpendletonwool/PinePods/releases)
 
 
 ```bash
@@ -96,7 +101,7 @@ pinepods
 
 Linux Mint supports both DEB packages and Flatpak:
 
-Dowmload the latest deb (here)[https://github.com/madeofpendletonwool/PinePods/releases]
+Download the latest deb [here](https://github.com/madeofpendletonwool/PinePods/releases)
 
 
 ```bash
@@ -121,7 +126,7 @@ flatpak install flathub com.gooseberrydevelopment.pinepods
 
 Pop!_OS supports both DEB and Flatpak:
 
-Dowmload the latest deb (here)[https://github.com/madeofpendletonwool/PinePods/releases]
+Download the latest deb [here](https://github.com/madeofpendletonwool/PinePods/releases)
 
 
 ```bash
@@ -151,7 +156,7 @@ yay -S pinepods
 
 Perfect for any Linux distribution or when you don't have admin privileges:
 
-Dowmload the latest appimage (here)[https://github.com/madeofpendletonwool/PinePods/releases]
+Download the latest appimage [here](https://github.com/madeofpendletonwool/PinePods/releases)
 
 
 ```bash
@@ -210,7 +215,7 @@ There's a dmg and pinepods_mac file.
 
 Simply extract, and then go into Contents/MacOS. From there you can run the app.
 
-The dmg file will prompt you to install the Pinepods client into your applications fileter while the _mac file will just run a portable version of the app.
+The dmg file will prompt you to install the Pinepods client into your applications folder while the _mac file will just run a portable version of the app.
 
 Once started you'll be able to sign in with your username and password. The server name is simply the url you browse to to access the server.
 
@@ -231,7 +236,22 @@ Search for "Pinepods" in the App Store or use the link above to install.
 
 ### Firewood (CLI TUI player)
 
-Pinepods also includes a terminal-based client called Firewood. See the **Firewood** section in the documentation sidebar for detailed installation and usage instructions.
+**Pinepods Firewood** is now available! It's a beautiful terminal-based client for power users who prefer command-line interfaces.
+
+**Installation:**
+
+1. **Download from GitHub**
+   - Visit the [Pinepods Firewood repository](https://github.com/madeofpendletonwool/pinepods-firewood)
+   - Download the latest release for your platform
+   - Follow the installation instructions in the repository
+
+2. **Features:**
+   - Beautiful terminal user interface (TUI)
+   - Full podcast management capabilities
+   - Lightweight and fast
+   - Perfect for remote servers and headless systems
+
+See the **Firewood** section in the documentation sidebar for detailed installation and usage instructions.
 
 
 #### Troubleshooting

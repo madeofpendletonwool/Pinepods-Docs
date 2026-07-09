@@ -354,6 +354,7 @@ const ScreenshotsSection = () => {
               <div className={styles.screenshotInfo}>
                 <h3>Web Interface (WASM)</h3>
                 <p>A lightning-fast Rust WebAssembly frontend that feels native in the browser.</p>
+                <a href="https://github.com/madeofpendletonwool/PinePods/releases" className={styles.downloadLink}>Download from Releases</a>
               </div>
             </div>
             <div className={styles.screenshotCard}>
@@ -376,6 +377,8 @@ const ScreenshotsSection = () => {
               <div className={styles.screenshotInfo}>
                 <h3>Mobile Apps</h3>
                 <p>Native iOS and Android clients with background playback and offline support.</p>
+                <a href="https://apps.apple.com/us/app/pinepods/id6751441116" className={styles.downloadLink}>Download on App Store</a>
+                <a href="https://play.google.com/store/apps/details?id=com.gooseberrydevelopment.pinepods" className={styles.downloadLink}>Get it on Google Play</a>
               </div>
             </div>
             <div className={styles.screenshotCard}>
@@ -387,6 +390,7 @@ const ScreenshotsSection = () => {
               <div className={styles.screenshotInfo}>
                 <h3>Desktop App</h3>
                 <p>Cross-platform desktop apps for Windows, macOS, and Linux.</p>
+                <a href="https://github.com/madeofpendletonwool/PinePods/releases" className={styles.downloadLink}>Download from Releases</a>
               </div>
             </div>
             <div className={styles.screenshotCard}>
@@ -398,6 +402,7 @@ const ScreenshotsSection = () => {
               <div className={styles.screenshotInfo}>
                 <h3>CLI TUI (Firewood)</h3>
                 <p>A beautiful terminal interface for power users who live in the shell.</p>
+                <a href="https://github.com/madeofpendletonwool/pinepods-firewood" className={styles.downloadLink}>Download Firewood</a>
               </div>
             </div>
           </div>

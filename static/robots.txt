@@ -1,0 +1,10 @@
+# PinePods Documentation — https://pinepods.online
+User-agent: *
+Allow: /
+
+# AI-friendly, machine-readable docs (llmstxt.org standard):
+#   https://pinepods.online/llms.txt       — index of the documentation
+#   https://pinepods.online/llms-full.txt  — full docs as a single Markdown file
+# Individual pages are also available as clean Markdown by appending `.md`.
+
+Sitemap: https://pinepods.online/sitemap.xml

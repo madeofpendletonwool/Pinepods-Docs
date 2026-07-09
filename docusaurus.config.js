@@ -82,6 +82,48 @@ module.exports = {
     ],
   ],
 
+  // Offline, self-contained search. Builds a search index at `docusaurus build`
+  // time and runs entirely in the browser — no external service, no crawler, and
+  // no query ever leaves the visitor's machine. Fits the Docker/nginx deploy.
+  themes: [
+    [
+      require.resolve("@easyops-cn/docusaurus-search-local"),
+      /** @type {import("@easyops-cn/docusaurus-search-local").PluginOptions} */
+      ({
+        hashed: true, // cache-bust the index across builds
+        indexDocs: true,
+        indexBlog: true,
+        indexPages: false, // skip the src/pages marketing/landing pages
+        docsRouteBasePath: "/docs",
+        blogRouteBasePath: "/blog",
+        language: ["en"],
+        highlightSearchTermsOnTargetPage: true,
+        explicitSearchResultPath: true,
+      }),
+    ],
+  ],
+
+  // Emit AI-friendly docs into /build so external LLM tools (Claude, ChatGPT,
+  // etc.) can consume the documentation cleanly:
+  //   /llms.txt        — llmstxt.org index of the docs
+  //   /llms-full.txt   — all docs concatenated into one Markdown file
+  //   per-page .md     — clean Markdown for each doc page (generateMarkdownFiles)
+  plugins: [
+    [
+      "docusaurus-plugin-llms",
+      {
+        generateLLMsTxt: true,
+        generateLLMsFullTxt: true,
+        generateMarkdownFiles: true,
+        docsDir: "docs",
+        includeBlog: true,
+        title: "PinePods Documentation",
+        description:
+          "A Forest of Podcasts, Rooted in the Spirit of Self-Hosting",
+      },
+    ],
+  ],
+
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({

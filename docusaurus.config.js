@@ -32,6 +32,24 @@ module.exports = {
 
   presets: [
     [
+      "redocusaurus",
+      {
+        // Renders the auto-generated PinePods API spec as an interactive reference.
+        // The spec is generated from the Rust backend (rust-api/openapi.json) and
+        // synced here via scripts/sync-openapi.sh.
+        specs: [
+          {
+            id: "pinepods-api",
+            spec: "static/openapi.json",
+            route: "/docs/API/reference/",
+          },
+        ],
+        theme: {
+          primaryColor: "#2E7D32",
+        },
+      },
+    ],
+    [
       "@docusaurus/preset-classic",
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
@@ -39,6 +57,18 @@ module.exports = {
           sidebarPath: require.resolve("./sidebars.js"),
           editUrl:
             "https://github.com/madeofpendletonwool/Pinepods-Docs/blob/main",
+          // The live docs/ folder is the "current" (unreleased) version. Released
+          // versions are snapshotted into versioned_docs/ via `docs:version X.Y.Z`.
+          // The newest entry in versions.json is served as the default at /docs/,
+          // so the current version is never the default. When a release is cut,
+          // update the `current` label below to the next in-progress version.
+          versions: {
+            current: {
+              label: "0.9.1 (Next 🚧)",
+              path: "next",
+              banner: "unreleased",
+            },
+          },
         },
         blog: {
           showReadingTime: true,
@@ -63,6 +93,7 @@ module.exports = {
         },
         style: "primary",
         items: [
+          { type: "docsVersionDropdown", position: "left" },
           { type: "doc", docId: "intro", position: "left", label: "Docs" },
           { to: "/blog", label: "Blog", position: "left" },
           {

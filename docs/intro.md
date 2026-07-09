@@ -3,6 +3,8 @@
 
 PinePods is a Rust based podcast management system that manages podcasts with multi-user support and relies on a central database with clients to connect to it. It's browser based and your podcasts and settings follow you from device to device due to everything being stored on the server. You can subscribe to podcasts and even hosts for podcasts with the help of the PodPeopleDB. It works on mobile devices and can also sync with a Nextcloud server or gpodder compatible sync server so you can use external apps like Antennapod as well!
 
+![The PinePods home dashboard](/img/screenshots/homepage.png)
+
 ## Features
 
 Pinepods is a complete podcast management system and allows you to play, download, and keep track of podcasts you (or any of your users) enjoy. It allows for searching and subscribing to hosts and podcasts using The Podcast Index or Itunes and provides a modern looking UI to browse through shows and episodes. In addition, Pinepods provides simple user management and can be used by multiple users at once using a browser or app version. Everything is saved into a MySQL or Postgres database including user settings, podcasts and episodes. It's fully self-hosted, open-sourced, and I provide an option to use a hosted search API or you can also get one from the Podcast Index and use your own. There's even many different themes to choose from! Everything is fully dockerized and I provide a simple guide found below explaining how to install and run Pinepods on your own system.
@@ -27,17 +29,22 @@ You can also choose to use MySQL/MariaDB or Postgres as your database. Examples 
 
 ### Docker Compose
 
-> **⚠️ WARNING:** An issue was recently pointed out to me related to postgres version 18. If you run into an error that looks like this on startup when using postgres:
-
-```
-Failed to deploy a stack: compose up operation failed: Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: error during container init: error mounting "<POSTGRESQL_PATH>" to rootfs at "/var/lib/postgresql/data": change mount propagation through procfd: open o_path procfd: open /<DOCKER ROOT>/overlay2/17561d31d0730b3fd3071752d82cf8fe60b2ea0ed84521c6ee8b06427ca8f064/merged/var/lib/postgresql/data: no such file or directory: unknown`
-```
-> Please change your postgres tag in your compose to '17'. See [this issue](https://github.com/docker-library/postgres/issues/1363) for more details.
+:::note PostgreSQL 18 data path
+The `postgres:18` image moved its data directory and declared `VOLUME` to
+`/var/lib/postgresql`. Bind-mounting to the old `/var/lib/postgresql/data` can fail on
+some Linux/overlay2 hosts with `change mount propagation through procfd ... no such file
+or directory`. The compose below avoids this by mounting at `/var/lib/pgdata` (outside
+the image's `VOLUME`) — use that pattern and you won't hit the error. See
+[docker-library/postgres#1363](https://github.com/docker-library/postgres/issues/1363).
+Already running Postgres 17? See [Upgrading PostgreSQL](/docs/Troubleshooting/PostgresMajorUpgrade).
+:::
 
 #### User Permissions
-Pinepods can run with specific user permissions to ensure downloaded files are accessible on the host system. This is controlled through two environment variables:
-- `PUID`: Process User ID (defaults to 1000 if not set)
-- `PGID`: Process Group ID (defaults to 1000 if not set)
+Pinepods can run as a non-root user so downloaded files are accessible on the host system. This is controlled through two environment variables:
+- `PUID`: Process User ID — the host user the stack runs as
+- `PGID`: Process Group ID — the host group the stack runs as
+
+When `PUID`/`PGID` are set, `startup.sh` remaps the container's `pinepods` user to those IDs and drops privileges with `su-exec`, so the entire stack runs as your host user. The compose examples below pass `${UID:-911}`/`${GID:-911}`, so they fall back to `911` if `UID`/`GID` aren't exported in your shell. If `PUID`/`PGID` are left unset entirely, the container runs as root (legacy mode).
 
 To find your user's UID and GID, run:
 ```bash
@@ -50,14 +57,16 @@ id -g   # Your GID
 services:
   db:
     container_name: db
-    image: postgres:17
+    image: postgres:18
     environment:
       POSTGRES_DB: pinepods_database
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: myS3curepass
-      PGDATA: /var/lib/postgresql/data/pgdata
+      PGDATA: /var/lib/pgdata/pgdata
     volumes:
-      - /home/user/pinepods/pgdata:/var/lib/postgresql/data
+      - /home/user/pinepods/pgdata:/var/lib/pgdata
+    ports:
+      - "5432:5432"
     restart: always
 
   valkey:
@@ -101,6 +110,16 @@ services:
       - db
       - valkey
 ```
+
+:::info Upgrading an existing Postgres 17 install to 18?
+New installs default to `postgres:18` and need no special steps. **Existing** installs
+can't just bump the tag — a major Postgres version uses an incompatible on-disk format,
+so `postgres:18` will refuse to start against a directory created by 17. Your data is
+safe; it just needs a one-time upgrade. Run the helper script
+`deployment/docker/upgrade-postgres.sh` (takes a backup, then upgrades in place) or
+follow the [Upgrading PostgreSQL](/docs/Troubleshooting/PostgresMajorUpgrade) guide.
+Always back up first — the upgrade is one-way.
+:::
 
 #### Compose File - MariaDB (Alternative)
 ```yaml
@@ -184,12 +203,12 @@ Most of those are pretty obvious, but let's break a couple of them down.
 
 #### Admin User Info
 
-First of all, the USERNAME, PASSWORD, FULLNAME, and EMAIL vars are your details for your default admin account. This account will have admin credentails and will be able to log in right when you start up the app. Once started you'll be able to create more users and even more admins but you need an account to kick things off on. If you don't specify credentials in the compose file it will create an account with a random password for you but I would recommend just creating one for yourself.
+First of all, the USERNAME, PASSWORD, FULLNAME, and EMAIL vars are your details for your default admin account. This account will have admin credentials and will be able to log in right when you start up the app. Once started you'll be able to create more users and even more admins, but you need one account to kick things off. If you don't specify these credentials in the compose file, PinePods will prompt you to create your first admin account when you open the web UI for the first time — so setting them is optional.
 
 
 #### Note on the Search API
 
-Let's talk quickly about the searching API. This allows you to search for new podcasts and it queries either itunes or the podcast index for new podcasts. The podcast index requires an api key while itunes does not. If you'd rather not mess with the api at all simply set the API_URL to the one below.
+Let's talk quickly about the searching API. This allows you to search for new podcasts and it queries iTunes, the Podcast Index, or YouTube for new content. The Podcast Index and YouTube (via the Google Search API) both require an API key, while iTunes does not. Note that Google enforces a daily quota on YouTube searches, so heavy YouTube users will want to self-host. If you'd rather not mess with the API at all simply set the API_URL to the one below.
 
 ```
 SEARCH_API_URL: 'https://search.pinepods.online/api/search'
@@ -427,7 +446,7 @@ This will deploy Pinepods on your Kubernetes cluster with a postgres database. M
 
 Check out the Tutorials on the documentation site for more information on how to do basic things.
 
-https://pinepods.online/tutorial-basic/sign-in-homescreen.md
+[Tutorial: Signing in & the home screen](/docs/tutorial-basics/sign-in-homescreen)
 
 ## Client Installs
 
@@ -507,11 +526,23 @@ Once started you'll be able to sign in with your username and password. The serv
 
 #### Android Install :iphone:
 
-In beta currently. Feel free to sign up for the beta testing to get access!
+The Android app is available now on the
+[Google Play Store](https://play.google.com/store/apps/details?id=com.gooseberrydevelopment.pinepods)!
+You can also install it from
+[IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/com.gooseberrydevelopment.pinepods)
+or via [Obtainium](https://github.com/madeofpendletonwool/PinePods/releases) for direct
+updates from GitHub Releases. Android Auto is supported.
 
-#### ios Install :iphone:
+Once installed, sign in with your username and password. The server name is simply the
+URL you browse to to access the server.
 
-In beta currently. Feel free to sign up for the beta testing to get access!
+#### iOS Install :iphone:
+
+The iOS app is on the [App Store](https://apps.apple.com/us/app/pinepods/id6751441116)!
+CarPlay is supported.
+
+Once installed, sign in with your username and password. The server name is simply the
+URL you browse to to access the server.
 
 ## PodPeople DB
 
@@ -525,13 +556,20 @@ Finally, you can check out the Repo for it [here!](https://github.com/madeofpend
 
 ## Pinepods Firewood
 
-A CLI only client that can be used to remotely share your podcasts to is in the works! Check out [Pinepods Firewood!](https://github.com/madeofpendletonwool/pinepods-firewood)
+A CLI-only client that lets you enjoy your podcasts from the comfort of the terminal
+has had its first release! Check out [Pinepods Firewood!](https://github.com/madeofpendletonwool/pinepods-firewood)
 
 ## Platform Availability
 
-The Intention is for this app to become available on Windows, Linux, Mac, Android, and IOS. Windows, Linux, Mac, web, and android are all currently available and working. The android app is in a sort of beta currently as I finalize any remaining issues with it. Track those [here](https://github.com/madeofpendletonwool/PinePods/issues/320). This app is built with Tauri, therefore once the Android version is in a final state there's no reason I can't just compile it to ios as well.
+PinePods is available on **Windows, Linux, macOS, web, Android, and iOS** — all shipped
+and working today. The desktop clients are built with Tauri, while the mobile apps
+(Android and iOS) are native Flutter apps with native audio layers, CarPlay, and
+Android Auto support.
 
-For a podcast sync app I recommend Opodsync, but nextcloud sync works great too! This is only required if you use an app like AntennaPods. So then your Pinepods and Antennapods sync up podcasts.
+PinePods also runs a **built-in gpodder-compatible sync server**, so you can keep using
+external apps like AntennaPod and have them stay in sync with PinePods automatically —
+no separate sync server required. If you'd prefer an external sync server, OpodSync and
+the Nextcloud gpodder sync app both work great too.
 
 [OpodSync](https://github.com/kd2org/opodsync)
 

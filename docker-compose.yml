@@ -1,15 +1,13 @@
-version: '3'
 services:
   pinepods-docs:
-    image: awesometic/docusaurus
+    build: .
     ports:
       - "8080:80"
-    environment:
-      TARGET_UID: 1000 
-      TARGET_GID: 1000 
-      AUTO_UPDATE: true 
-      WEBSITE_NAME: "pinepods-docs"
-      TEMPLATE: classic
-    volumes: 
-      - /home/collinp/Documents/GitHub/Pinepods-Docs/config/:/docusaurus
-
+    volumes:
+      # Download Center files live here, NOT in git.
+      # Drop apks / desktop builds / etc. into ./downloads-data on the host and
+      # they become available at https://pinepods.online/downloads/<filename>.
+      # Then add a matching entry to the `downloads` array in
+      # src/pages/download.js so it shows up on the /download page.
+      - ./downloads-data:/usr/share/nginx/html/downloads:ro
+    restart: unless-stopped

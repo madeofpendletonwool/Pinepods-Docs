@@ -346,62 +346,62 @@ const ScreenshotsSection = () => {
           </p>
           <div className={styles.screenshotGrid}>
             <div className={styles.screenshotCard}>
-              <img 
-                src="/img/screenshots/web-interface.png" 
-                alt="PinePods Web Interface" 
+              <img
+                src="/img/screenshots/homepage.png"
+                alt="PinePods Web Interface"
                 className={styles.screenshotImage}
               />
               <div className={styles.screenshotInfo}>
                 <h3>Web Interface (WASM)</h3>
-                <p>Lightning-fast Rust WebAssembly frontend</p>
+                <p>A lightning-fast Rust WebAssembly frontend that feels native in the browser.</p>
                 <a href="https://github.com/madeofpendletonwool/PinePods/releases" className={styles.downloadLink}>Download from Releases</a>
               </div>
             </div>
             <div className={styles.screenshotCard}>
-              <img 
-                src="/img/screenshots/android-app.png" 
-                alt="PinePods Android App" 
+              <img
+                src="/img/screenshots/singlepodcastpage.png"
+                alt="PinePods podcast detail view"
                 className={styles.screenshotImage}
               />
               <div className={styles.screenshotInfo}>
-                <h3>Android App</h3>
-                <p>Native Android experience with offline support</p>
-                <a href="https://apt.izzysoft.de/fdroid/index/apk/com.gooseberrydevelopment.pinepods" className={styles.downloadLink}>Download from IzzyOnDroid</a>
+                <h3>Rich Podcast Pages</h3>
+                <p>Chapters, transcripts, people, and funding info &mdash; all in one place.</p>
               </div>
             </div>
             <div className={styles.screenshotCard}>
-              <img 
-                src="/img/screenshots/android-app.png" 
-                alt="PinePods iOS App" 
+              <img
+                src="/img/screenshots/android-app.png"
+                alt="PinePods Android App"
                 className={styles.screenshotImage}
               />
               <div className={styles.screenshotInfo}>
-                <h3>iOS App</h3>
-                <p>Beautiful native iOS interface</p>
+                <h3>Mobile Apps</h3>
+                <p>Native iOS and Android clients with background playback and offline support.</p>
                 <a href="https://apps.apple.com/us/app/pinepods/id6751441116" className={styles.downloadLink}>Download on App Store</a>
+                <a href="https://play.google.com/store/apps/details?id=com.gooseberrydevelopment.pinepods" className={styles.downloadLink}>Get it on Google Play</a>
               </div>
             </div>
             <div className={styles.screenshotCard}>
-              <img 
-                src="/img/screenshots/desktop-app.png" 
-                alt="PinePods Desktop App" 
+              <img
+                src="/img/screenshots/pp-desktop.png"
+                alt="PinePods Desktop App"
                 className={styles.screenshotImage}
               />
               <div className={styles.screenshotInfo}>
                 <h3>Desktop App</h3>
-                <p>Cross-platform desktop application</p>
+                <p>Cross-platform desktop apps for Windows, macOS, and Linux.</p>
                 <a href="https://github.com/madeofpendletonwool/PinePods/releases" className={styles.downloadLink}>Download from Releases</a>
               </div>
             </div>
             <div className={styles.screenshotCard}>
-              <img 
-                src="/img/screenshots/cli-tui.png" 
-                alt="PinePods CLI TUI - Firewood" 
+              <img
+                src="/img/screenshots/cli-tui.png"
+                alt="PinePods CLI TUI - Firewood"
                 className={styles.screenshotImage}
               />
               <div className={styles.screenshotInfo}>
                 <h3>CLI TUI (Firewood)</h3>
-                <p>Beautiful terminal interface for power users</p>
+                <p>A beautiful terminal interface for power users who live in the shell.</p>
                 <a href="https://github.com/madeofpendletonwool/pinepods-firewood" className={styles.downloadLink}>Download Firewood</a>
               </div>
             </div>

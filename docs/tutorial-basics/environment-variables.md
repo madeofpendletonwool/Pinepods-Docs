@@ -11,6 +11,11 @@ Below are all the environment variables supported by PinePods. These should be c
 | `SEARCH_API_URL` | `https://search.pinepods.online/api/search` | **Yes** | External URL for the search API that the frontend can access. Set this to your domain + port (e.g., `https://yourdomain.com:8000`) |
 | `PEOPLE_API_URL` | `https://people.pinepods.online` | **Yes** | External URL for the people/person lookup API |
 | `HOSTNAME` | `http://localhost:8040` | **Yes** | The URL where you will access the app. Used for RSS feed sharing and callbacks |
+| `SERVER_URL` | (falls back to `HOSTNAME`) | **No** | Explicit public URL for building absolute RSS feed links. Checked before `HOSTNAME`; set it if your container platform overrides `HOSTNAME` (see note below) |
+
+:::tip RSS links showing your container name instead of your domain?
+PinePods builds absolute RSS feed URLs (`<link>`, `<guid>`, `<enclosure>`) from `HOSTNAME`. Some container runtimes — rootless Podman under a systemd unit is a known case — set their own `HOSTNAME` (the container/pod name), which can override the value you passed in. If your feed's episode links look like `pinepods-pod/api/data/stream/...` instead of your real domain, set `SERVER_URL` to your public URL (the same value you'd give `HOSTNAME`). PinePods checks `SERVER_URL` first, and unlike `HOSTNAME`, nothing in the container platform can silently overwrite it.
+:::
 
 ## Database Configuration
 

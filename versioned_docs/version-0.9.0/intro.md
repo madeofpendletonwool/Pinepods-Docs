@@ -1,0 +1,596 @@
+
+# Getting Started
+
+PinePods is a Rust based podcast management system that manages podcasts with multi-user support and relies on a central database with clients to connect to it. It's browser based and your podcasts and settings follow you from device to device due to everything being stored on the server. You can subscribe to podcasts and even hosts for podcasts with the help of the PodPeopleDB. It works on mobile devices and can also sync with a Nextcloud server or gpodder compatible sync server so you can use external apps like Antennapod as well!
+
+![The PinePods home dashboard](/img/screenshots/homepage.png)
+
+## Features
+
+Pinepods is a complete podcast management system and allows you to play, download, and keep track of podcasts you (or any of your users) enjoy. It allows for searching and subscribing to hosts and podcasts using The Podcast Index or Itunes and provides a modern looking UI to browse through shows and episodes. In addition, Pinepods provides simple user management and can be used by multiple users at once using a browser or app version. Everything is saved into a MySQL or Postgres database including user settings, podcasts and episodes. It's fully self-hosted, open-sourced, and I provide an option to use a hosted search API or you can also get one from the Podcast Index and use your own. There's even many different themes to choose from! Everything is fully dockerized and I provide a simple guide found below explaining how to install and run Pinepods on your own system.
+
+## Try it out! :zap:
+
+I maintain an instance of Pinepods that's publicly accessible for testing over at [try.pinepods.online](https://try.pinepods.online). Feel free to make an account there and try it out before making your own server instance. This is not intended as a permanant method of using Pinepods and it's expected you run your own server so accounts will often be deleted from there.
+
+
+## Installing :runner:
+
+There's potentially a few steps to getting Pinepods fully installed. After you get your server up and running fully you can also install the client editions of your choice. The server install of Pinepods runs a server and a browser client over a port of your choice in order to be accessible on the web. With the client installs you simply give the client your server url to connect to the database and then sign in.
+
+### Server Installation :floppy_disk:
+
+First, the server. You have multiple options for deploying Pinepods:
+
+  - [Using Docker Compose :whale:](#docker-compose)
+  - [Using Helm for Kubernetes :anchor:](#helm-deployment)
+
+You can also choose to use MySQL/MariaDB or Postgres as your database. Examples for both are provided below.
+
+### Docker Compose
+
+:::note PostgreSQL 18 data path
+The `postgres:18` image moved its data directory and declared `VOLUME` to
+`/var/lib/postgresql`. Bind-mounting to the old `/var/lib/postgresql/data` can fail on
+some Linux/overlay2 hosts with `change mount propagation through procfd ... no such file
+or directory`. The compose below avoids this by mounting at `/var/lib/pgdata` (outside
+the image's `VOLUME`) — use that pattern and you won't hit the error. See
+[docker-library/postgres#1363](https://github.com/docker-library/postgres/issues/1363).
+Already running Postgres 17? See [Upgrading PostgreSQL](/docs/Troubleshooting/PostgresMajorUpgrade).
+:::
+
+#### User Permissions
+Pinepods can run with specific user permissions to ensure downloaded files are accessible on the host system. This is controlled through two environment variables:
+- `PUID`: Process User ID (defaults to 1000 if not set)
+- `PGID`: Process Group ID (defaults to 1000 if not set)
+
+To find your user's UID and GID, run:
+```bash
+id -u   # Your UID
+id -g   # Your GID
+```
+
+#### Compose File - PostgreSQL (Recommended)
+```yaml
+services:
+  db:
+    container_name: db
+    image: postgres:18
+    environment:
+      POSTGRES_DB: pinepods_database
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: myS3curepass
+      PGDATA: /var/lib/pgdata/pgdata
+    volumes:
+      - /home/user/pinepods/pgdata:/var/lib/pgdata
+    ports:
+      - "5432:5432"
+    restart: always
+
+  valkey:
+    image: valkey/valkey:8-alpine
+    ports:
+      - "6379:6379"
+
+  pinepods:
+    image: madeofpendletonwool/pinepods:latest
+    ports:
+      - "8040:8040"
+    environment:
+      # Basic Server Info
+      SEARCH_API_URL: 'https://search.pinepods.online/api/search'
+      PEOPLE_API_URL: 'https://people.pinepods.online'
+      HOSTNAME: 'http://localhost:8040'
+      # Default Admin User Information
+      USERNAME: myadminuser01
+      PASSWORD: myS3curepass
+      FULLNAME: Pinepods Admin
+      EMAIL: user@pinepods.online
+      # Database Vars
+      DB_TYPE: postgresql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: myS3curepass
+      DB_NAME: pinepods_database
+      # Valkey Settings
+      VALKEY_HOST: valkey
+      VALKEY_PORT: 6379
+      # Enable or Disable Debug Mode for additional Printing
+      DEBUG_MODE: false
+      PUID: ${UID:-911}
+      PGID: ${GID:-911}
+      # Add timezone configuration
+      TZ: "America/New_York"
+    volumes:
+      # Mount the download and backup locations on the server
+      - /home/user/pinepods/downloads:/opt/pinepods/downloads
+      - /home/user/pinepods/backups:/opt/pinepods/backups
+      # Timezone volumes, HIGHLY optional. Read the timezone notes below
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    depends_on:
+      - db
+      - valkey
+```
+
+:::info Upgrading an existing Postgres 17 install to 18?
+New installs default to `postgres:18` and need no special steps. **Existing** installs
+can't just bump the tag — a major Postgres version uses an incompatible on-disk format,
+so `postgres:18` will refuse to start against a directory created by 17. Your data is
+safe; it just needs a one-time upgrade. Run the helper script
+`deployment/docker/upgrade-postgres.sh` (takes a backup, then upgrades in place) or
+follow the [Upgrading PostgreSQL](/docs/Troubleshooting/PostgresMajorUpgrade) guide.
+Always back up first — the upgrade is one-way.
+:::
+
+#### Compose File - MariaDB (Alternative)
+```yaml
+services:
+  db:
+    container_name: db
+    image: mariadb:12
+    command: --wait_timeout=1800
+    environment:
+      MYSQL_TCP_PORT: 3306
+      MYSQL_ROOT_PASSWORD: myS3curepass
+      MYSQL_DATABASE: pinepods_database
+      MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
+      MYSQL_CHARACTER_SET_SERVER: utf8mb4
+      MYSQL_INIT_CONNECT: 'SET @@GLOBAL.max_allowed_packet=64*1024*1024;'
+    volumes:
+      - /home/user/pinepods/sql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    restart: always
+
+  valkey:
+    image: valkey/valkey:8-alpine
+    ports:
+      - "6379:6379"
+
+  pinepods:
+    image: madeofpendletonwool/pinepods:latest
+    ports:
+      - "8040:8040"
+    environment:
+      # Basic Server Info
+      SEARCH_API_URL: 'https://search.pinepods.online/api/search'
+      PEOPLE_API_URL: 'https://people.pinepods.online'
+      HOSTNAME: 'http://localhost:8040'
+      # Default Admin User Information
+      USERNAME: myadminuser01
+      PASSWORD: myS3curepass
+      FULLNAME: Pinepods Admin
+      EMAIL: user@pinepods.online
+      # Database Vars
+      DB_TYPE: mariadb
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: myS3curepass
+      DB_NAME: pinepods_database
+      # Valkey Settings
+      VALKEY_HOST: valkey
+      VALKEY_PORT: 6379
+      # Enable or Disable Debug Mode for additional Printing
+      DEBUG_MODE: false
+      PUID: ${UID:-911}
+      PGID: ${GID:-911}
+      # Add timezone configuration
+      TZ: "America/New_York"
+
+    volumes:
+      # Mount the download and backup locations on the server
+      - /home/user/pinepods/downloads:/opt/pinepods/downloads
+      - /home/user/pinepods/backups:/opt/pinepods/backups
+      # Timezone volumes, HIGHLY optional. Read the timezone notes below
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    depends_on:
+      - db
+      - valkey
+```
+
+Make sure you change these variables to variables specific to yourself at a minimum.
+
+```
+      # The url you hit the site at. Only used for sharing rss feeds
+      HOSTNAME: 'http://localhost:8040'
+      # These next 4 are optional. They allow you to set an admin without setting on the first boot
+      USERNAME: pinepods
+      PASSWORD: password
+      FULLNAME: John Pinepods
+      EMAIL: john@pinepods.com
+      # DB vars should match your values for the db you set up above
+      DB_TYPE: postgresql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: myS3curepass
+      DB_NAME: pinepods_database
+```
+
+Most of those are pretty obvious, but let's break a couple of them down.
+
+#### Admin User Info
+
+First of all, the USERNAME, PASSWORD, FULLNAME, and EMAIL vars are your details for your default admin account. This account will have admin credentials and will be able to log in right when you start up the app. Once started you'll be able to create more users and even more admins, but you need one account to kick things off. If you don't specify these credentials in the compose file, PinePods will prompt you to create your first admin account when you open the web UI for the first time — so setting them is optional.
+
+
+#### Note on the Search API
+
+Let's talk quickly about the searching API. This allows you to search for new podcasts and it queries iTunes, the Podcast Index, or YouTube for new content. The Podcast Index and YouTube (via the Google Search API) both require an API key, while iTunes does not. Note that Google enforces a daily quota on YouTube searches, so heavy YouTube users will want to self-host. If you'd rather not mess with the API at all simply set the API_URL to the one below.
+
+```
+SEARCH_API_URL: 'https://search.pinepods.online/api/search'
+```
+
+Above is an api that I maintain. I do not guarantee 100% uptime on this api though, it should be up most of the time besides a random internet or power outage here or there. A better idea though, and what I would honestly recommend is to maintain your own api. It's super easy. Check out the API docs for more information on doing this. Link Below -
+
+https://www.pinepods.online/docs/API/search_api
+
+#### Timezone Configuration
+
+PinePods supports displaying timestamps in your local timezone instead of UTC. This helps improve readability and prevents confusion when viewing timestamps such as "last sync" times in the gpodder API. Note that this configuration is specifically for logs. Each user sets their own timezone settings on first login. That is seperate from this server timezone config.
+
+##### Setting the Timezone
+
+You have two main options for configuring the timezone in PinePods:
+
+##### Option 1: Using the TZ Environment Variable (Recommended)
+
+Add the `TZ` environment variable to your docker-compose.yml file:
+
+```yaml
+services:
+  pinepods:
+    image: madeofpendletonwool/pinepods:latest
+    environment:
+      # Other environment variables...
+      TZ: "America/Chicago"  # Set your preferred timezone
+```
+
+This method works consistently across all operating systems (Linux, macOS, Windows) and is the recommended approach.
+
+##### Option 2: Mounting Host Timezone Files (Linux Only)
+
+On Linux systems, you can mount the host's timezone files:
+
+```yaml
+services:
+  pinepods:
+    image: madeofpendletonwool/pinepods:latest
+    volumes:
+      # Other volumes...
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+```
+
+**Note**: This method only works reliably on Linux hosts. For macOS and Windows users, please use the TZ environment variable (Option 1).
+
+##### Priority
+
+If both methods are used:
+1. The TZ environment variable takes precedence
+2. Mounted timezone files are used as a fallback
+
+##### Common Timezone Values
+
+Here are some common timezone identifiers:
+- `America/New_York` - Eastern Time
+- `America/Chicago` - Central Time
+- `America/Denver` - Mountain Time
+- `America/Los_Angeles` - Pacific Time
+- `Europe/London` - United Kingdom
+- `Europe/Berlin` - Central Europe
+- `Asia/Tokyo` - Japan
+- `Australia/Sydney` - Australia Eastern
+
+For a complete list of valid timezone identifiers, see the [IANA Time Zone Database](https://www.iana.org/time-zones).
+
+##### Troubleshooting Timezones
+
+**I'm on macOS and timezone settings aren't working**
+
+macOS uses a different timezone file format than Linux. You must use the TZ environment variable method on macOS.
+
+#### Start it up!
+
+Either way, once you have everything all setup and your compose file created go ahead and run
+
+```
+sudo docker-compose up
+```
+
+To pull the container images and get started. Once fully started up you'll be able to access pinepods at the port you configured and you'll be able to start connecting clients as well.
+
+
+### Helm Deployment
+
+Alternatively, you can deploy Pinepods using Helm on a Kubernetes cluster. Helm is a package manager for Kubernetes that simplifies deployment.
+
+#### Adding the Helm Repository
+
+First, add the Pinepods Helm repository:
+
+```bash
+helm repo add pinepods http://helm.pinepods.online
+helm repo update
+```
+#### Installing the Chart
+
+To install the Pinepods Helm chart with default values:
+
+```bash
+helm install pinepods pinepods/pinepods --namespace pinepods-namespace --create-namespace
+```
+
+Or with custom values:
+
+```bash
+helm install pinepods pinepods/pinepods -f my-values.yaml --namespace pinepods-namespace --create-namespace
+```
+#### Configuration Options
+
+The Helm chart supports extensive configuration. Key areas include:
+
+**Main Application:**
+- Image repository and tag configuration
+- Service type and port settings
+- Ingress configuration with TLS support
+- Persistent storage for downloads and backups
+- Resource limits and requests
+- Security contexts and pod placement
+
+**Dependencies:**
+- PostgreSQL database (can be disabled for external database)
+- Valkey/Redis for caching (can be disabled)
+- Optional backend API deployment for self-hosted search
+- Optional PodPeople database for podcast host information
+
+**Example values.yaml:**
+
+```yaml
+# Main application configuration
+image:
+  repository: madeofpendletonwool/pinepods
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8040
+
+ingress:
+  enabled: true
+  className: ""
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+  hosts:
+    - host: pinepods.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# Persistent storage
+persistence:
+  enabled: true
+  downloads:
+    storageClass: ""  # Use default storage class
+    size: 5Gi
+  backups:
+    storageClass: ""
+    size: 2Gi
+
+# Database configuration
+postgresql:
+  enabled: true
+  auth:
+    username: postgres
+    password: "changeme"
+    database: pinepods_database
+  persistence:
+    enabled: true
+    size: 3Gi
+
+# Valkey/Redis configuration
+valkey:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
+
+# Optional backend API (self-hosted search)
+backend:
+  enabled: false
+  secrets:
+    apiKey: "YOUR_PODCAST_INDEX_KEY"
+    apiSecret: "YOUR_PODCAST_INDEX_SECRET"
+
+# Optional PodPeople database
+podpeople:
+  enabled: false
+
+# Application environment
+env:
+  USERNAME: "admin"
+  PASSWORD: "password"
+  FULLNAME: "Admin User"
+  EMAIL: "admin@example.com"
+  DEBUG_MODE: "false"
+  HOSTNAME: 'http://localhost:8040'
+```
+
+#### External Database Configuration
+
+To use an external database instead of the included PostgreSQL:
+
+```yaml
+postgresql:
+  enabled: false
+
+externalDatabase:
+  host: "your-postgres-host"
+  port: 5432
+  user: postgres
+  password: "your-password"
+  database: pinepods_database
+```
+
+#### Create a Namespace for Pinepods
+
+Create a namespace to hold the deployment:
+
+```bash
+kubectl create namespace pinepods-namespace
+```
+
+#### Starting Helm
+
+Once you have everything set up, install the Helm chart:
+
+```bash
+helm install pinepods pinepods/pinepods -f my-values.yaml --namespace pinepods-namespace --create-namespace
+```
+This will deploy Pinepods on your Kubernetes cluster with a postgres database. MySQL/MariaDB is not supported with the kubernetes setup. The service will be accessible at the specified NodePort.
+
+Check out the Tutorials on the documentation site for more information on how to do basic things.
+
+[Tutorial: Signing in & the home screen](/docs/tutorial-basics/sign-in-homescreen)
+
+## Client Installs
+
+Any of the client additions are super easy to get going.
+
+### Linux Client Installs :computer:
+
+#### AppImage, Fedora/Red Hat Derivative/Debian based (Ubuntu)
+
+First head over to the releases page on Github
+
+https://github.com/madeofpendletonwool/PinePods/releases
+
+Grab the latest linux release. There's both an appimage a deb, and an rpm. Use the appimage of course if you aren't using a debian or red hat based distro. Change the permissions if using the appimage version to allow it to run.
+
+```
+sudo chmod +x pinepods.appimage
+```
+
+^ The name of the app file will vary slightly based on the version so be sure you change it or it won't work.
+
+For the rpm or deb version just run and install
+
+Once started you'll be able to sign in with your username and password. The server name is simply the url you browse to to access the server.
+
+#### Arch Linux (AUR)
+
+Install the Pinepods Client right from the AUR! Replace the command below with your favorite aur helper
+
+```
+paru -S pinepods
+```
+
+#### Flatpak
+
+You can search for Pinepods in your favorite flatpak installer gui app such as Gnome Software.
+
+Flathub page can be found [here](https://flathub.org/apps/com.gooseberrydevelopment.pinepods)
+
+```
+flatpak install flathub com.gooseberrydevelopment.pinepods
+```
+
+#### Snap
+
+I have had such a nightmare trying to make the snap client work. Pass, use the flatpak. They're better anyway. I'll test it again in the future and see if Canonical has gotten it together. If you really want a snap version of the client please reach out and tell me you're interested in the first place.
+
+#### Windows Client Install :computer:
+
+Any of the client additions are super easy to get going. First head over to the releases page on Github
+
+https://github.com/madeofpendletonwool/PinePods/releases
+
+There's a exe and msi windows install file.
+
+The exe will actually start an install window and allow you to properly install the program to your computer.
+
+The msi will simply run a portable version of the app.
+
+Either one does the same thing ultimately and will work just fine.
+
+Once started you'll be able to sign in with your username and password. The server name is simply the url you browse to to access the server.
+
+#### Mac Client Install :computer:
+
+Any of the client additions are super easy to get going. First head over to the releases page on Github
+
+https://github.com/madeofpendletonwool/PinePods/releases
+
+There's a dmg and pinepods_mac file.
+
+Simply extract, and then go into Contents/MacOS. From there you can run the app.
+
+The dmg file will prompt you to install the Pinepods client into your applications fileter while the _mac file will just run a portable version of the app.
+
+Once started you'll be able to sign in with your username and password. The server name is simply the url you browse to to access the server.
+
+#### Android Install :iphone:
+
+The Android app is available now on the
+[Google Play Store](https://play.google.com/store/apps/details?id=com.gooseberrydevelopment.pinepods)!
+You can also install it from
+[IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/com.gooseberrydevelopment.pinepods)
+or via [Obtainium](https://github.com/madeofpendletonwool/PinePods/releases) for direct
+updates from GitHub Releases. Android Auto is supported.
+
+Once installed, sign in with your username and password. The server name is simply the
+URL you browse to to access the server.
+
+#### iOS Install :iphone:
+
+The iOS app is on the [App Store](https://apps.apple.com/us/app/pinepods/id6751441116)!
+CarPlay is supported.
+
+Once installed, sign in with your username and password. The server name is simply the
+URL you browse to to access the server.
+
+## PodPeople DB
+
+Podpeople DB is a project that I maintain and also develop. Podpeople DB is a way to suppliment Person tags for podcasts that don't support them by default. This allows the community to maintain hosts and follow them to all podcasts! I maintain an instance of Podpeople DB at podpeopledb.com. Otherwise, it's an open source project and you can maintain and instance of your own if you prefer. For information on that go [here](https://podpeopledb.com/docs/self-host). You can download the database yourself and maintain your own instance. If you do decide to go this route please still add any hosts for your favorite podcasts at the instance hosted at podpeopledb.com. The community will thank you!
+
+For additional info on Podpeople DB check out [the docs](https://podpeopledb.com/docs/what-is-this-for).
+
+Additionally, I've written [a blog](https://www.pinepods.online/blog) post discussing the rational around it's creation.
+
+Finally, you can check out the Repo for it [here!](https://github.com/madeofpendletonwool/podpeople-db)
+
+## Pinepods Firewood
+
+A CLI-only client that lets you enjoy your podcasts from the comfort of the terminal
+has had its first release! Check out [Pinepods Firewood!](https://github.com/madeofpendletonwool/pinepods-firewood)
+
+## Platform Availability
+
+PinePods is available on **Windows, Linux, macOS, web, Android, and iOS** — all shipped
+and working today. The desktop clients are built with Tauri, while the mobile apps
+(Android and iOS) are native Flutter apps with native audio layers, CarPlay, and
+Android Auto support.
+
+PinePods also runs a **built-in gpodder-compatible sync server**, so you can keep using
+external apps like AntennaPod and have them stay in sync with PinePods automatically —
+no separate sync server required. If you'd prefer an external sync server, OpodSync and
+the Nextcloud gpodder sync app both work great too.
+
+[OpodSync](https://github.com/kd2org/opodsync)
+
+[Nextcloud Podcast Sync App](https://apps.nextcloud.com/apps/gpoddersync)
+
+ARM devices are also supported including raspberry pis. The app is shockingly performant on a raspberry pi as well. The only limitation is that a 64bit OS is required on an arm device. Setup is exactly the same, just use the latest tag and docker will auto pull the arm version.
+
+
+#### Runners
+
+Arm Images made possible by Runs-On:
+https://runs-on.com

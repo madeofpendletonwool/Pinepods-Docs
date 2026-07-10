@@ -1,0 +1,9 @@
+node_modules
+build
+.docusaurus
+.git
+.idea
+config
+downloads-data
+*.log
+.DS_Store

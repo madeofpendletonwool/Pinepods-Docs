@@ -2,6 +2,16 @@ const { themes } = require("prism-react-renderer");
 const lightCodeTheme = themes.github;
 const darkCodeTheme = themes.dracula;
 
+// Self-hosted Umami analytics (cookieless, privacy-respecting). The tracking
+// script is only injected when BOTH env vars are supplied at build time, so
+// local dev and CI builds stay analytics-free. Wire these up as Docker build
+// args / build-time env once the umami backend (docker-compose.umami.yml) is
+// deployed and a "website" has been created in its dashboard:
+//   UMAMI_WEBSITE_ID  — the website's UUID from the Umami dashboard
+//   UMAMI_SRC         — e.g. https://analytics.pinepods.online/script.js
+const umamiWebsiteId = process.env.UMAMI_WEBSITE_ID;
+const umamiSrc = process.env.UMAMI_SRC;
+
 // With JSDoc @type annotations, IDEs can provide config autocompletion
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
@@ -122,11 +132,59 @@ module.exports = {
           "A Forest of Podcasts, Rooted in the Spirit of Self-Hosting",
       },
     ],
+    [
+      "@docusaurus/plugin-client-redirects",
+      {
+        // Preserve inbound links after restructuring. `to` targets are
+        // validated against real routes at build time.
+        //
+        // Note: the "Firewood (CLI)" -> "Firewood CLI" directory rename only
+        // exists in the unreleased `next` version; the currently-served default
+        // (0.9.0) still uses the parenthesized path as its live URL, so no
+        // redirect is needed until 0.9.1 becomes the default version.
+        redirects: [
+          // Deleted default-tutorial pages (early template) -> docs home
+          {
+            from: [
+              "/docs/tutorial-basics/create-a-page",
+              "/docs/tutorial-basics/create-a-blog-post",
+              "/docs/tutorial-basics/create-a-document",
+              "/docs/tutorial-basics/congratulations",
+              "/docs/tutorial-basics/deploy-your-site",
+              "/docs/tutorial-basics/markdown-features",
+              "/docs/tutorial-extras/manage-docs-versions",
+              "/docs/tutorial-extras/translate-your-site",
+              "/docs/tutorial-extras/reverse-proxy",
+            ],
+            to: "/docs/intro",
+          },
+        ],
+      },
+    ],
   ],
+
+  // Inject the Umami tracking script only when configured at build time.
+  headTags:
+    umamiWebsiteId && umamiSrc
+      ? [
+          {
+            tagName: "script",
+            attributes: {
+              defer: "true",
+              src: umamiSrc,
+              "data-website-id": umamiWebsiteId,
+            },
+          },
+        ]
+      : [],
 
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      // Default social/link-preview card. Individual pages can override via
+      // `image:` / `description:` front matter.
+      image: "img/social-card.jpg",
+      metadata: [{ name: "twitter:card", content: "summary_large_image" }],
       navbar: {
         title: "PinePods",
         logo: {

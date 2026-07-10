@@ -1,0 +1,52 @@
+# Self-hosted Umami analytics for the PinePods docs site.
+#
+# This is intentionally SEPARATE from docker-compose.yml so rebuilding/restarting
+# the docs container never touches the analytics database. Bring it up with:
+#
+#     cp .env.example .env      # then fill in strong secrets
+#     docker compose -f docker-compose.umami.yml up -d
+#
+# Then expose the `umami` service (host port 3001 below) through your existing
+# reverse proxy (Nginx Proxy Manager) at a subdomain with TLS, e.g.
+# https://analytics.pinepods.online. Log in (default admin / umami — change it
+# immediately), add a website for pinepods.online, and copy its Website ID.
+# Finally, build the docs image with UMAMI_WEBSITE_ID and UMAMI_SRC set (see
+# .env.example) so the tracking script is injected.
+
+services:
+  umami:
+    image: ghcr.io/umami-software/umami:postgresql-latest
+    ports:
+      # host:container — point your reverse proxy at host port 3001.
+      - "3001:3000"
+    environment:
+      DATABASE_URL: postgresql://umami:${UMAMI_DB_PASSWORD}@umami-db:5432/umami
+      DATABASE_TYPE: postgresql
+      APP_SECRET: ${UMAMI_APP_SECRET}
+    depends_on:
+      umami-db:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/heartbeat || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  umami-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: umami
+      POSTGRES_USER: umami
+      POSTGRES_PASSWORD: ${UMAMI_DB_PASSWORD}
+    volumes:
+      - umami-db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U umami -d umami"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  umami-db-data:

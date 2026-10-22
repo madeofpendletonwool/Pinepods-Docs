@@ -74,7 +74,7 @@ Behind a reverse proxy, Pinepods reads the original host and scheme from the `X-
 
 **Devices** lists every app that has synced, with when it was last seen.
 
-- **Rename** changes the name shown in Pinepods. Some apps reset it the next time they configure their device.
+- **Rename** changes the name shown in Pinepods (and to your apps). It sticks even when an app updates its device.
 - **Remove** deletes the device. Its history is kept, and the app simply registers a new device on its next sync.
 - Pinepods' own device is listed too (it's how changes made in Pinepods reach your apps). It can't be removed.
 
@@ -125,8 +125,13 @@ Both can be tuned with environment variables:
 | `PINEPODS_SYNC_PUSH_DELAY` | `30` | Seconds to wait after the last local change before pushing it. |
 | `PINEPODS_SYNC_PUSH_MAX_DELAY` | `120` | Push no later than this many seconds after the first unsent change. |
 | `PINEPODS_PUBLIC_URL` | (unset) | The server URL shown for gpodder apps. |
+| `PINEPODS_SYNC_LOG_RETENTION_DAYS` | `90` | How long changes that a newer one replaced are kept in the sync history. `0` keeps everything. |
 
-The first three only affect external servers. Apps syncing with the PinePods gpodder server decide for themselves when to sync.
+The first three only affect external servers.
+
+### Sync history
+
+Pinepods keeps a history of sync changes; it's what apps download. After 90 days, changes that a newer one replaced are dropped (once every external server has them). The latest state of every podcast and episode is always kept, so a newly connected app still gets everything. Apps syncing with the PinePods gpodder server decide for themselves when to sync.
 
 ## Statistics
 
@@ -142,7 +147,7 @@ The first three only affect external servers. Apps syncing with the PinePods gpo
 ## Troubleshooting
 
 - **An app can't log in.** Compare the Server URL in the app with the one in the settings, and check that the gpodder server is switched on. Apps need an app password: your Pinepods password is refused. Try a fresh app password.
-- **A podcast from an app doesn't show up.** New subscriptions are imported in the background. If the feed can't be fetched, it won't appear.
+- **A podcast from an app doesn't show up.** New subscriptions are imported in the background. If the feed can't be fetched, Pinepods keeps trying for about a week and lists it under **Settings → Feed problems**, where you can try again, unsubscribe everywhere, or dismiss it. See [Feed problems and Podping](../Features/feed-updates.md).
 - **The external server isn't syncing.** Look at the status for the last error, and use **Test connection** to check the login.
 - **Logs.** Sync failures are logged as warnings in the Pinepods container log.
 

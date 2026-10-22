@@ -62,6 +62,7 @@ module.exports = {
         'Features/Statistics',
         'Features/CustomThemes',
         'Features/gpodder-sync',
+        'Features/feed-updates',
         'Features/Search',
         'Features/Chapters',
         'Features/Transcript',

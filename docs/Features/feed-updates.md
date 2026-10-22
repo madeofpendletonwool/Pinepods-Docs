@@ -28,7 +28,7 @@ Turn it on under **Settings → Admin → Podcast update services**. It's off by
 
 ### How it works
 
-Announcements are published on the Hive blockchain. The Pinepods search service follows the chain and keeps the last day of announced feed addresses. Your Pinepods server asks it every 30 seconds for the announcements since the last time, matches them against its own subscriptions, and refreshes the matches through the normal refresh (same caching, same limits).
+Announcements are published on the Hive blockchain. The Pinepods search service follows the chain and keeps the last day of announced feed addresses. Your Pinepods server asks it once a minute for the announcements since the last time, matches them against its own subscriptions, and refreshes the matches through the normal refresh (same caching, same limits). A feed refreshed because of an announcement isn't fetched again for 5 minutes; announcements in that time are picked up when the 5 minutes are over.
 
 Nothing about your subscriptions leaves your server: it downloads all announcements and does the matching itself.
 
@@ -37,7 +37,7 @@ Nothing about your subscriptions leaves your server: it downloads all announceme
 | Where | Variable | Default | Meaning |
 |---|---|---|---|
 | Pinepods | `PINEPODS_PODPING_URL` | the search service (`SEARCH_API_URL` without `/api/search`) | Where announcements are read from. |
-| Pinepods | `PINEPODS_PODPING_INTERVAL` | `30` | Seconds between reads. |
+| Pinepods | `PINEPODS_PODPING_INTERVAL` | `60` | Seconds between reads. |
 | Search service | `PODPING_ENABLED` | `true` | Follow Podping and serve `/api/podping/updates`. |
 | Search service | `HIVE_API_NODES` | `https://api.hive.blog,https://api.deathwing.me,https://api.openhive.network` | Hive API nodes to read from, tried in turn. |
 

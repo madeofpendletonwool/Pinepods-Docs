@@ -3233,6 +3233,212 @@
         ]
       }
     },
+    "/api/data/feed_problems": {
+      "get": {
+        "tags": [
+          "podcasts"
+        ],
+        "summary": "Feeds that keep failing",
+        "description": "The caller's podcasts whose last refresh failed (with the kind of error) and feeds a sync app subscribed to that couldn't be added.",
+        "operationId": "get_feed_problems",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedProblems"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/api/data/feed_problems/imports/{id}": {
+      "delete": {
+        "tags": [
+          "podcasts"
+        ],
+        "summary": "Dismiss a failed sync import",
+        "description": "Forgets the failed import without unsubscribing: the feed stays subscribed in the sync apps.",
+        "operationId": "dismiss_import",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "404": {
+            "description": "No such failed import"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/api/data/feed_problems/imports/{id}/remove": {
+      "post": {
+        "tags": [
+          "podcasts"
+        ],
+        "summary": "Unsubscribe from a feed that couldn't be added",
+        "description": "Forgets the failed import and records an unsubscribe, so sync apps and the external sync server drop the feed too.",
+        "operationId": "remove_import",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "404": {
+            "description": "No such failed import"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/api/data/feed_problems/imports/{id}/retry": {
+      "post": {
+        "tags": [
+          "podcasts"
+        ],
+        "summary": "Try adding a failed sync import again",
+        "description": "Starts the import now (also after Pinepods stopped retrying). It shows in the activity panel.",
+        "operationId": "retry_import",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "404": {
+            "description": "No such failed import"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/api/data/feed_problems/{podcast_id}/refresh": {
+      "post": {
+        "tags": [
+          "podcasts"
+        ],
+        "summary": "Refresh a failing podcast now",
+        "description": "Refreshes one of the caller's podcasts straight away and returns its state afterwards: absent from `feeds` when it worked.",
+        "operationId": "refresh_failing_feed",
+        "parameters": [
+          {
+            "name": "podcast_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedProblems"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "404": {
+            "description": "No such podcast"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
     "/api/data/fetch_podcast_feed": {
       "get": {
         "tags": [
@@ -9603,6 +9809,82 @@
         ]
       }
     },
+    "/api/data/update_services": {
+      "get": {
+        "tags": [
+          "settings"
+        ],
+        "summary": "Search service and Podping status",
+        "description": "Admin only. Checks that the search service answers and reports Podping: whether it's on, the relay's state and what this server did with its announcements.",
+        "operationId": "get_update_services",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateServices"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "403": {
+            "description": "Not an admin"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/api/data/update_services/podping": {
+      "put": {
+        "tags": [
+          "settings"
+        ],
+        "summary": "Turn Podping on or off",
+        "description": "Admin only. When on, Pinepods reads which feeds Podping announced from the relay and refreshes the ones it has right away. Only announcements are fetched; what this server subscribes to is never sent.",
+        "operationId": "set_podping",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetPodping"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateServices"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "403": {
+            "description": "Not an admin"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
     "/api/data/update_time_format": {
       "put": {
         "tags": [
@@ -13019,6 +13301,56 @@
           }
         }
       },
+      "ClientStatus": {
+        "type": "object",
+        "description": "What this server's Podping client has done, for the admin settings.",
+        "required": [
+          "pings_seen",
+          "feeds_refreshed"
+        ],
+        "properties": {
+          "last_poll_at": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "description": "Unix seconds."
+          },
+          "last_success_at": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "last_error": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "pings_seen": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Announcements seen since this server started.",
+            "minimum": 0
+          },
+          "feeds_refreshed": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Feeds refreshed because of one.",
+            "minimum": 0
+          },
+          "last_refresh_at": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          }
+        }
+      },
       "Collection": {
         "type": "object",
         "required": [
@@ -14471,6 +14803,69 @@
           }
         }
       },
+      "FailingFeed": {
+        "type": "object",
+        "description": "One of the user's podcasts that's failing right now.",
+        "required": [
+          "podcast_id",
+          "name",
+          "feed_url",
+          "kind",
+          "failures",
+          "reported"
+        ],
+        "properties": {
+          "podcast_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "feed_url": {
+            "type": "string"
+          },
+          "artwork": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "kind": {
+            "$ref": "#/components/schemas/FeedErrorKind"
+          },
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The last error, as the host or the parser reported it."
+          },
+          "failures": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "failing_since": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "description": "Unix seconds."
+          },
+          "last_attempt": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64"
+          },
+          "reported": {
+            "type": "boolean",
+            "description": "Over the reporting threshold (and so reported)."
+          }
+        }
+      },
       "FavoriteStatusResponse": {
         "type": "object",
         "required": [
@@ -14501,6 +14896,41 @@
           "feed_cutoff_days": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "FeedErrorKind": {
+        "type": "string",
+        "enum": [
+          "gone",
+          "auth",
+          "not_feed",
+          "unreachable",
+          "server",
+          "throttled",
+          "other"
+        ]
+      },
+      "FeedProblems": {
+        "type": "object",
+        "required": [
+          "feeds",
+          "imports"
+        ],
+        "properties": {
+          "feeds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FailingFeed"
+            },
+            "description": "Podcasts whose last refresh failed, longest-failing first."
+          },
+          "imports": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ImportFailure"
+            },
+            "description": "Feeds from sync apps that couldn't be added, oldest first."
           }
         }
       },
@@ -14768,6 +15198,61 @@
           },
           "ignore": {
             "type": "boolean"
+          }
+        }
+      },
+      "ImportFailure": {
+        "type": "object",
+        "required": [
+          "id",
+          "feed_url",
+          "source",
+          "kind",
+          "attempts",
+          "first_failed_at",
+          "last_attempt_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "feed_url": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string",
+            "description": "Where the subscription came from: `client` (an app on the PinePods gpodder server) or\n`target` (the external sync server)."
+          },
+          "kind": {
+            "$ref": "#/components/schemas/FeedErrorKind"
+          },
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "attempts": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "first_failed_at": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unix seconds."
+          },
+          "last_attempt_at": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "next_attempt_at": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "description": "`None`: Pinepods stopped retrying."
           }
         }
       },
@@ -16088,6 +16573,40 @@
           }
         }
       },
+      "PodpingInfo": {
+        "type": "object",
+        "required": [
+          "enabled",
+          "relay_url",
+          "client"
+        ],
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "relay_url": {
+            "type": "string",
+            "description": "Where announcements are read from (`PINEPODS_PODPING_URL`, else the search service)."
+          },
+          "relay": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "The relay's own status (`following`: it keeps up with Hive), when it answered."
+          },
+          "relay_error": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Why the relay's status couldn't be read (e.g. a search service without the relay)."
+          },
+          "client": {
+            "$ref": "#/components/schemas/ClientStatus"
+          }
+        }
+      },
       "PublicOidcProviderResponse": {
         "type": "object",
         "required": [
@@ -16966,6 +17485,36 @@
           }
         }
       },
+      "SearchServiceStatus": {
+        "type": "object",
+        "required": [
+          "url",
+          "reachable"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "The search service's address (`SEARCH_API_URL` without its path)."
+          },
+          "reachable": {
+            "type": "boolean"
+          },
+          "latency_ms": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int64",
+            "minimum": 0
+          },
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      },
       "SelfServiceStatusResponse": {
         "type": "object",
         "required": [
@@ -17309,6 +17858,17 @@
             "format": "int32"
           },
           "use_podcast_covers": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SetPodping": {
+        "type": "object",
+        "required": [
+          "enabled"
+        ],
+        "properties": {
+          "enabled": {
             "type": "boolean"
           }
         }
@@ -18389,6 +18949,21 @@
           },
           "message": {
             "type": "string"
+          }
+        }
+      },
+      "UpdateServices": {
+        "type": "object",
+        "required": [
+          "search",
+          "podping"
+        ],
+        "properties": {
+          "search": {
+            "$ref": "#/components/schemas/SearchServiceStatus"
+          },
+          "podping": {
+            "$ref": "#/components/schemas/PodpingInfo"
           }
         }
       },

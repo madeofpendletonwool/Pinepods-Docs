@@ -1,8 +1,29 @@
-# Feed problems and Podping
+# Feed updates, feed problems and Podping
+
+## When feeds are refreshed
+
+Each podcast is refreshed on its own schedule, based on how often it actually publishes. Pinepods checks once a minute for podcasts that are due.
+
+- **How often:** an eighth of the typical gap between its last ten episodes, between 15 minutes and 6 hours. A daily show is checked about every 3 hours, a weekly one every 6 hours, one that posts twice a day about every 90 minutes.
+- **Quiet podcasts** (no new episode in 90 days, or marked as finished by the feed) are checked once a day.
+- **The feed and its host can slow this down:** a `Cache-Control: max-age` from the host, or the feed's `<sy:updatePeriod>`/`<sy:updateFrequency>`, set the shortest gap, up to the 6 hours above. Neither makes a podcast refresh more often than its publishing pattern.
+- **Announced release times:** a feed with `<podcast:updateFrequency>` (for example "weekly on Mondays") is checked about 10 minutes after each announced time, even if that's sooner than usual.
+- **Failures and "slow down" answers** push the next refresh further out (see below). A host asking Pinepods to wait (`Retry-After`) is left alone that long.
+- Refresh times vary by up to 10% so feeds don't all come due at once.
+
+A feed several people subscribe to is fetched once for all of them. **Refresh** in the app, **Refresh now** on a feed problem, adding a podcast and [Podping](#podping) refresh straight away; the next scheduled refresh follows from there.
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `PINEPODS_REFRESH_MAX_INTERVAL` | `24h` | The longest any podcast waits between refreshes. Minutes (`90`) or a number with `s`, `m`, `h` or `d` (`6h`). Set it lower to have even quiet podcasts checked more often; anything below 15 minutes makes every podcast refresh at that interval. |
+
+`PINEPODS_REFRESH_CRON` (a cron schedule for refreshing everything at once) is deprecated. It's still read when `PINEPODS_REFRESH_MAX_INTERVAL` isn't set: the gap between its runs becomes the maximum interval (`0 */30 * * * *` → 30 minutes), and Pinepods logs a warning at startup.
+
+After upgrading, each podcast's interval is worked out from the episodes already stored, and the first refreshes are spread over the following 30 minutes.
 
 ## Feed problems
 
-Pinepods refreshes your podcasts on a schedule. When a feed keeps failing, you see it instead of the podcast quietly going stale.
+When a feed keeps failing, you see it instead of the podcast quietly going stale.
 
 **Settings → Feed problems** lists:
 
@@ -18,11 +39,11 @@ Pinepods refreshes your podcasts on a schedule. When a feed keeps failing, you s
 
 You also get **one message in the activity panel** when a podcast has failed to update for a day (a feed that's gone is reported after three tries), and another when it works again. The podcast's own page shows a note while it's failing.
 
-Failing feeds are retried less often the longer they fail: 30 minutes after the first failure, longer after each further one, up to once a day.
+Failing feeds are retried less often the longer they fail: 30 minutes after the first failure, longer after each further one, up to once a day (or the podcast's usual interval, if that's longer).
 
 ## Podping
 
-[Podping](https://podping.org) is how many podcast hosts (Buzzsprout, Spreaker, RSS.com and others) announce a new episode the moment they publish it. With Podping on, Pinepods refreshes those feeds within about a minute instead of at the next scheduled refresh.
+[Podping](https://podping.org) is how many podcast hosts (Buzzsprout, Spreaker, RSS.com and others) announce a new episode the moment they publish it. With Podping on, Pinepods refreshes those feeds within about a minute instead of waiting for their next scheduled refresh.
 
 Turn it on under **Settings → Admin → Podcast update services**. It's off by default.
 

@@ -137,8 +137,9 @@ no longer created** — it was removed for security. Don't rely on it.
 
 Feed refreshes and nightly maintenance are **scheduled internally by the Rust API**. The
 old cron jobs and helper scripts (`call_refresh_endpoint.sh`, `call_nightly_tasks.sh`)
-and their `*/30 * * * *` crontab entries have been **removed**. Refresh cadence is
-configurable through PinePods' settings rather than the crontab.
+and their `*/30 * * * *` crontab entries have been **removed**. Each feed is now refreshed
+on its own schedule, from how often it publishes; `PINEPODS_REFRESH_MAX_INTERVAL` sets the
+longest gap (see [Feed updates](../Features/feed-updates.md#when-feeds-are-refreshed)).
 
 ## Build Process (multi-stage Dockerfile)
 

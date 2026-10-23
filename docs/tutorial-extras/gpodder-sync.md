@@ -147,7 +147,7 @@ Pinepods keeps a history of sync changes; it's what apps download. After 90 days
 ## Troubleshooting
 
 - **An app can't log in.** Compare the Server URL in the app with the one in the settings, and check that the gpodder server is switched on. Apps need an app password: your Pinepods password is refused. Try a fresh app password.
-- **A podcast from an app doesn't show up.** New subscriptions are imported in the background. If the feed can't be fetched, Pinepods keeps trying for about a week and lists it under **Settings → Feed problems**, where you can try again, unsubscribe everywhere, or dismiss it. See [Feed problems and Podping](../Features/feed-updates.md).
+- **A podcast from an app doesn't show up.** New subscriptions are imported in the background. If the feed can't be fetched, Pinepods keeps trying for about a week and lists it under **Settings → Feed problems**, where you can try again, unsubscribe everywhere, or dismiss it. See [Feed updates, feed problems and Podping](../Features/feed-updates.md).
 - **The external server isn't syncing.** Look at the status for the last error, and use **Test connection** to check the login.
 - **Logs.** Sync failures are logged as warnings in the Pinepods container log.
 

@@ -15,7 +15,8 @@ player instead of the audio player.
   episode page, sized to the content, with the usual playback controls, speed, and
   position tracking.
 - **YouTube** — channels you subscribe to through search are treated as video sources
-  and play through the same video pipeline.
+  and play through the same video pipeline. See [Feed updates](./feed-updates.md#youtube-channels)
+  for how new videos are picked up.
 
 ## On mobile
 

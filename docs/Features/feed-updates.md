@@ -21,6 +21,18 @@ A feed several people subscribe to is fetched once for all of them. **Refresh** 
 
 After upgrading, each podcast's interval is worked out from the episodes already stored, and the first refreshes are spread over the following 30 minutes.
 
+### YouTube channels
+
+YouTube channels follow the same schedule, worked out from their videos.
+
+- **New videos are spotted through the channel's RSS feed** (`youtube.com/feeds/videos.xml`), which lists its 15 newest videos. A refresh where nothing changed costs one small request. Changing view counts don't count as a change.
+- **yt-dlp only runs for new videos.** All of a channel's new videos are fetched in one yt-dlp run, for their duration and description, and then their audio is downloaded. At most 3 yt-dlp processes run at once during refreshes.
+- **A channel several people subscribe to is checked once for all of them.** Each subscriber gets the new videos within their own cutoff ("only videos from the last N days"). Nothing older than the longest cutoff among them is fetched.
+- **If the RSS feed fails**, Pinepods lists the channel's 15 newest videos with yt-dlp instead. If that fails too, the channel shows up under [Feed problems](#feed-problems) like any other feed.
+- Videos that yt-dlp can't read (members-only, private, upcoming premieres) are skipped without counting as a failure.
+- **Old videos past your cutoff are removed**, except ones you've played, saved, queued, downloaded, or added to a playlist or collection.
+- New videos show up in **Refresh** in the app as they arrive, the same way new podcast episodes do.
+
 ## Feed problems
 
 When a feed keeps failing, you see it instead of the podcast quietly going stale.

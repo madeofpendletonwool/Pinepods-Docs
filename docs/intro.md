@@ -65,8 +65,6 @@ services:
       PGDATA: /var/lib/pgdata/pgdata
     volumes:
       - /home/user/pinepods/pgdata:/var/lib/pgdata
-    ports:
-      - "5432:5432"
     restart: always
 
   valkey:
@@ -98,10 +96,14 @@ services:
       PGID: ${GID:-911}
       # Add timezone configuration
       TZ: "America/New_York"
+      # Language Configuration
+      DEFAULT_LANGUAGE: "en"
     volumes:
       # Mount the download and backup locations on the server
       - /home/user/pinepods/downloads:/opt/pinepods/downloads
       - /home/user/pinepods/backups:/opt/pinepods/backups
+      # Mount local media files to use the Add Local Podcast feature (optional)
+      - /home/user/pinepods/local-media:/opt/pinepods/local-media
       # Timezone volumes, HIGHLY optional. Read the timezone notes below
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
@@ -172,6 +174,8 @@ services:
       # Mount the download and backup locations on the server
       - /home/user/pinepods/downloads:/opt/pinepods/downloads
       - /home/user/pinepods/backups:/opt/pinepods/backups
+      # Mount local media files to use the Add Local Podcast feature (optional)
+      - /home/user/pinepods/local-media:/opt/pinepods/local-media
       # Timezone volumes, HIGHLY optional. Read the timezone notes below
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
@@ -183,7 +187,7 @@ services:
 Make sure you change these variables to variables specific to yourself at a minimum.
 
 ```
-      # The url you hit the site at. Only used for sharing rss feeds
+      # The url you reach the site at. Used to build RSS feed and shared links
       HOSTNAME: 'http://localhost:8040'
       # These next 4 are optional. They allow you to set an admin without setting on the first boot
       USERNAME: pinepods
@@ -208,7 +212,7 @@ First of all, the USERNAME, PASSWORD, FULLNAME, and EMAIL vars are your details 
 
 #### Note on the Search API
 
-Let's talk quickly about the searching API. This allows you to search for new podcasts and it queries iTunes, the Podcast Index, or YouTube for new content. The Podcast Index and YouTube (via the Google Search API) both require an API key, while iTunes does not. Note that Google enforces a daily quota on YouTube searches, so heavy YouTube users will want to self-host. If you'd rather not mess with the API at all simply set the API_URL to the one below.
+Let's talk quickly about the searching API. This allows you to search for new podcasts and it queries iTunes, the Podcast Index, or YouTube for new content. The Podcast Index and YouTube (via the Google Search API) both require an API key, while iTunes does not. Note that Google enforces a daily quota on YouTube searches, so heavy YouTube users will want to self-host. If you'd rather not mess with the API at all simply set `SEARCH_API_URL` to the one below.
 
 ```
 SEARCH_API_URL: 'https://search.pinepods.online/api/search'
@@ -442,7 +446,7 @@ Once you have everything set up, install the Helm chart:
 ```bash
 helm install pinepods pinepods/pinepods -f my-values.yaml --namespace pinepods-namespace --create-namespace
 ```
-This will deploy Pinepods on your Kubernetes cluster with a postgres database. MySQL/MariaDB is not supported with the kubernetes setup. The service will be accessible at the specified NodePort.
+This deploys Pinepods on your Kubernetes cluster with a bundled PostgreSQL database. To use MariaDB or MySQL instead, run it yourself and point `externalDatabase` at it with `type: mariadb` (or `mysql`). Pinepods is reached through the ingress you configured; the service itself is `ClusterIP` by default.
 
 Check out the Tutorials on the documentation site for more information on how to do basic things.
 

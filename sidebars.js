@@ -52,10 +52,13 @@ module.exports = {
       items: [
         'Features/smart-playlists',
         'Features/Queue',
+        'Features/RemoteDevices',
+        'Features/Collections',
         'Features/Downloads',
         'Features/AutoDownload',
         'Features/SerialPodcasts',
         'Features/Video',
+        'Features/YouTube',
         'Features/LocalPodcasts',
         'Features/Favorites',
         'Features/SharedLinks',

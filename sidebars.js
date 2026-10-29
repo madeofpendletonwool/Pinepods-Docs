@@ -57,7 +57,6 @@ module.exports = {
         'Features/Collections',
         'Features/Downloads',
         'Features/AutoDownload',
-        'Features/SerialPodcasts',
         'Features/Video',
         'Features/YouTube',
         'Features/LocalPodcasts',

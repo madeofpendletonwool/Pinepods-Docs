@@ -168,6 +168,10 @@ module.exports = {
             to: "/docs/next/tutorial-basics/user-management",
           },
           {
+            from: "/docs/next/Features/SerialPodcasts",
+            to: "/docs/next/Features/Queue",
+          },
+          {
             from: "/docs/next/Features/gpodder-sync",
             to: "/docs/next/tutorial-extras/gpodder-sync",
           },

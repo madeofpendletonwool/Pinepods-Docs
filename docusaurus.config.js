@@ -167,6 +167,10 @@ module.exports = {
             from: "/docs/next/tutorial-basics/AdjustingUserSettings",
             to: "/docs/next/tutorial-basics/user-management",
           },
+          {
+            from: "/docs/next/Features/gpodder-sync",
+            to: "/docs/next/tutorial-extras/gpodder-sync",
+          },
         ],
       },
     ],

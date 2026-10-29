@@ -158,6 +158,15 @@ module.exports = {
             ],
             to: "/docs/intro",
           },
+          // Pages renamed or merged in the unreleased version
+          {
+            from: "/docs/next/tutorial-basics/ChangingLoginPage",
+            to: "/docs/next/tutorial-basics/display-settings",
+          },
+          {
+            from: "/docs/next/tutorial-basics/AdjustingUserSettings",
+            to: "/docs/next/tutorial-basics/user-management",
+          },
         ],
       },
     ],

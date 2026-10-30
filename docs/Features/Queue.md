@@ -1,41 +1,35 @@
-# The Queue
+# The Queue and What Plays Next
 
-The queue is your up-next list. Add episodes to it from anywhere, reorder them, and
-PinePods plays through them one after another.
+The queue is your up-next list. It's saved on the server, so the web app, the desktop app and the mobile apps share one queue.
 
 ![The PinePods queue side panel](/img/screenshots/queuepage.png)
 
-## The queue side panel (web)
+## Adding episodes
 
-On the web client, the queue lives in a **persistent side panel** you can open from any
-page — you don't have to navigate away from what you're doing to see or change what's
-playing next.
+- **Queue Episode** in an episode's menu puts it right after the episode that's playing, so it plays next. With nothing playing, it goes to the top.
+- **Playing an episode** moves it to the top of the queue (adding it if it wasn't there), so whatever is playing is always first.
+- **Auto-add new episodes to queue** in a podcast's settings adds each new episode of that podcast to the end of the queue when it arrives.
+- On a podcast's page, **Select** lets you tick several episodes and **Queue** them at once.
 
-From the panel (and from episode context menus) you can:
+## Managing the queue
 
-- **Add** episodes to the queue.
-- **Reorder** episodes by dragging them into the order you want.
-- **Remove** an episode with the "Remove From Queue" action.
-- **Clear** the queue when you want to start fresh.
-- **Multi-select** episodes with checkboxes to manage several at once.
+The **Queue** button in the player opens the queue panel next to whatever page you're on. It shows **Now Playing** and the episodes after it. Drag episodes to reorder them. **Queue** in the sidebar shows the same list full-size.
 
-## Auto-play next
+**Manage queue** opens a larger view:
 
-When the current episode finishes, the **next episode in the queue starts
-automatically**, giving you a continuous listening session. This works hand-in-hand
-with:
+- **Sort** by **Manual order**, **Date: newest first**, **Date: oldest first**, or **Group by podcast**, check the **Preview of new order**, and click **Apply new order**. This rewrites the queue order and can't be undone.
+- Search the queue, tick episodes, and **Remove selected**.
 
-- [Serial podcasts](./SerialPodcasts.md), which advance a single show in order.
-- Playlist continued play, which plays a playlist straight through.
+Finishing an episode, or marking it complete, removes it from the queue.
 
-## On mobile
+## What plays next
 
-The mobile apps include the same queue concept with auto-play-next when an episode
-finishes, plus inline queue controls on the podcast detail screen.
+When an episode ends, Pinepods picks the next one in this order:
 
-## Tips
+1. **Playing from a playlist:** the next episode in that [playlist](./smart-playlists.md).
+2. **Auto-play next episode** is on for the podcast: the next newer episode of the same podcast you haven't finished. Use this for shows meant to be heard in order, like audio dramas or courses. It's off by default and set per podcast in the podcast's settings. The episode isn't added to your queue.
+3. Otherwise: the next unfinished episode in your queue.
 
-- Build a listening session by queueing a few episodes across different shows, then let
-  auto-play carry you through them.
-- Use the multi-select checkboxes to quickly clear out episodes you've changed your mind
-  about.
+If none of these finds anything, playback stops.
+
+To control playback on another of your devices, see [Playing on other devices](./RemoteDevices.md).

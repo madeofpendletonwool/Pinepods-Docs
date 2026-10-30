@@ -27,6 +27,4 @@ header. Admin-only endpoints additionally require an admin (or web) key. See the
 [API introduction](./api_intro.md) for how keys are issued to the web, desktop, and
 mobile clients.
 
-> **Note:** the reference is rolling out across the API module-by-module, so some
-> endpoints may not appear yet. The spec is regenerated on every change and verified in
-> CI, so what *is* listed is guaranteed accurate.
+The spec is regenerated from the code on every change and checked in CI. It covers the HTTP API; the WebSocket endpoints under `/ws/api/` and the image placeholder route are not in it.

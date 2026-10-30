@@ -4,7 +4,7 @@
 
 PinePods ships as a **single Docker image** that runs several cooperating processes
 under a lightweight process supervisor. Everything an instance needs at runtime — the
-web UI, the main API, the gpodder sync server, and the reverse proxy — lives in that one
+web UI, the main API (which includes the gpodder sync server), and the reverse proxy — lives in that one
 container. It talks to two external services you provide: a **database** (PostgreSQL or
 MySQL/MariaDB) and a **Valkey/Redis** cache.
 
@@ -38,19 +38,15 @@ The main backend is a compiled Rust binary, `pinepods-api`. It handles:
 - User management, authentication, and OIDC
 - RSS feed generation (`/api/feed/*`)
 - WebSocket connections for real-time updates and task progress
-- **Background job scheduling** — feed refreshes and nightly maintenance run on an
-  internal scheduler inside this process (no cron)
+- The **gpodder.net sync server** that apps like AntennaPod sync with, plus syncing with
+  an external gpodder server or Nextcloud (see [Podcast Sync](../tutorial-extras/gpodder-sync.md))
+- **Background job scheduling** — feed refreshes, sync, scheduled backups and nightly
+  maintenance run on an internal scheduler inside this process (no cron)
 
 It listens on **port 8032 inside the container** and is reached through nginx; it is not
 exposed directly.
 
-### 3. gpodder API — Go
-
-A separate Go binary, `gpodder-api`, implements the gpodder.net sync protocol so apps
-like AntennaPod can sync subscriptions and episode actions with PinePods. It listens on
-**port 8042** and shares the same database as the Rust API.
-
-### 4. Database setup tool — `pinepods-db-setup`
+### 3. Database setup tool — `pinepods-db-setup`
 
 Schema creation, migrations, and validation are performed by a small standalone binary,
 `pinepods-db-setup`. It is written in Python but **compiled to a single executable with
@@ -58,24 +54,26 @@ PyInstaller at build time**, so the runtime image contains no Python interpreter
 **once on every startup** before the services launch, is idempotent, and supports both
 PostgreSQL and MySQL/MariaDB.
 
-### 5. Database layer (external)
+### 4. Database layer (external)
 
 Supports **PostgreSQL** (recommended) and **MySQL/MariaDB**. Stores users, podcast and
 episode metadata, listening history, playlists, settings, queue, downloads, and gpodder
 sync state. You run this yourself (or via the bundled Helm/Compose examples); it is not
 part of the PinePods image.
 
-### 6. Valkey / Redis cache (external)
+### 5. Valkey / Redis cache (external)
 
 Used for caching and coordination. Configured via `VALKEY_HOST` / `VALKEY_PORT`.
 
-### 7. nginx
+### 6. nginx
 
 nginx listens on **port 8040** (the web UI port) and:
 
 - Serves the compiled WASM frontend (with the correct `application/wasm` MIME type)
 - Reverse-proxies API, RSS, and WebSocket routes to the Rust API
-- Routes gpodder.net protocol paths to the Go service
+- Routes gpodder.net protocol paths to the Rust API too
+- Passes the original host and scheme on (`X-Forwarded-Host`, `X-Forwarded-Proto`), so the
+  API builds correct public URLs behind another reverse proxy
 - Adds CORS headers and handles preflight requests
 
 ## Process Supervision — Horust
@@ -87,8 +85,7 @@ services defined in `/etc/horust/services/`:
 | Service | Binary | Port | Notes |
 |---|---|---|---|
 | `pinepods-api` | `/usr/local/bin/pinepods-api` | 8032 (internal) | Main Rust API + internal scheduler |
-| `gpodder-api` | `/usr/local/bin/gpodder-api` | 8042 | Starts after `pinepods-api` |
-| `nginx` | `nginx -g 'daemon off;'` | 8040 | Starts after `gpodder-api` |
+| `nginx` | `nginx -g 'daemon off;'` | 8040 | Starts after `pinepods-api` |
 
 Each service is configured to restart automatically. Startup ordering is enforced with
 `start-after` so the API is up before nginx begins proxying to it.
@@ -110,14 +107,13 @@ nginx (port 8040) maps request paths to the right backend:
 | `/` | static files in `/var/www/html` | The WASM web UI (`try_files … /index.html`) |
 | `/api/*` | Rust API (8032) | Main application API |
 | `/api/gpodder` | Rust API (8032) | gpodder bridge handled by the Rust API |
-| `/ws/api/data/`, `/ws/api/tasks/` | Rust API (8032) | WebSocket connections |
+| `/ws/api/` | Rust API (8032) | WebSocket connections (tasks, notifications, now-playing) |
 | `/rss/{id}` | rewritten to `/api/feed/{id}` → Rust API (8032) | Public RSS feeds |
-| `/api/2`, `/auth`, `/subscriptions`, `/devices`, `/updates`, `/episodes`, `/settings`, `/lists`, `/favorites`, `/sync-devices`, … | Go gpodder API (8042) | gpodder.net protocol |
+| `/api/2`, `/auth`, `/subscriptions`, `/devices`, `/updates`, `/episodes`, `/settings`, `/lists`, `/favorites`, `/sync-devices`, … | Rust API (8032) | gpodder.net protocol |
 
 ## Ports
 
-- **8040** — web UI (nginx). **Exposed**; this is the port you publish.
-- **8042** — gpodder API (Go). **Exposed** for direct gpodder clients.
+- **8040** — web UI, API and gpodder sync (nginx). **Exposed**; this is the only port you publish.
 - **8032** — Rust API. **Internal only**, reached via nginx.
 
 The container `HEALTHCHECK` hits `http://localhost:8040/api/health`, which proxies to the
@@ -137,8 +133,9 @@ no longer created** — it was removed for security. Don't rely on it.
 
 Feed refreshes and nightly maintenance are **scheduled internally by the Rust API**. The
 old cron jobs and helper scripts (`call_refresh_endpoint.sh`, `call_nightly_tasks.sh`)
-and their `*/30 * * * *` crontab entries have been **removed**. Refresh cadence is
-configurable through PinePods' settings rather than the crontab.
+and their `*/30 * * * *` crontab entries have been **removed**. Each feed is now refreshed
+on its own schedule, from how often it publishes; `PINEPODS_REFRESH_MAX_INTERVAL` sets the
+longest gap (see [Feed updates](../Features/feed-updates.md#when-feeds-are-refreshed)).
 
 ## Build Process (multi-stage Dockerfile)
 
@@ -151,13 +148,12 @@ The image is built in several stages and assembled into a small Alpine final ima
      trunk build --features server_build --release
    ```
    Output (`/app/dist`) is copied to `/var/www/html`.
-2. **gpodder (golang:alpine)** — `go build` produces the static `gpodder-api` binary.
-3. **db-setup (python:3.11-alpine)** — PyInstaller compiles `setup_database_new.py`
+2. **db-setup (python:3.14-alpine)** — PyInstaller compiles `setup_database_new.py`
    (plus `database_functions/`) into the standalone `pinepods-db-setup` binary.
-4. **rust-api (rust:alpine)** — `cargo build --release` produces the statically linked
+3. **rust-api (rust:alpine)** — `cargo build --release` produces the statically linked
    `pinepods-api` binary.
-5. **Final (alpine)** — installs runtime tools (nginx, ffmpeg, yt-dlp, db clients,
-   `su-exec`, Horust), copies the four artifacts and the startup files, and sets
+4. **Final (alpine)** — installs runtime tools (nginx, ffmpeg, yt-dlp, db clients,
+   `su-exec`, Horust), copies the three artifacts and the startup files, and sets
    `startup.sh` as the entrypoint.
 
 ## Container Directory Structure
@@ -165,7 +161,6 @@ The image is built in several stages and assembled into a small Alpine final ima
 ```
 /usr/local/bin/
 ├── pinepods-api          # Rust API (Axum)
-├── gpodder-api           # Go gpodder.net sync server
 ├── pinepods-db-setup     # Compiled DB setup/migration tool
 ├── horust                # Process supervisor
 └── yt-dlp                # YouTube media fetching
@@ -194,7 +189,7 @@ The image is built in several stages and assembled into a small Alpine final ima
 
 ```bash
 # Database
-DB_TYPE=<postgresql|mysql>
+DB_TYPE=<postgresql|mariadb|mysql>
 DB_HOST=<host or Unix socket directory>
 DB_PORT=<port>
 DB_USER=<user>
@@ -237,10 +232,9 @@ To run PinePods natively you would reproduce what the container does:
    `database_functions/` available.
 3. **Start `pinepods-api`** (listens on 8032). Its internal scheduler handles feed
    refresh and nightly tasks — no cron needed.
-4. **Start `gpodder-api`** (listens on 8042) if you want gpodder sync.
-5. **Serve the WASM frontend and reverse-proxy the APIs** with nginx using the routing
+4. **Serve the WASM frontend and reverse-proxy the APIs** with nginx using the routing
    table above (UI on 8040).
-6. Optionally use a supervisor (the container uses Horust) to keep the three services
+5. Optionally use a supervisor (the container uses Horust) to keep both services
    running and ordered.
 
 :::tip Connecting over a Unix socket

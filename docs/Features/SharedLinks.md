@@ -1,34 +1,21 @@
 # Shared Episode Links
 
-Shared episode links let you generate a **shareable URL for a single episode** so you
-can send it to a friend — even if they don't have an account on your server.
+A shared link lets someone listen to one episode from your server without an account.
 
 ![Managing shared episode links in PinePods](/img/screenshots/sharedlinks.png)
 
-## Creating a shared link
+## Creating a link
 
-You can create a shared link for an episode from its options, and manage all of your
-links from the **Shared Links** section in Settings.
+- **Web:** on an episode's page, click **Share Episode**, then **Copy Shared Link**.
+- **Mobile:** open the episode and use its share button. The app creates the link and opens your phone's share sheet.
 
-When someone opens a shared link, they land on a dedicated shared-episode page that
-displays the episode details and lets them play it.
+The link looks like `https://your-server/shared_episode/<key>`. Whoever opens it gets a page with the episode's details, its show notes and a **Play** button, without signing in.
 
-## Managing your links
+The same dialog on the web also shows the episode's normal address, for people who do have an account on your server.
 
-The Shared Links settings page gives you full control over every link you've created:
+## Expiry
 
-- **List** all of your currently active shared links.
-- **Delete** a link to revoke access immediately.
-- **Extend** a link's expiration when you need it to stay live longer.
+A link works for 60 days. Under **Settings → Shared Links** you see every link you've made, with its **Episode**, **Podcast** and **Expires** date:
 
-## Expiration
-
-Shared links can carry an **expiration**, so a link you send today won't stay open
-forever. You can extend or delete links at any time from the Shared Links page.
-
-## Tips
-
-- Because the link resolves to a self-contained page, recipients don't need to log in or
-  install anything to listen.
-- Revoke links you no longer need with **Delete** rather than letting them sit — it
-  keeps your shared list tidy and your content private.
+- **Extend** adds the number of days you enter to the link's expiry.
+- **Delete** turns the link off straight away.

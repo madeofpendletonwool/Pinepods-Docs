@@ -1,55 +1,79 @@
 # Developing
 
-First of all, thanks for considering contributing on Pinepods! Pinepods is a Rust project — the frontend uses the Yew framework to build a WASM application, and the backend is a Rust (Axum) API that serves data from the database of the user's choice. A separate Go service provides gpodder.net sync. For a deeper look at how the pieces fit together at runtime, see [Container Fundamentals](./Container-Fundamentals.md).
+Thanks for considering contributing to Pinepods! This page covers how the code is laid out and how to run it while you work on it. For how the pieces fit together at runtime, see [Container Fundamentals](./Container-Fundamentals.md).
 
-This article outlines how to get Pinepods running in a development environment, and outlines the basics of the architecture.
+- [The code](#the-code)
+- [Setting up the dev environment](#setting-up-the-dev-environment)
+- [Tests and checks](#tests-and-checks)
+- [Git strategy](#git-strategy)
+- [Resources for beginners](#resources-for-beginners)
 
-- [Setting up the Development Environment](#setting-up-the-dev-environment)
-  - [Prerequisites](#prerequisites)
-  - [Running the App](#running-the-project)
-  - [Notes](#notes)
-- [Git Strategy](#git-strategy)
-  - [Flow](#git-flow)
-  - [Branches](#git-branch-naming)
-  - [PR Guidelines](#pr-guidelines)
-- [Resources for Beginners](#resources-for-beginners)
+## The code
+
+Everything is in the [PinePods repository](https://github.com/madeofpendletonwool/PinePods):
+
+| Directory | What it is |
+|---|---|
+| `web/` | The web app: Rust and [Yew](https://yew.rs), compiled to WebAssembly with [Trunk](https://trunkrs.dev). The same code builds the desktop app with Tauri. User-visible strings live in `web/src/translations/`. |
+| `rust-api/` | The server: a Rust ([Axum](https://docs.rs/axum)) API. It includes the gpodder sync server, feed refreshes and the background scheduler. Routes are in `src/lib.rs`, handlers in `src/handlers/`, background services in `src/services/`. |
+| `database_functions/`, `startup/` | Database migrations (Python, compiled into the image as `pinepods-db-setup`) and the container's startup scripts, nginx config and Horust services. |
+| `mobile/` | The Android and iOS apps, in Flutter. |
+| `pinepods-ai/` | The optional AI container for transcripts and ad detection. See [AI Setup](../AI/Setup.md). |
+| `deployment/` | Docker Compose files and the Helm chart. |
 
 ## Setting up the Dev Environment
 
 ### Prerequisites
 
-You will need either the latest version of **[Rust](https://www.rust-lang.org/tools/install)**. You'll also need the latest version of **[Trunk](https://trunkrs.dev/)** to build and serve the application. Finally **[Git](https://git-scm.com/downloads)** to easily fetch the code, and push any changes. If you plan on running or deploying the container, you'll also need **[Docker](https://docs.docker.com/get-docker/)**.
+- **[Rust](https://www.rust-lang.org/tools/install)** with the WebAssembly target: `rustup target add wasm32-unknown-unknown`
+- **[Trunk](https://trunkrs.dev/)** to build and serve the web app
+- **[Docker](https://docs.docker.com/get-docker/)** for the server and its database
+- **[Git](https://git-scm.com/downloads)**
+- **[Flutter](https://docs.flutter.dev/get-started/install)**, only if you work on the mobile apps
 
-With all this installed you also need the compilation target for wasm
+### Running the server
 
-```
-rustup target add wasm32-unknown-unknown
-```
+Build the image from the repository root and run it with one of the [compose files](https://github.com/madeofpendletonwool/PinePods/tree/main/deployment/docker/compose-files):
 
-### Running the Project
-
-1. Get Code: `git clone https://github.com/madeofpendletonwool/PinePods.git`
-2. Navigate into the directory: `cd web`
-4. Start dev server: `RUSTFLAGS="--cfg=web_sys_unstable_apis" trunk serve --features server_build --release`
-
-Pinepods should now be being served on [Localhost Port 8080](http://localhost:8080/). Hot reload is enabled, so making changes to any of the files and saving will trigger them to be rebuilt and the page refreshed.
-
-Now, what you've just done is run the web frontend of the project. The backend is not running currently, meaning, unless you connect to an external Pinepods server you will not be able to sign in. To sign in you need the backend running. To run the backend you can either just pull the Pinepods docker image form docker hub or you can build it yourself. You can build it with this command after navigating to the base repo directory:
-
-```
-cd Pinepods/
-sudo docker build -t madeofpendletonwool/pinepods:latest .
+```bash
+git clone https://github.com/madeofpendletonwool/PinePods.git
+cd PinePods
+docker build -f dockerfile -t madeofpendletonwool/pinepods:latest .
 ```
 
-Then once built you can run the container with **[Docker Compose](https://github.com/madeofpendletonwool/PinePods/tree/main/deployment/docker/compose-files)**. Once you have the backend running you can connect to the server and sign in with your development frontend. Go to the development server url: http://localhost:8080 by default. Click the connect to different server button:
+The server is then at `http://localhost:8040` with the compose files' defaults.
+
+### Running the web app
+
+```bash
+cd web
+RUSTFLAGS="--cfg=web_sys_unstable_apis --cfg getrandom_backend=\"wasm_js\"" trunk serve --features server_build --release
+```
+
+It's served at [localhost:8080](http://localhost:8080/) and rebuilds when you save a file. Click **Connect to Different Server** on the sign-in page and enter your server's address (`http://localhost:8040`):
 
 ![Connect Different Server Button](/img/diff-serv.png)
 
-And then enter the server url in the server name: http://localhost:8040 by default with the compose file linked above. You're now signed into a dev Pinepods server using a local backend!
+Always build with `--features server_build`, as the container does; without it Trunk builds the desktop (Tauri) variant. A plain `cargo check` also misses code behind that feature, so check with `cargo check --target wasm32-unknown-unknown --features server_build`.
 
-### Notes
+### The mobile apps
 
-- You'll notice above we're using the server_build feature. This is because when compiling without that feature it builds the project for the client version which builds on Tauri.
+```bash
+cd mobile
+flutter pub get
+flutter run
+```
+
+Sign in to your development server from the app, using your computer's LAN address rather than `localhost`.
+
+## Tests and checks
+
+These run in CI on every pull request:
+
+- **Server integration tests** boot the real API against a fresh Postgres or MariaDB database for each test: `bash rust-api/scripts/integration-tests.sh` (add `--db postgres` or `--db mariadb` for one database, and `-- <name>` to filter). They need Docker. See `rust-api/tests/README.md`.
+- **API spec:** `rust-api/openapi.json` is generated from the code. After changing an endpoint, regenerate it with `cd rust-api && cargo run -- --dump-openapi openapi.json`; CI fails if it's out of date. The [API reference](/docs/API/reference/) on this site is built from it.
+- **Translations:** web UI text goes through `i18n.t("…")` with the English string in `web/src/translations/en.json`. CI flags new hard-coded strings and keys missing from `en.json`; other languages fall back to English.
+- **Mobile:** `cd mobile && flutter test`.
 
 ---
 

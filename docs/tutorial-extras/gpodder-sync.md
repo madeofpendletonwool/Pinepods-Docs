@@ -1,156 +1,172 @@
-# PinePods Podcast Synchronization Guide
+# Podcast Sync Guide
 
-## Introduction
+Pinepods can keep your subscriptions and listening progress in sync with other podcast apps. There are two parts, and you can use either or both:
 
-PinePods 0.7.8 introduced a completely rebuilt podcast synchronization system, offering multiple ways to keep your podcast subscriptions and listening progress in sync across different devices and applications. This guide explains the available synchronization options, with a particular focus on the built-in GPodder API server.
+1. **The PinePods gpodder server.** Pinepods is itself a gpodder sync server. gpodder.net-compatible apps such as AntennaPod and Kasts sign in to Pinepods and sync with it directly. Nothing else to install.
+2. **An external sync server.** Pinepods also syncs, as a client, with one other server: a gpodder-compatible server (oPodSync, Podfetch, a self-hosted gpodder.net, …) or a Nextcloud with the GPodder Sync app.
 
-## Synchronization Options Overview
+Both are set up in **Settings → Podcast Sync**.
 
-PinePods now offers three primary synchronization methods:
+:::tip Which one do I want?
+If your other apps can talk to a gpodder server, use the PinePods gpodder server: point the apps at Pinepods and you're done. Add an external server only if you already have one that other apps rely on.
+:::
 
-1. **Internal GPodder API** (Recommended) - A full-featured built-in GPodder-compatible sync server
-2. **External GPodder Server** - Connect to an existing third-party GPodder server
-3. **Nextcloud Sync** - Connect to a Nextcloud instance with the GPodder plugin
+## What gets synced
 
-These options can be configured in the **Podcast Sync Settings** section of your PinePods installation.
+- **Subscriptions.** Adding or removing a podcast on one side adds or removes it on the other. A podcast an app subscribes to is imported in the background, so it can take a moment to show up in Pinepods.
+- **Episode progress.** Play position, and episodes marked played or unplayed. When two devices disagree, the most recent change wins.
 
-## Internal GPodder API (Recommended)
+Changes you make in Pinepods (web, desktop or mobile) are recorded the moment you make them, so an app sees them on its next sync.
 
-### What is the Internal GPodder API?
+## The PinePods gpodder server
 
-The Internal GPodder API is a feature introduced in PinePods 0.7.8 that embeds a full-featured GPodder-compatible synchronization server directly into PinePods itself. This means PinePods can now act as its own podcast synchronization server without requiring any additional external services.
+### Turning it on
 
-### Key Benefits
+1. Go to **Settings → Podcast Sync**.
+2. Under **PinePods gpodder server**, switch on **Enable the gpodder server**.
+3. The section now shows the **Server URL** and **Username** to enter in your apps, each with a copy button.
 
-- **Single Server Maintenance** - No need to set up and maintain a separate GPodder server
-- **High Performance** - Built in Golang for exceptional speed and reliability
-- **Simplified Authentication** - Uses your existing PinePods credentials
-- **Advanced Device Management** - Full support for managing multiple devices
-- **Manual Synchronization Options** - Control exactly when and how your podcasts sync
-- **Scalability** - Designed to handle thousands of podcasts efficiently
-- **Direct Database Integration** - Uses the same database as your PinePods installation
+When you turn it on, your current listening progress is published to the server, so the first sync of a new app gets your full state.
 
-### Setting Up Internal GPodder Sync
+### App passwords
 
-1. Navigate to **Settings → Podcast Sync Settings**
-2. In the "Internal Gpodder API" section, toggle the switch to "Enabled"
-3. Your internal GPodder server is now active and ready to use. Seriously, it's that easy.
+Apps sign in with an **app password**, never your Pinepods password:
 
-### Connecting External Apps to Internal GPodder
+- each app gets its own password, and you can revoke one without touching the others or your Pinepods password;
+- revoking it signs that app out straight away;
+- it works the same for accounts with MFA or that sign in with OIDC/SSO;
+- your real password never sits in a third-party app.
 
-When connecting apps like AntennaPod (Android) to your PinePods server:
+To create one, enter a label (e.g. "AntennaPod on my phone") under **App passwords** and click **Generate app password**. It's shown **once**, so copy it into your app right away. The list shows when each password was created and last used, with a **Revoke** button.
 
-- **Server URL**: Use your PinePods server address (e.g., `https://my-pinepods-server.com`)
-- **Username**: Your PinePods username
-- **Password**: Your PinePods password
+### Setting up your apps
 
-## Device Management
+Use the **Server URL**, your **Username** and an **app password** from the settings page.
 
-With the new GPodder sync system, you can manage multiple devices through an intuitive interface:
+**AntennaPod (Android)**
 
-- **Add New Devices** - Register smartphones, tablets, desktops, or other instances (Generally apps register their own device as they connect the first time.)
-- **Set Default Device** - Designate a primary device for automatic synchronization
-- **Manual Sync Controls** - Push or pull podcast subscriptions as needed manually. This also occurs automatically in the background.
+1. Settings → **Synchronization** → **Choose a synchronization provider** → **gpodder.net**.
+2. Choose to use a custom server and enter the Server URL (e.g. `https://pods.example.com`).
+3. Enter your username and app password.
+4. Pick an existing device or create a new one, then finish. AntennaPod syncs subscriptions and episode progress from then on.
 
-**Note** that which ever devices is selected in the dropdown is the one you will sync from. For example, if you have device-1 selected in the dropdown and device-2 if your default device in Pinepods, you'll sync podcasts associated with device-1 to device-2.
+**Kasts (KDE)**
 
-### Advanced Device Features
+1. Settings → **Synchronization** → select **gpodder.net** as the provider and choose a custom server.
+2. Enter the Server URL, username and app password, and pick or create a device.
 
-- **Device Types** - Categorize your devices (mobile, desktop, laptop, server, etc.)
-- **Device Captions** - Add descriptive names to help identify your devices
-- **Last Sync Tracking** - Monitor when each device last connected
-- **Default Device Indicators** - Easily identify your primary device
+**Other apps**
 
-## External GPodder Server
+Look for gpodder or gpodder.net sync with a custom server, and enter the same three things. Menu names differ between apps and versions. Pinepods also answers the older "Simple API" (`/subscriptions/{user}`) used by some apps.
 
-If you already have an existing GPodder server that you wish to continue using, PinePods supports connecting to it as a client.
+### The server URL
 
-### Configuration Steps
+Pinepods shows the address you opened it with, which is usually the right one. If your apps reach Pinepods at a different address than your browser does (for example, you browse it on your LAN but your phone goes through a reverse proxy), set `PINEPODS_PUBLIC_URL` to the address apps should use:
 
-1. Navigate to **Settings → Podcast Sync Settings**
-2. Ensure the "Internal Gpodder API" is disabled
-3. In the "GPodder-compatible Server" section, enter:
-   - Server URL
-   - Username
-   - Password
-4. Click "Test Connection" to verify your settings
-5. Click "Authenticate" to establish the connection
+```yaml
+environment:
+  PINEPODS_PUBLIC_URL: https://pods.example.com
+```
 
-### Notes on External GPodder Sync
+Behind a reverse proxy, Pinepods reads the original host and scheme from the `X-Forwarded-Host` and `X-Forwarded-Proto` headers. Most proxies send them, and the nginx inside the Pinepods container passes them through, so the right host name and `https` come out without extra setup.
 
-While fully supported, external GPodder synchronization requires maintaining a separate server and potentially dealing with additional configuration complexity. For most users, the internal GPodder API will provide a simpler and more integrated experience.
+### Devices
 
-## Nextcloud Sync
+**Devices** lists every app that has synced, with when it was last seen.
 
-PinePods supports synchronization with Nextcloud instances that have the GPodder plugin installed.
+- **Rename** changes the name shown in Pinepods (and to your apps). It sticks even when an app updates its device.
+- **Remove** deletes the device. Its history is kept, and the app simply registers a new device on its next sync.
+- Pinepods' own device is listed too (it's how changes made in Pinepods reach your apps). It can't be removed.
 
-### Configuration Steps
+You don't need to create devices yourself, and there's no "default device" to pick: apps register their own, and Pinepods uses its own.
 
-1. Navigate to **Settings → Podcast Sync Settings**
-2. Ensure the "Internal Gpodder API" is disabled
-3. In the "Nextcloud Sync" section, enter your Nextcloud server URL
-4. Click "Authenticate" and follow the authentication flow in the new browser tab
+## External sync server
 
-### Limitations of Nextcloud Sync
+Under **External sync server**, choose what to sync with: **Nothing else**, **gpodder server** or **Nextcloud**. You can use an external server and the PinePods gpodder server at the same time; Pinepods passes changes between them.
 
-Nextcloud sync provides basic podcast subscription synchronization but lacks some advanced features:
+### A gpodder server
 
-- Limited device management capabilities
-- Fewer configuration options
-- Potentially slower synchronization
-- May take up to 20 minutes to fully synchronize all podcasts
+1. Choose **gpodder server** and enter the server's URL, your username and password.
+2. Optionally set a **Device name**: how Pinepods shows up on that server. Leave it empty and Pinepods picks one.
+3. Click **Test connection**. It checks the login and lists your devices on that server, without saving anything.
+4. Click **Save and sync**. The login is checked again, and the first sync starts in the background (you can follow it in the activity panel).
 
-This option is primarily useful for users who are already heavily integrated with Nextcloud and prefer to keep everything within that ecosystem.
+The first sync is a full one: subscriptions and progress from both sides are merged, and nothing is removed from either side.
 
-## Choosing the Right Sync Option
+### Nextcloud
 
-### Why Choose Internal GPodder API (Recommended)
+You need a Nextcloud with the **GPodder Sync** app installed.
 
-- **Simplicity**: One server to maintain instead of two
-- **Performance**: Golang-based implementation offers superior speed
-- **Integration**: Direct access to PinePods database for efficiency
-- **Features**: Full device management and manual sync controls
-- **Authentication**: Uses existing PinePods credentials
-- **Reliability**: Some of the other podcast sync servers aren't particularly reliable
+1. Choose **Nextcloud** and enter your Nextcloud URL.
+2. Either click **Log in with Nextcloud** and approve Pinepods in the tab that opens (Pinepods waits for the approval), or enter your Nextcloud username and an app password and click **Save and sync**.
 
-### When to Consider External GPodder
+Nextcloud's sync app has no device list, so there's nothing to manage there.
 
-- You already have a well-established GPodder server
-- Your current setup includes multiple applications relying on your existing server
-- You have specific customizations to your GPodder server that PinePods doesn't replicate
+### Status and manual syncs
 
-### When to Consider Nextcloud Sync
+The section shows when the last sync succeeded, the last error if there was one, and whether the next sync is a full one.
 
-- You're deeply invested in the Nextcloud ecosystem
-- You primarily use Nextcloud's podcast features already
-- You prefer centralized management through Nextcloud
+- **Sync now** runs a sync straight away.
+- **Force full sync** re-merges everything from both sides (again without removing anything). Use it if the two sides look out of step.
+- **Remove** stops syncing with the server. Nothing is deleted on either side.
 
-### If you notice issues
+If syncing keeps failing (the server is down, the password changed), automatic syncs back off: 30 minutes after the first failure, longer after each further one, up to once a day. The status says when they resume. **Sync now** always works.
 
-- Check the PinePods logs for any error messages
-- Ensure your PinePods installation is updated to the latest version
-- Verify that any external GPodder server or Nextcloud instance is accessible
-- Open an issue on the Pinepods Repo. Please include which option you're using, and if using an external option please provide which one. Not all gpodder sync servers are the same.
+### When it syncs
+
+- **On a schedule**, every 5 minutes by default.
+- **After a change in Pinepods**: about 30 seconds after your last change, and never more than 2 minutes after the first one, so a burst of changes goes out as one sync.
+
+Both can be tuned with environment variables:
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `PINEPODS_SYNC_CRON` | `0 */5 * * * *` | Schedule for syncing with external servers. Six fields, starting with seconds. |
+| `PINEPODS_SYNC_PUSH_DELAY` | `30` | Seconds to wait after the last local change before pushing it. |
+| `PINEPODS_SYNC_PUSH_MAX_DELAY` | `120` | Push no later than this many seconds after the first unsent change. |
+| `PINEPODS_PUBLIC_URL` | (unset) | The server URL shown for gpodder apps. |
+| `PINEPODS_SYNC_LOG_RETENTION_DAYS` | `90` | How long changes that a newer one replaced are kept in the sync history. `0` keeps everything. |
+
+The first three only affect external servers.
+
+### Sync history
+
+Pinepods keeps a history of sync changes; it's what apps download. After 90 days, changes that a newer one replaced are dropped (once every external server has them). The latest state of every podcast and episode is always kept, so a newly connected app still gets everything. Apps syncing with the PinePods gpodder server decide for themselves when to sync.
+
+## Statistics
+
+**Sync statistics** (collapsed by default) shows how many podcasts are synced, recent episode actions and where they came from, and how many changes are still waiting to be sent to the external server. It's read from Pinepods' own sync history, so opening it doesn't contact any server.
+
+## Compatible servers and apps
+
+The PinePods gpodder server speaks the gpodder.net v2 API and the older Simple API, and its tests follow the way AntennaPod syncs. Kasts and other gpodder.net clients use the same API. For external servers, oPodSync, Podfetch and Nextcloud GPodder Sync have been used with Pinepods. If an app or server doesn't work, please [open an issue](https://github.com/madeofpendletonwool/PinePods/issues) with its name and version.
+
+## Upgrading from 0.9.0 or earlier
+
+- Your setup is carried over. The PinePods gpodder server stays on if it was on.
+- **Apps need an app password.** An app set up with your Pinepods password stops syncing after the upgrade: generate an app password in **Settings → Podcast Sync** and enter it in the app instead of your Pinepods password.
+- The gpodder server is now part of the Pinepods API, on the same address and paths as before, so the server URL in your apps and your proxy stay the same. Port `8042` is gone: if you mapped it, remove the mapping.
+- If you used the PinePods gpodder server **and** an external server at the same time, the external server couldn't be carried over. Pinepods shows a notice on the home page; enter the server again in the sync settings.
+
+## Troubleshooting
+
+- **An app can't log in.** Compare the Server URL in the app with the one in the settings, and check that the gpodder server is switched on. Apps need an app password: your Pinepods password is refused. Try a fresh app password.
+- **A podcast from an app doesn't show up.** New subscriptions are imported in the background. If the feed can't be fetched, Pinepods keeps trying for about a week and lists it under **Settings → Feed problems**, where you can try again, unsubscribe everywhere, or dismiss it. See [Feed updates, feed problems and Podping](../Features/feed-updates.md).
+- **The external server isn't syncing.** Look at the status for the last error, and use **Test connection** to check the login.
+- **Logs.** Sync failures are logged as warnings in the Pinepods container log.
+
+When reporting an issue on [GitHub](https://github.com/madeofpendletonwool/PinePods/issues), include the app and its version, whether you use the PinePods gpodder server or an external one (and which), and any errors from the status or the log.
 
 ## FAQ
 
-**Q: Will my existing podcast subscriptions be deleted when enabling podcast sync?**
-A: Almost certainly no. There could be a situation where if you have a well established Gpodder Sync server elsewhere it could remove some. I would recommend backing up your podcasts via opml before enabling a Gpodder server.
+**Can I use the PinePods gpodder server and an external server together?**
+Yes. Pinepods syncs with the external server and serves your apps at the same time.
 
-**Q: Will my existing podcast subscriptions transfer automatically?**
-A: Yes, when you enable synchronization, your current PinePods subscriptions will be available to sync to other devices. This includes episode listen times.
+**Can I sync with more than one external server?**
+Not at the moment: one external server per user.
 
-**Q: How often does synchronization occur?**
-A: Every 15 mins.
+**Will turning sync on delete podcasts?**
+Turning on the PinePods gpodder server doesn't remove anything. The first sync with an external server merges both sides and doesn't remove anything either. After that, removing a podcast on one side removes it on the other.
 
-**Q: My podcasts don't seem to be syncing over. What should I do?**
-A: Sometimes it can take awhile when it's onboarding a lot of podcasts. There can be a lot of data to parse.
-
-**Q: Can I use multiple sync methods simultaneously?**
-A: No, you should choose one synchronization method. Enabling the internal GPodder API will disable external sync options.
-
-**Q: What information is synchronized?**
-A: Typically, podcast subscriptions and episode play states are synchronized. Exact details may vary by client application as some support more features than others.
-
-**Q: Is my listening data secure?**
-A: Yes, as long as your Pinepods server is behind an https connection transmission of the data to any app is secure. Especially with the internal GPodder API which uses your existing PinePods authentication system and doesn't require exposing credentials to third-party services.
+**Is it secure?**
+Use HTTPS (a reverse proxy in front of Pinepods) so passwords and sync data are encrypted in transit, and give each app its own app password.

@@ -2,7 +2,7 @@
 
 You can now setup OIDC logins in Pinepods to use either your own self-hosted OIDC provider or one of the other large cloud hosted providers such as Github, Google, or Azure. Anything that follows the OIDC standard (and also Github even though they don't follow the standard) will work just fine. Below is instructions for setting up different types of providers
 
-(NOTE: Only admins can setup OIDC Settings)
+Providers are managed by admins under **Settings → Admin → OIDC/SSO Settings**. The callback to give your provider is shown there as **OIDC Redirect URL**.
 
 ### Resources
 
@@ -48,6 +48,22 @@ Seriously, since you're already self-hosted Pinepods you might as well self-host
 
 ![OIDC Button](/img/myoidcbutton.png)
 
+
+### Discovery, claims and roles
+
+These apply to every provider.
+
+- **Discovery URL (optional):** paste the provider's issuer URL or its `.well-known/openid-configuration` address and click **Discover**. Pinepods fills in the **Authorization URL**, **Token URL** and **User Info URL** for you.
+- **Name Claim**, **Email Claim**, **Username Claim:** which fields of the provider's user info to use. Leave them empty for the usual defaults.
+- **Roles Claim**, **User Role**, **Admin Role:** set these to control access from your provider's groups or roles.
+  - With a **Roles Claim** and **User Role** set, only users who have the user role or the admin role can sign in.
+  - With an **Admin Role** set, users with that role are made admins, and users without it lose admin rights, every time they sign in.
+
+The first time someone signs in through a provider, Pinepods creates their account. Later sign-ins update their full name from the provider, and their username if a **Username Claim** is set.
+
+### Providers from environment variables
+
+A provider can also be set with the `OIDC_*` environment variables (see [Environment Variables](../tutorial-basics/environment-variables.md)). It shows up in the list marked **Environment** and can't be removed from the app; change or remove the variables instead.
 
 ### Using a Nextcloud as your OIDC provider (Also works great)
 

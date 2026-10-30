@@ -13,7 +13,7 @@ The queue is your up-next list. It's saved on the server, so the web app, the de
 
 ## Managing the queue
 
-The **Queue** button in the player opens the queue panel next to whatever page you're on. It shows **Now Playing** and the episodes after it. Drag episodes to reorder them. A full-page view of the same list is at `/queue`; pick **Queue** as your [start page](../tutorial-basics/display-settings.md) to open it after signing in.
+The **Queue** button in the player opens the queue panel next to whatever page you're on. It shows **Now Playing** and the episodes after it. Drag episodes to reorder them. **Queue** in the sidebar shows the same list full-size.
 
 **Manage queue** opens a larger view:
 

@@ -13,6 +13,10 @@ Pinepods reads local media from `/opt/pinepods/local-media` inside the container
       - /home/user/pinepods/local-media:/opt/pinepods/local-media
 ```
 
+On Kubernetes, turn on `persistence.localMedia.enabled` in the Helm chart and set `persistence.localMedia.existingClaim` to a volume that holds your media (or let the chart create one).
+
+The mount must be writable: artwork you upload for a local podcast is saved in an `_artwork` folder inside it.
+
 Keep each podcast in its own folder.
 
 ## Adding a local podcast

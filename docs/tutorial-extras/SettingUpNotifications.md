@@ -2,7 +2,7 @@
 
 Pinepods tells you about things in two places:
 
-- **Push notifications** to your phone or desktop through [ntfy](https://ntfy.sh) or [Gotify](https://gotify.net), for new episodes of the podcasts you choose.
+- **Push notifications** to your phone or desktop through [ntfy](https://ntfy.sh), [Gotify](https://gotify.net) or any HTTP endpoint (a webhook, a Telegram bot, a home-automation hook), for new episodes of the podcasts you choose.
 - **The Activity panel** in the web app, for downloads and other background work, and for messages from the server such as a feed that stopped updating.
 
 ## Push notifications for new episodes
@@ -27,6 +27,16 @@ Under **Settings → Notification Settings**, pick a **Notification Platform** a
 |---|---|
 | **Gotify Server URL** | Your Gotify server, for example `https://gotify.example.com`. |
 | **Gotify App Token** | Create an application in Gotify's web interface and paste its token. |
+
+**HTTP**
+
+| Field | |
+|---|---|
+| **HTTP Endpoint URL** | Where to send it. |
+| **Auth Token** | Optional. Sent as `Authorization: Bearer <token>`. |
+| **HTTP Method** | **POST** sends JSON: `{"title": "New Podcast Episode", "message": "…", "text": "…"}`. **GET** adds `?message=…` to the URL. |
+
+For a Telegram bot, use `https://api.telegram.org/bot<bot token>/sendMessage` as the URL, **POST**, and `<bot token>:<chat id>` as the token; Pinepods then sends Telegram's `chat_id` and `text` instead.
 
 Click **Save Settings**, then **Send Test Notification** to check it arrives.
 

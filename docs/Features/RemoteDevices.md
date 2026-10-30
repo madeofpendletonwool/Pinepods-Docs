@@ -17,7 +17,7 @@ For each device in the list:
 |---|---|
 | Play / Pause, skip back 15s, skip forward 30s | Controls that device's player. |
 | **Play here** | Plays what that device is playing on the device you're holding, from the same position, and pauses the other one. |
-| **Send here** | Shown while you're playing something: moves what you're playing to that device. |
+| **Send to *device*** | Shown while you're playing something: moves what you're playing to that device. |
 
 To start a particular episode on another device, open the episode's menu and choose **Play on** (web) or **Play on…** (mobile), then pick the device. The option only appears while another device is online.
 

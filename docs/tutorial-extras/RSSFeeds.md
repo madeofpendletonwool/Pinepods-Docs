@@ -18,8 +18,8 @@ Every link has the form `https://your-server/rss/<user id>?api_key=<key>`, with 
 
 ## One podcast's feed
 
-On a podcast's page, the RSS button shows a feed for just that podcast (the same address with `&podcast_id=…`). This is useful for a premium feed you added to Pinepods with a username and password: other apps can subscribe to the Pinepods copy without the credentials.
+On a podcast's page, the RSS button shows a feed for just that podcast. Its link has a key of its own that only reads that podcast's feed, so it's safe to share: whoever has it can't get at your other feeds. This is useful for a premium feed you added to Pinepods with a username and password: other apps can subscribe to the Pinepods copy without the credentials.
 
 :::caution
-All your feed links use the same RSS key. Anyone with one link can change the address to read your other feeds too. Share them only with people you'd show your whole library to.
+The links under **Settings → Enable/Disable RSS Feeds** all share one RSS key, so anyone with one of them can read all your feeds by changing the address. Share those only with people you'd show your whole library to; to share a single podcast, use the RSS button on its page.
 :::

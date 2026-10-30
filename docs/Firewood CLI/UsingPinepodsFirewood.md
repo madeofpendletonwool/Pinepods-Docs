@@ -1,394 +1,80 @@
-# Firewood User Guide
-
-Complete guide to using PinePods Firewood - your feature-rich terminal podcast client.
-
-## Interface Overview
-
-Firewood provides a tabbed interface with multiple sections for managing and listening to your podcasts. Each tab offers specific functionality for different aspects of podcast management.
-
-### Main Navigation
-
-**Tab Switching:**
-- `Tab` - Navigate between tabs sequentially
-- `1-9` - Jump directly to specific tabs by number
-- `Arrow Keys` / `hjkl` - Navigate within lists and content
-- `Enter` - Select/activate items
-- `q` / `Ctrl+C` - Quit application
-
-**Global Controls:**
-- `Space` - Global play/pause toggle (works from any tab)
-- `Ctrl+R` - Refresh current page/content
-- `Esc` - Return to previous screen or cancel actions
-
-## Tab-by-Tab Guide
-
-### 🏠 Home Tab (1)
-
-Your dashboard for quick access to recent content and recommendations.
-
-**Features:**
-- **Recent Episodes**: Latest episodes from your subscribed podcasts
-- **Continue Listening**: Resume episodes you've started but haven't finished
-- **Quick Access**: Jump to saved content and downloads
-- **Activity Overview**: See your listening progress and statistics
-
-**Navigation:**
-- Use arrow keys to browse through recent episodes
-- Press `Enter` to start playing an episode
-- Episodes show title, podcast name, and publication date
-
-### 🎵 Player Tab (2)
-
-Full-screen audio player with comprehensive playback controls.
-
-**Player Interface:**
-- **Episode Information**: Title, podcast name, description
-- **Artwork Display**: Episode or podcast cover art
-- **Progress Bar**: Visual playback progress with time indicators
-- **Control Buttons**: Play, pause, skip forward/backward, volume
-
-**Playback Controls:**
-- `Space` / `Enter` - Play/pause toggle
-- `→` / `l` - Skip forward 15 seconds
-- `←` / `h` - Skip backward 15 seconds
-- `↑` / `k` - Increase volume
-- `↓` / `j` - Decrease volume
-- `0-9` - Seek to percentage (0% to 90%)
-- `m` - Mute/unmute audio
-
-**Advanced Features:**
-- **Progress Sync**: Automatically syncs listening progress with PinePods server
-- **Resume Playback**: Pick up where you left off on any device
-- **Smart Skip**: Respects podcast chapter markers when available
-- **Background Play**: Continues playing while you browse other tabs
-
-### 📻 Episodes Tab (3)
-
-Comprehensive episode management with filtering and search capabilities.
-
-**Content Views:**
-- **All Episodes**: Complete feed of recent episodes from all subscriptions
-- **In Progress**: Episodes you've started but haven't finished
-- **Completed**: Episodes you've finished listening to
-
-**Features:**
-- **Auto-loading**: Episodes load automatically as you scroll
-- **Real-time Search**: Filter episodes by title or podcast name
-- **Status Tracking**: Visual indicators for play status and progress
-- **Batch Actions**: Mark multiple episodes as played/unplayed
-
-**Navigation:**
-- `↑/↓` - Browse episode list
-- `Enter` - Play selected episode
-- `Space` - Quick play/pause
-- `/` - Activate search mode
-- `Esc` - Clear search filter
-
-### 🎙️ Podcasts Tab (4)
-
-Browse your podcast subscriptions with a dual-panel interface.
-
-**Layout:**
-- **Left Panel**: List of subscribed podcasts
-- **Right Panel**: Episodes from the selected podcast
-
-**Navigation:**
-- `Tab` - Switch between left and right panels
-- `↑/↓` or `j/k` - Navigate podcast list
-- `Enter` - Select podcast (loads episodes in right panel)
-- In episodes panel: `↑/↓` to browse, `Enter` to play
-
-**Features:**
-- View all your podcast subscriptions organized alphabetically
-- See episode counts and latest episode information
-- Quick access to specific podcast episodes
-- Podcast artwork and descriptions (when available)
-
-### 📝 Queue Tab (5)
-
-Manage your episode queue and listening order.
-
-**Features:**
-- **Queue Management**: Add, remove, and reorder episodes
-- **Queue Display**: View your current listening queue
-- **Episode Controls**: Play episodes directly from queue
-- **Queue Actions**: Clear queue and manage playback order
-
-**Navigation:**
-- `↑/↓` - Browse queue items
-- `Enter` - Play selected episode
-- `d` / `Delete` - Remove from queue
-- `c` - Clear entire queue
-
-### ⭐ Saved Tab (6)
-
-Access your bookmarked and favorite episodes.
-
-**Features:**
-- **Bookmarks**: Episodes you've marked for later
-- **Favorites**: Your starred episodes and podcasts
-- **Collections**: Custom groups of related episodes
-- **Quick Access**: Fast filtering and search within saved content
-- **Sync**: Saved items sync across all your devices
-
-**Navigation:**
-- `↑/↓` - Browse saved episodes
-- `Enter` - Play selected episode
-- `r` - Remove from saved
-- `/` - Search saved content
-
-### 📥 Downloads Tab (7)
-
-Manage offline episode downloads for listening without internet.
-
-**Features:**
-- **Download Management**: Queue, pause, cancel downloads
-- **Offline Library**: Browse downloaded episodes
-- **Storage Monitoring**: Track disk usage and manage space
-- **Auto-download**: Set rules for automatic episode downloads
-- **Quality Settings**: Choose download quality and format
-
-**Navigation:**
-- `↑/↓` - Browse downloaded episodes
-- `Enter` - Play downloaded episode
-- `d` / `Delete` - Delete download
-- `p` - Pause/resume download
-
-### 🔍 Search Tab (8)
-
-Discover new content and find specific episodes or podcasts.
-
-**Features:**
-- **Global Search**: Find episodes across all your subscriptions
-- **Podcast Discovery**: Browse and subscribe to new podcasts
-- **Advanced Filters**: Filter by date, duration, podcast, etc.
-- **Search History**: Quick access to previous searches
-- **Trending**: See popular and recommended content
-
-**Navigation:**
-- `/` - Enter search query
-- `↑/↓` - Browse search results
-- `Enter` - Play or subscribe to result
-- `Esc` - Clear search
-
-### ⚙️ Settings Tab (9)
-
-Configure Firewood to match your preferences and setup.
-
-**Features:**
-- **Audio Settings**: Output device, volume levels, equalizer
-- **Remote Control**: Configure network settings and port
-- **Appearance**: Themes, colors, and layout customization
-- **Keyboard Shortcuts**: Customize key bindings
-- **Sync Settings**: Server connection and sync preferences
-- **Advanced Options**: Debug settings and performance tuning
-
-**Navigation:**
-- `↑/↓` - Browse settings categories
-- `Enter` - Modify setting
-- `Esc` - Cancel changes
-- `s` - Save settings
-
-## Micro-Player Controls
-
-Firewood includes an always-visible micro-player at the bottom of every screen, providing quick access to playback controls without switching to the Player tab.
-
-**Micro-Player Features:**
-- **Track Info**: Current episode title and podcast name
-- **Playback Status**: Play/pause indicator and progress
-- **Quick Controls**: Play/pause, skip buttons
-- **Time Display**: Current position and total duration
-- **Volume Indicator**: Current volume level
-
-**Universal Controls:**
-- `Space` - Play/pause from any screen
-- `→` / `Ctrl+→` - Skip forward 15 seconds
-- `←` / `Ctrl+←` - Skip backward 15 seconds
-- `↑` / `Ctrl+↑` - Volume up
-- `↓` / `Ctrl+↓` - Volume down
-
-## Remote Control Features
-
-Firewood can be controlled remotely from other devices on your network, making it perfect for integration with smart home systems or remote control from phones/tablets.
-
-### Network Discovery
-
-**Automatic Discovery:**
-- Firewood advertises itself via mDNS as `_pinepods-remote._tcp.local.`
-- Other devices can automatically find and connect to your Firewood instance
-- No manual IP configuration needed on the same network
-
-**Manual Connection:**
-- Connect directly using IP:PORT (default port 8042)
-- Supports custom port configuration via environment variables
-
-### Remote Control API
-
-**HTTP Endpoints:**
-- `GET /status` - Get current playback status
-- `POST /play` - Play specific episode
-- `POST /pause` - Pause playback
-- `POST /resume` - Resume playback
-- `POST /stop` - Stop playback
-- `POST /skip` - Skip forward/backward by seconds
-- `POST /seek` - Seek to specific position
-- `POST /volume` - Set volume level
-
-**Web Integration:**
-When implemented in PinePods web UI, you'll be able to:
-- "Beam" episodes directly to Firewood players
-- Control multiple Firewood instances from one interface
-- See all available players on your network
-- Sync playback across devices
-
-### Remote Control Setup
-
-**Configuration:**
-```bash
-# Custom port (default: 8042)
-export FIREWOOD_REMOTE_PORT=8080
-
-# Disable remote control
-export FIREWOOD_REMOTE_DISABLED=true
-
-# Run Firewood
-pinepods_firewood
-```
-
-**Testing Remote Control:**
-Use the included Python test script:
-```bash
-# Discover Firewood players
-python test_remote_control.py --discover
-
-# Interactive control
-python test_remote_control.py -u http://IP:PORT --interactive
-```
-
-## Audio and Playback
-
-### Supported Formats
-
-Firewood supports all major podcast audio formats:
-- **MP3** - Most common podcast format
-- **AAC/M4A** - Apple's audio format
-- **OGG/Vorbis** - Open source format
-- **FLAC** - Lossless audio format
-- **WAV** - Uncompressed audio
-
-### Playback Features
-
-**Streaming:**
-- Direct streaming from PinePods server
-- No local storage required for streaming
-- Automatic quality adjustment based on connection
-
-**Progress Tracking:**
-- Syncs listening position with PinePods server
-- Resume playback across devices
-- Marks episodes as played automatically
-
-**Audio Controls:**
-- Variable speed playback (planned)
-- Sleep timer (planned)
-- Chapter navigation (planned)
-- Noise reduction (planned)
-
-## Keyboard Shortcuts Reference
-
-### Global Shortcuts
-| Key | Action |
-|-----|--------|
-| `Tab` | Switch tabs |
-| `1-9` | Jump to tab |
-| `Space` | Play/pause |
-| `q` | Quit |
-| `Ctrl+C` | Force quit |
-| `Ctrl+R` | Refresh |
-
-### Navigation
-| Key | Action |
-|-----|--------|
-| `↑/↓` or `k/j` | Navigate up/down |
-| `←/→` or `h/l` | Navigate left/right |
-| `Enter` | Select/activate |
-| `Esc` | Back/cancel |
-
-### Player Controls
-| Key | Action |
-|-----|--------|
-| `Space` | Play/pause |
-| `→` | Skip forward 15s |
-| `←` | Skip backward 15s |
-| `↑` | Volume up |
-| `↓` | Volume down |
-| `m` | Mute/unmute |
-| `0-9` | Seek to percentage |
-
-### List Management
-| Key | Action |
-|-----|--------|
-| `/` | Search/filter |
-| `Esc` | Clear search |
-| `Page Up/Down` | Scroll pages |
-| `Home/End` | Go to top/bottom |
-
-## Tips and Best Practices
-
-### Efficient Navigation
-- **Use Number Keys**: Quickly jump between tabs with 1-9
-- **Master the Micro-Player**: Control playback without leaving your current tab
-- **Search Everything**: Use `/` to quickly filter long lists
-- **Keyboard First**: Learn the shortcuts for faster navigation
-
-### Managing Large Libraries
-- **Use Filters**: Episode tab filters help manage large subscription lists
-- **Save Important Episodes**: Use the Saved tab for episodes you want to return to
-- **Queue Management**: Build listening queues for organized podcast sessions
-- **Regular Cleanup**: Mark episodes as played to keep lists manageable
-
-### Remote Control Tips
-- **Multiple Instances**: Run Firewood on multiple devices for whole-home audio
-- **Port Management**: Use custom ports if you have conflicts
-- **Network Setup**: Ensure devices are on same network for auto-discovery
-- **Firewall**: Allow mDNS (port 5353) for automatic discovery
-
-### Performance Optimization
-- **Refresh Wisely**: Use `r` to refresh content when needed
-- **Background Updates**: Let Firewood handle automatic syncing
-- **Network Patience**: Allow time for episode lists to load on slower connections
-
-## Troubleshooting
-
-### Common Issues
-
-**Audio Not Playing:**
-- Check system audio settings and volume
-- Verify ALSA libraries are installed (Linux)
-- Test with different episodes to isolate the issue
-
-**Connection Problems:**
-- Verify PinePods server is running and accessible
-- Check network connectivity and firewall settings
-- Try manual server URL entry
-
-**Performance Issues:**
-- Close other resource-intensive applications
-- Check available system memory
-- Update to latest Firewood version
-
-**Remote Control Not Working:**
-- Ensure devices are on same network
-- Check if port is blocked by firewall
-- Try manual IP:PORT connection
-
-### Getting Help
-
-- **GitHub Issues**: [Report bugs and request features](https://github.com/madeofpendletonwool/pinepods-firewood/issues)
-- **Documentation**: Check README.md and other docs in the repository
-- **Community**: Join discussions in GitHub Discussions
-- **Logs**: Enable debug logging with `RUST_LOG=debug pinepods_firewood`
-
----
-
-**Enjoy your podcast listening experience with Firewood!** This terminal-based client brings the power and convenience of PinePods directly to your command line, with all the features you need for managing and enjoying your favorite shows.
+# Using Firewood
+
+Firewood has a sidebar with every page, a now-playing bar at the bottom, and the keys for the current page always on screen. **?** lists every key for the page you're on.
+
+## Getting around
+
+| Key | |
+|---|---|
+| **1–9**, **0** | Jump to a sidebar entry. **Tab** / **Shift+Tab** step through them. |
+| **j/k** or **↑/↓** | Move. **g/G** first/last, **Ctrl+D/U** page down/up. |
+| **Enter** | Play an episode or open a podcast. |
+| **i** or **l** | An episode's details and show notes. **Esc** goes back. |
+| **/** | Filter the current list. **Enter** keeps the filter, **Esc** clears it. |
+| **:** or **Ctrl+P** | Command palette: type a few letters of a command, a page ("go queue"), a podcast, an episode on screen ("play …") or a recent search. |
+| **q** | Quit. **Ctrl+C** works anywhere. |
+
+The mouse works too: click to select, click again to play or open, scroll lists, click the progress bar to seek. `FIREWOOD_NO_MOUSE=1` turns it off.
+
+## Playing
+
+| Key | |
+|---|---|
+| **Space** | Play/pause. |
+| **←/→** | Skip back/forward (15 s by default; **Skip by** in Settings). |
+| **[ / ]** | Slower/faster, 0.5× to 3×, without changing pitch. |
+| **+/-** | Volume. |
+| **n** | Now Playing, which adds **=** for normal speed, **t** to toggle [trim silence](../Features/PodcastOptions.md#trim-silence) for the podcast, **x** to stop, and **.** / **,** for next and previous chapter. |
+| **v** | On Now Playing or an episode's details, switch between show notes, chapters and transcript. **Enter** on a chapter or a transcript line jumps there. |
+
+Playback starts each episode at the podcast's speed from Pinepods, resumes where you left off, and saves your position to the server as you listen. Firewood skips the ads and silence Pinepods has detected and the podcast's intro and outro skip times. Episodes the server has downloaded, and YouTube videos, play from the server's copy; the rest stream from the feed.
+
+When an episode ends it's marked played and the next one in your [queue](../Features/Queue.md) starts. Started from a playlist, the playlist's next episode plays instead.
+
+The keyboard's media keys and the system's media controls work too: MPRIS on Linux (so `playerctl` works) and Now Playing on macOS. Next and previous skip by the skip length. Turn this off in Settings or with `FIREWOOD_MEDIA_KEYS=0`.
+
+Firewood plays MP3, AAC/M4A, FLAC, Ogg Vorbis and WAV.
+
+## On any episode
+
+| Key | |
+|---|---|
+| **a** / **A** | Add to or remove from the queue / play next. |
+| **s** | Save or unsave. |
+| **d** | Have the server download it, or delete the server's copy. |
+| **m** | Mark played or unplayed. |
+| **c** | Add it to or take it out of a [collection](../Features/Collections.md). |
+| **o** | Play it on another of your devices. See [Remote Control](./Beaming.md). |
+
+## Pages
+
+| Page | |
+|---|---|
+| **Home** | Where you left off, new episodes and your most-played podcasts. |
+| **Feed** | Recent episodes from every subscription. **f** cycles All / Unplayed / In progress / Played. |
+| **Podcasts** | Your subscriptions; **Enter** lists a podcast's episodes. **U** twice unsubscribes. |
+| **Queue** | **K/J** move an episode up/down, **t/b** to the top/bottom, **x** remove, **S** shuffle, **C** twice to clear. |
+| **Saved** | Saved episodes, and your other collections after it. |
+| **Playlists** | Your [playlists](../Features/smart-playlists.md); playing from one carries on through it. |
+| **History** | What you've played, newest first. |
+| **Downloads** | Episodes the server has a copy of, by podcast. |
+| **Search** | Your library's episodes as you type. **f** switches to finding new podcasts on Podcast Index, iTunes or YouTube: type a name, **Enter**, then **s** to subscribe. |
+| **Devices** | Your other players. See [Remote Control](./Beaming.md). |
+| **Now Playing** | The current episode, its chapters and transcript. |
+| **Settings** | See below. |
+
+## Settings
+
+**Theme**, **Cover art**, **Media keys**, **Starting volume**, **Skip by**, **Audio output**, **Name on other devices**, **Sidebar order**, **Key bindings** and **Logs**, plus who you're signed in as and the version.
+
+- **Themes:** Firewood starts with the theme you picked in the web app, custom themes included, until you pick one in Settings. **Terminal** uses your terminal's colors. `FIREWOOD_COLOR=truecolor` or `256` overrides the color detection.
+- **Cover art** shows as real images in terminals with the kitty (kitty, Ghostty), sixel (foot, Konsole) or iTerm2 (iTerm2, WezTerm) protocols, and as colored blocks elsewhere. In tmux, set `set -g allow-passthrough on`. `FIREWOOD_GRAPHICS=kitty|sixel|iterm2|blocks` forces one.
+- **Key bindings** writes `~/.config/pinepods-firewood/keymap.toml` with every binding commented out. Uncomment a line, change its keys and restart:
+
+  ```toml
+  [global]
+  quit = ["q", "ctrl+q"]
+
+  [queue]
+  move_up = ["U", "shift+up"]
+  ```

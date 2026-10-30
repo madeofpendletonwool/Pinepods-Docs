@@ -19,7 +19,6 @@ module.exports = {
         'tutorial-basics/clients',
         'tutorial-basics/sign-in-homescreen',
         'tutorial-basics/browsing-podcasts',
-        'tutorial-basics/searching-and-adding',
         'tutorial-basics/settings',
         'tutorial-basics/environment-variables',
         'tutorial-basics/adding-an-api-key',
@@ -51,6 +50,7 @@ module.exports = {
       type: 'category',
       label: 'Features',
       items: [
+        'Features/PodcastOptions',
         'Features/smart-playlists',
         'Features/Queue',
         'Features/RemoteDevices',

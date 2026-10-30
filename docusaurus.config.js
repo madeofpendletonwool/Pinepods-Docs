@@ -175,6 +175,10 @@ module.exports = {
             from: "/docs/next/Features/gpodder-sync",
             to: "/docs/next/tutorial-extras/gpodder-sync",
           },
+          {
+            from: "/docs/next/tutorial-basics/searching-and-adding",
+            to: "/docs/next/Features/Search",
+          },
         ],
       },
     ],

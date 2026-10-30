@@ -57,7 +57,11 @@ When PinePods ships a new release (e.g. `0.9.1`):
 4. Commit the generated files — `versioned_docs/version-0.9.1/`,
    `versioned_sidebars/version-0.9.1-sidebars.json`, and the updated
    `versions.json` — along with the config change.
-5. Rebuild and deploy the Docker image as usual.
+5. Check the redirects in `docusaurus.config.js`. Pages renamed or merged while a
+   version was "Next" only have redirects under `/docs/next/…`, because the old
+   paths still existed in the released version. Once the new version is the default,
+   add the same redirects without `/next` so old `/docs/…` links keep working.
+6. Rebuild and deploy the Docker image as usual.
 
 After this, `versions.json` becomes `["0.9.1", "0.9.0"]`: `0.9.1` automatically
 becomes the default, `0.9.0` drops down the dropdown with an "old version" banner,

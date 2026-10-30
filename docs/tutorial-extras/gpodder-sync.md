@@ -137,6 +137,10 @@ Pinepods keeps a history of sync changes; it's what apps download. After 90 days
 
 **Sync statistics** (collapsed by default) shows how many podcasts are synced, recent episode actions and where they came from, and how many changes are still waiting to be sent to the external server. It's read from Pinepods' own sync history, so opening it doesn't contact any server.
 
+## Compatible servers and apps
+
+The PinePods gpodder server speaks the gpodder.net v2 API and the older Simple API, and its tests follow the way AntennaPod syncs. Kasts and other gpodder.net clients use the same API. For external servers, oPodSync, Podfetch and Nextcloud GPodder Sync have been used with Pinepods. If an app or server doesn't work, please [open an issue](https://github.com/madeofpendletonwool/PinePods/issues) with its name and version.
+
 ## Upgrading from 0.9.0 or earlier
 
 - Your setup is carried over. The PinePods gpodder server stays on if it was on.

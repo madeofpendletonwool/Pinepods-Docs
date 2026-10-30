@@ -65,8 +65,6 @@ services:
       PGDATA: /var/lib/pgdata/pgdata
     volumes:
       - /home/user/pinepods/pgdata:/var/lib/pgdata
-    ports:
-      - "5432:5432"
     restart: always
 
   valkey:
@@ -98,10 +96,14 @@ services:
       PGID: ${GID:-911}
       # Add timezone configuration
       TZ: "America/New_York"
+      # Language Configuration
+      DEFAULT_LANGUAGE: "en"
     volumes:
       # Mount the download and backup locations on the server
       - /home/user/pinepods/downloads:/opt/pinepods/downloads
       - /home/user/pinepods/backups:/opt/pinepods/backups
+      # Mount local media files to use the Add Local Podcast feature (optional)
+      - /home/user/pinepods/local-media:/opt/pinepods/local-media
       # Timezone volumes, HIGHLY optional. Read the timezone notes below
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
@@ -172,6 +174,8 @@ services:
       # Mount the download and backup locations on the server
       - /home/user/pinepods/downloads:/opt/pinepods/downloads
       - /home/user/pinepods/backups:/opt/pinepods/backups
+      # Mount local media files to use the Add Local Podcast feature (optional)
+      - /home/user/pinepods/local-media:/opt/pinepods/local-media
       # Timezone volumes, HIGHLY optional. Read the timezone notes below
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
@@ -183,7 +187,7 @@ services:
 Make sure you change these variables to variables specific to yourself at a minimum.
 
 ```
-      # The url you hit the site at. Only used for sharing rss feeds
+      # The url you reach the site at. Used to build RSS feed and shared links
       HOSTNAME: 'http://localhost:8040'
       # These next 4 are optional. They allow you to set an admin without setting on the first boot
       USERNAME: pinepods
@@ -208,7 +212,7 @@ First of all, the USERNAME, PASSWORD, FULLNAME, and EMAIL vars are your details 
 
 #### Note on the Search API
 
-Let's talk quickly about the searching API. This allows you to search for new podcasts and it queries iTunes, the Podcast Index, or YouTube for new content. The Podcast Index and YouTube (via the Google Search API) both require an API key, while iTunes does not. Note that Google enforces a daily quota on YouTube searches, so heavy YouTube users will want to self-host. If you'd rather not mess with the API at all simply set the API_URL to the one below.
+Let's talk quickly about the searching API. This allows you to search for new podcasts and it queries iTunes, the Podcast Index, or YouTube for new content. Only the Podcast Index needs an API key; iTunes needs none, and YouTube searches run through `yt-dlp` inside the search service. The search service also relays [Podping](./Features/feed-updates.md#podping) announcements to your server. If you'd rather not mess with the API at all simply set `SEARCH_API_URL` to the one below.
 
 ```
 SEARCH_API_URL: 'https://search.pinepods.online/api/search'
@@ -216,7 +220,7 @@ SEARCH_API_URL: 'https://search.pinepods.online/api/search'
 
 Above is an api that I maintain. I do not guarantee 100% uptime on this api though, it should be up most of the time besides a random internet or power outage here or there. A better idea though, and what I would honestly recommend is to maintain your own api. It's super easy. Check out the API docs for more information on doing this. Link Below -
 
-https://www.pinepods.online/docs/API/search_api
+[Search API docs](./API/search_api.md)
 
 #### Timezone Configuration
 
@@ -371,6 +375,10 @@ persistence:
   backups:
     storageClass: ""
     size: 2Gi
+  # Optional: a volume of audio files for Add Local Podcast
+  localMedia:
+    enabled: false
+    existingClaim: ""
 
 # Database configuration
 postgresql:
@@ -442,7 +450,7 @@ Once you have everything set up, install the Helm chart:
 ```bash
 helm install pinepods pinepods/pinepods -f my-values.yaml --namespace pinepods-namespace --create-namespace
 ```
-This will deploy Pinepods on your Kubernetes cluster with a postgres database. MySQL/MariaDB is not supported with the kubernetes setup. The service will be accessible at the specified NodePort.
+This deploys Pinepods on your Kubernetes cluster with a bundled PostgreSQL database. To use MariaDB or MySQL instead, run it yourself and point `externalDatabase` at it with `type: mariadb` (or `mysql`). Pinepods is reached through the ingress you configured; the service itself is `ClusterIP` by default.
 
 Check out the Tutorials on the documentation site for more information on how to do basic things.
 
@@ -450,99 +458,7 @@ Check out the Tutorials on the documentation site for more information on how to
 
 ## Client Installs
 
-Any of the client additions are super easy to get going.
-
-### Linux Client Installs :computer:
-
-#### AppImage, Fedora/Red Hat Derivative/Debian based (Ubuntu)
-
-First head over to the releases page on Github
-
-https://github.com/madeofpendletonwool/PinePods/releases
-
-Grab the latest linux release. There's both an appimage a deb, and an rpm. Use the appimage of course if you aren't using a debian or red hat based distro. Change the permissions if using the appimage version to allow it to run.
-
-```
-sudo chmod +x pinepods.appimage
-```
-
-^ The name of the app file will vary slightly based on the version so be sure you change it or it won't work.
-
-For the rpm or deb version just run and install
-
-Once started you'll be able to sign in with your username and password. The server name is simply the url you browse to to access the server.
-
-#### Arch Linux (AUR)
-
-Install the Pinepods Client right from the AUR! Replace the command below with your favorite aur helper
-
-```
-paru -S pinepods
-```
-
-#### Flatpak
-
-You can search for Pinepods in your favorite flatpak installer gui app such as Gnome Software.
-
-Flathub page can be found [here](https://flathub.org/apps/com.gooseberrydevelopment.pinepods)
-
-```
-flatpak install flathub com.gooseberrydevelopment.pinepods
-```
-
-#### Snap
-
-I have had such a nightmare trying to make the snap client work. Pass, use the flatpak. They're better anyway. I'll test it again in the future and see if Canonical has gotten it together. If you really want a snap version of the client please reach out and tell me you're interested in the first place.
-
-#### Windows Client Install :computer:
-
-Any of the client additions are super easy to get going. First head over to the releases page on Github
-
-https://github.com/madeofpendletonwool/PinePods/releases
-
-There's a exe and msi windows install file.
-
-The exe will actually start an install window and allow you to properly install the program to your computer.
-
-The msi will simply run a portable version of the app.
-
-Either one does the same thing ultimately and will work just fine.
-
-Once started you'll be able to sign in with your username and password. The server name is simply the url you browse to to access the server.
-
-#### Mac Client Install :computer:
-
-Any of the client additions are super easy to get going. First head over to the releases page on Github
-
-https://github.com/madeofpendletonwool/PinePods/releases
-
-There's a dmg and pinepods_mac file.
-
-Simply extract, and then go into Contents/MacOS. From there you can run the app.
-
-The dmg file will prompt you to install the Pinepods client into your applications fileter while the _mac file will just run a portable version of the app.
-
-Once started you'll be able to sign in with your username and password. The server name is simply the url you browse to to access the server.
-
-#### Android Install :iphone:
-
-The Android app is available now on the
-[Google Play Store](https://play.google.com/store/apps/details?id=com.gooseberrydevelopment.pinepods)!
-You can also install it from
-[IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/com.gooseberrydevelopment.pinepods)
-or via [Obtainium](https://github.com/madeofpendletonwool/PinePods/releases) for direct
-updates from GitHub Releases. Android Auto is supported.
-
-Once installed, sign in with your username and password. The server name is simply the
-URL you browse to to access the server.
-
-#### iOS Install :iphone:
-
-The iOS app is on the [App Store](https://apps.apple.com/us/app/pinepods/id6751441116)!
-CarPlay is supported.
-
-Once installed, sign in with your username and password. The server name is simply the
-URL you browse to to access the server.
+Besides the web app your server serves, there are apps for Linux, Windows, macOS, Android and iOS, and Firewood for the terminal. See [Using Clients in Pinepods](./tutorial-basics/clients.md) for downloads and install steps. In every app you sign in with your server's address (the URL you open Pinepods at in a browser), your username and your password.
 
 ## PodPeople DB
 

@@ -1,44 +1,42 @@
-# Local Podcasts & Local Media
+# Local Podcasts
 
-PinePods can add podcasts from **local files on your server** — audiobooks, archived
-shows, recordings, or any audio you keep on disk — alongside the podcasts you subscribe
-to over RSS.
+A local podcast is a folder of audio files on your server (an audiobook, an archive of an old show, your own recordings) turned into a podcast you can play, queue and track like any other.
 
 ![Adding a local podcast in PinePods](/img/screenshots/localpodcast.png)
 
 ## Mounting your media
 
-PinePods reads local media from a directory inside the container at
-`/opt/pinepods/local-media`. Mount your library there in your Docker Compose file:
+Pinepods reads local media from `/opt/pinepods/local-media` inside the container. Mount your library there:
 
 ```yaml
-services:
-  pinepods:
-    image: madeofpendletonwool/pinepods:latest
     volumes:
-      - /home/user/pinepods/downloads:/opt/pinepods/downloads
-      - /home/user/pinepods/backups:/opt/pinepods/backups
-      # Mount your local audio library
-      - /home/user/Media/podcasts:/opt/pinepods/local-media
+      - /home/user/pinepods/local-media:/opt/pinepods/local-media
 ```
+
+On Kubernetes, turn on `persistence.localMedia.enabled` in the Helm chart and set `persistence.localMedia.existingClaim` to a volume that holds your media (or let the chart create one).
+
+The mount must be writable: artwork you upload for a local podcast is saved in an `_artwork` folder inside it.
+
+Keep each podcast in its own folder.
 
 ## Adding a local podcast
 
-From the **Local Podcast** settings, browse the mounted directory and add a folder as a
-podcast. PinePods will:
+Under **Settings → Add Local Podcast**:
 
-- **Detect audio files** in the directory and turn them into episodes.
-- **Find cover art** in the folder (or let you set artwork) for the podcast image.
-- **Read metadata** (such as ID3 tags) to fill in episode titles and details.
+1. Enter a **Podcast Name**.
+2. Enter the folder as a path inside the local-media mount, for example `audiobooks/my-series`, or click **Browse** to pick it.
+3. Optionally add an **Author**, a **Description**, **Artwork**, and tick **Explicit**.
+4. Click **Add Local Podcast**.
 
-## Refreshing
+Pinepods reads the folder (not its subfolders):
 
-Dropped new files into the folder? Use the **refresh local podcast** action to rescan
-the directory and pick up new episodes — the same way an RSS podcast refreshes for new
-entries.
+- **Episodes:** every `.mp3`, `.m4a`, `.ogg`, `.flac`, `.wav`, `.aac` and `.opus` file.
+- **Episode details** come from the files' tags: title, description, date and track number. A file without a date uses its modification time.
+- **Order:** by track number, then by file name.
+- **Cover:** the artwork you uploaded; otherwise a `cover.jpg`, `cover.jpeg`, `cover.png`, `folder.jpg`, `folder.jpeg`, `artwork.jpg` or `artwork.png` in the folder, or artwork embedded in the files.
 
-## Tips
+## Adding new files
 
-- Local podcasts behave like any other podcast: queue them, add them to playlists, track
-  progress, and play them on any client.
-- Keep each "show" in its own subfolder so cover art and metadata stay grouped correctly.
+Local podcasts aren't checked automatically. After you add files to the folder, click **Refresh Directory** for that podcast under **Settings → Add Local Podcast**, and the new files become episodes.
+
+Local podcasts are never touched by auto-delete; the files are yours.

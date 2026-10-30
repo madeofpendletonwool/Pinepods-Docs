@@ -1,29 +1,24 @@
 # Listening Statistics
 
-PinePods keeps track of how you listen and surfaces it on your **User Stats** page — a
-personal dashboard of your podcast habits.
+Each user has a statistics page. To open it, click your avatar at the top of the sidebar on the web, or tap your avatar in the mobile app. It only shows your own listening.
 
 ![The PinePods user statistics dashboard](/img/screenshots/userstats.png)
 
-## What you'll see
+**User Statistics** shows when your account was created, **Podcasts Played**, **Time Listened**, **Podcasts Added**, **Episodes Saved** and **Episodes Downloaded**.
 
-The stats page brings together metrics and charts about your listening, which can
-include things like:
+**Listening Insights**:
 
-- Total time spent listening.
-- Episodes started and completed.
-- Your most-listened podcasts and favorite categories.
-- Activity over time, visualized as charts.
+| Item | What it is |
+|---|---|
+| **Top Podcasts** | The five podcasts you've spent the most time on. |
+| **Favorite Categories** | The five categories you've spent the most time on. |
+| **Completion Rate** | The share of episodes in your history you listened to at least 90% of. |
+| **Longest Episode Listened** | |
+| **Listening Style** | Night Owl, Evening, Afternoon or Morning Listener, from the average time of day you listen. |
+| **Total Data Downloaded** | |
+| **Day Streak** | How many days in a row you've listened. |
+| **Listening by Day of Week** | |
 
-## Per-user
+**Podcast Sync Status** says which sync you use: the internal gpodder server, an external gpodder server, Nextcloud, or none. See [Podcast Sync](../tutorial-extras/gpodder-sync.md).
 
-Stats are tracked **per user**, so everyone on your server sees their own numbers. Your
-listening data stays on your own server — like everything else in PinePods, it's never
-sent anywhere else.
-
-## Tips
-
-- Stats build up over time as you listen, so the page gets richer the longer you use
-  PinePods.
-- Use the page to spot shows you've drifted away from — then mark the ones you love as
-  [favorites](./Favorites.md) to keep them close.
+The page also shows the server's Pinepods version and links to the documentation and the GitHub repository.

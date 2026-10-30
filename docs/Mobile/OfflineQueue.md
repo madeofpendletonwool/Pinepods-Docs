@@ -1,31 +1,9 @@
 # Offline Action Queue (Mobile)
 
-The mobile apps keep working when your connection drops. Actions you take while
-offline — playing, downloading, queueing, and more — are **recorded locally and synced
-to your server automatically** once you're back online.
+You can listen to downloaded episodes on your phone without a connection. What you do meanwhile isn't lost: listening progress, finishing an episode, saving, queueing and history are stored on the phone and sent to your server once it's reachable again. The app tries on start-up, when the connection comes back, and after each new action.
 
-## How it works
+## Seeing what's waiting
 
-- When the app can't reach your server, your actions are stored in an **offline action
-  queue** on the device instead of being lost.
-- As soon as connectivity returns, the queued actions are sent to the server and your
-  state catches up — listening progress, queue changes, downloads, and the rest.
+On the **Downloads** screen, the action queue button shows how many actions are waiting (**Action queue (N pending)**). Tap it to open **Action Queue** and see each one. When everything has gone through it says **Everything is synced**.
 
-## Viewing pending actions
-
-The app includes an **action queue** screen where you can see the actions waiting to be
-synced. This is handy for confirming that something you did offline is still pending and
-will be applied when you reconnect.
-
-## Why it matters
-
-Podcast listening often happens exactly where connectivity is worst — planes, subways,
-basements, road trips. The offline action queue means your listening on those trips
-isn't lost; everything reconciles with your server the moment you have a signal again, so
-your other devices stay in sync too.
-
-## Tips
-
-- Pair this with [Downloads](../Features/Downloads.md) and
-  [Auto-Download](../Features/AutoDownload.md) so you have episodes on-device *and* your
-  offline actions sync cleanly later.
+To listen offline, download episodes first. See [Downloads](../Features/Downloads.md#device-downloads-mobile).

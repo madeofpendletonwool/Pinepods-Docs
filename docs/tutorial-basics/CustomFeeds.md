@@ -1,43 +1,15 @@
-# Custom Feed Addition
+# Adding a Feed by URL
 
-The Custom Feed feature in Pinepods allows users to manually add podcast feeds that may not be available in standard podcast directories like The Podcast Index or iTunes. This is particularly useful for premium podcasts, private feeds, or independent creators who aren't indexed by major discovery services.
+When a podcast isn't in the search indexes (a premium or private feed, a small independent show), add it by its feed address. You can do this under **Settings → Add Custom Feed**, or with the **Custom Feed** button on the **Podcasts** page, which opens the same form.
 
-## Overview
+1. Enter the RSS feed URL, for example `https://bestpodcast.com/feed.xml`.
+2. If the feed needs a login, fill in **Username (optional)** and **Password (optional)**. Pinepods sends them as HTTP Basic authentication every time it fetches the feed. Leave both empty for public feeds.
+3. Click **Add Feed**.
 
-Custom feeds enable you to subscribe to any podcast with a valid RSS feed URL, regardless of whether it's publicly indexed. This feature supports both public feeds and premium/protected feeds that require authentication credentials.
+The podcast then works like any other: it refreshes on its own schedule (see [Feed updates](../Features/feed-updates.md)) and shows up in your Podcasts list.
 
-## Accessing Custom Feed Addition
+Feeds that carry their credentials in the URL itself (`https://example.com/feed?token=…`) don't need the username and password fields; paste the whole URL.
 
-1. Navigate to **Settings** in the main menu
-2. Expand the **Custom Feed** or **Add Feed** section
-3. All users can add custom feeds to their personal podcast library
+## YouTube channels
 
-## How to Add Custom Feeds
-
-### Basic Feed Addition
-
-For publicly accessible podcast feeds:
-
-#### Step-by-Step Process
-1. Locate the **Add Feed** section in settings
-2. Enter the podcast's RSS feed URL in the **Feed URL** field
-   - Example: `https://bestpodcast.com/feed.xml`
-3. Leave Username and Password fields empty for public feeds
-4. Click **Add Feed** to subscribe to the podcast
-5. Wait for confirmation that the podcast was successfully added
-
-### Premium Feed Addition
-
-For password-protected or premium podcast feeds:
-
-#### Required Information
-- **Feed URL**: The RSS feed URL provided by the podcast creator
-- **Username**: Authentication username (if required)
-- **Password**: Authentication password (if required)
-
-#### Step-by-Step Process
-1. Enter the premium feed's RSS URL in the **Feed URL** field
-2. Enter your **Username** in the username field
-3. Enter your **Password** in the password field
-4. Click **Add Feed** to subscribe with authentication
-5. The system will validate your credentials and add the podcast
+The same section has a box for a YouTube channel URL, for example `https://www.youtube.com/@channelname` or `https://www.youtube.com/channel/UC…`. Click **Add Channel** to subscribe to it directly, without searching. See [YouTube channels](../Features/YouTube.md).

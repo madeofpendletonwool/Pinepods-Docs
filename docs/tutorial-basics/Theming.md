@@ -1,29 +1,7 @@
-# Theme Options
+# Themes
 
-Pinepods offers a comprehensive theme system that allows users to customize the visual appearance of their podcast listening experience. With over 20 different themes to choose from, users can personalize their interface to match their preferences and viewing conditions.
+Pinepods comes with 25 themes, light and dark. Pick one under **Settings → Change Theme**: click a theme's card and it applies straight away. **Show N more** expands the full list.
 
-## How to Change Themes
+Your theme is saved to your account, so the web app, the desktop app and the mobile app all use the one you chose last. Changing it on the mobile app (**Settings** in the app) changes it everywhere too.
 
-### Step-by-Step Process
-1. Open the **Theme Settings** section
-2. Click the dropdown menu to see all available themes
-3. Select your preferred theme from the list
-4. Click the **Apply Theme** button
-5. The theme will change immediately across your interface
-
-### Immediate Application
-- Theme changes take effect instantly when applied
-- No page refresh or restart required
-- All interface elements update to match the new theme
-
-## Theme Synchronization
-
-### Cross-Device Sync
-- Your theme preference is saved to your user account
-- Changes sync across all your Pinepods applications
-- Desktop, web, and mobile apps will use the same theme
-
-### Persistent Storage
-- Theme choice is saved both locally and on the server
-- Settings persist even if you clear your browser data
-- Theme preference is maintained across login sessions
+Themes you build yourself show up under **My Themes** in the same section. See [Custom Theme Creator](../Features/CustomThemes.md).

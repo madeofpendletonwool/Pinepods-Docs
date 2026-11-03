@@ -1,55 +1,12 @@
-# User Self-Service Settings
+# User Self Service
 
-The User Self-Service Settings feature in Pinepods allows administrators to enable user self-registration, empowering new users to create their own accounts directly from the login screen without requiring administrator intervention.
+With self service on, anyone who can reach your Pinepods sign-in page can create their own account.
 
-## Administrative Configuration
+Turn it on under **Settings → Admin → User Self Service Settings → Enable User Self Service**. The sign-in page then shows **Create New User**, which opens a form for a username, full name, email and password. The new account is a normal user, not an admin, and can sign in straight away.
 
-### Enabling User Self-Service Registration
+With it off, only admins create accounts, under [User Management](./user-management.md).
 
-**For Administrators Only**
+Before turning it on:
 
-The User Self-Service Settings control whether users can register their own accounts through the login interface.
-
-#### Accessing Self-Service Controls
-1. Navigate to **Settings** in the main menu
-2. Expand the **User Settings** section
-3. Locate the **User Self Service Settings** section
-4. Toggle the **Enable User Self Service** switch
-
-#### How It Works
-
-When enabled, this feature:
-- Adds a **"Create New User"** button to the login screen
-- Allows new users to register accounts independently
-- Provides a modal registration form accessible to anyone
-- Validates user input according to system requirements
-
-When disabled:
-- Only administrators can create new user accounts
-- The registration button is hidden from the login screen
-- User creation must be done through the administrative User Settings interface
-
-#### Important Prerequisites
-
-**Highly Recommended Setup Before Enabling:**
-
-1. **Configure Email Settings**: Essential for password reset functionality
-   - Set up SMTP server configuration
-   - Test email delivery to ensure users can reset forgotten passwords
-   - Configure proper email templates and sender information
-
-2. **Disable Server Downloads**: Prevent storage abuse by new users
-   - Navigate to Download Settings
-   - Disable server-side podcast downloads for security
-   - This prevents users from consuming excessive storage space
-
-#### Security Considerations
-
-**Account Management**
-- New accounts are created with standard user privileges (non-admin)
-- Administrators should regularly review newly created accounts
-
-**Email Dependency**
-- Password reset functionality becomes critical with self-service enabled
-- Users cannot reset passwords without functional email settings
-- Ensure email configuration is tested and reliable
+- **Set up [email](../tutorial-extras/PasswordResets.md).** Users who forget their password reset it with a code sent by email; without email, an admin has to reset it for them.
+- **Consider turning off server downloads** under **Settings → Admin → Download Settings**, so new users can't fill the server's disk. See [Downloads](../Features/Downloads.md).

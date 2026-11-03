@@ -1,68 +1,23 @@
 # OPML Import and Export
 
-Pinepods provides comprehensive OPML (Outline Processor Markup Language) import and export functionality, allowing users to transfer their podcast subscriptions to and from other podcast applications. This feature is essential for migrating between podcast apps, creating backups, and sharing subscription lists.
+OPML is the file format podcast apps use to move a subscription list from one app to another. Each user imports and exports their own subscriptions from **Settings**.
 
-## Overview
+## Exporting
 
-OPML is the standard format used by podcast applications to exchange subscription data. Pinepods supports both importing OPML files from other podcast clients and exporting your current subscriptions to OPML format for use elsewhere.
+Under **Export/Backup Podcasts**, click **Download/Export OPML**. The browser downloads `podcasts.opml` with the title and feed address of every podcast you subscribe to.
 
-## Accessing Import/Export Features
+This is a list of feeds, not a backup of your listening history. For a full backup of the server, see [Server Backup and Restore](./Backup-Restore.md).
 
-1. Navigate to **Settings** in the main menu
-2. Look for the **Import Options** and **Export Options** sections
-3. All users can import and export their personal podcast subscriptions
+## Importing
 
-## Exporting Your Podcasts
+1. Under **Import Podcasts**, click **Choose File** and pick an `.opml` file.
+2. Pinepods lists the podcasts it found, all selected. Unselect any you don't want.
+3. Click **Add them!**
 
-### OPML Export Process
+The import runs on the server. **Import Progress** shows which feed is being added and how many are left; a long list takes a while, because every feed is fetched. A feed that can't be fetched is skipped and the import carries on.
 
-The export feature creates an OPML file containing all your current podcast subscriptions.
+After importing, use **Match Podcasts to Podcast Index** (also in Settings) to link the new podcasts to their Podcast Index entries. That's what brings in host and guest information. See [People](../Features/Person.md).
 
-#### Step-by-Step Export
-1. Locate the **Export Options** section in settings
-2. Click the **Download/Export OPML** button
-3. The system will generate your OPML file automatically
-4. A file named `podcasts.opml` will be downloaded to your device
-5. The file contains all your current podcast subscriptions with feed URLs
-
-#### What's Included in Exports
-- **Podcast Titles**: Names of all subscribed podcasts
-- **Feed URLs**: RSS feed addresses for each podcast
-- **Subscription Data**: Current subscription information
-- **Standard Format**: Compatible with most podcast applications
-
-#### Export Use Cases
-- **App Migration**: Moving to a different podcast application
-- **Backup Creation**: Preserving your subscription list
-- **Device Transfer**: Setting up podcasts on a new device
-- **Sharing**: Providing your subscription list to friends or colleagues
-- **Cross-Platform**: Using subscriptions on multiple podcast apps
-
-## Importing Podcasts
-
-### OPML Import Process
-
-The import feature allows you to add podcasts from OPML files created by other podcast applications or exported from Pinepods.
-
-#### Step-by-Step Import
-1. Locate the **Import Options** section in settings
-2. Click **Choose File** or browse button to select your OPML file
-3. The system will parse the OPML file and display found podcasts
-4. Review the list of podcasts to be imported
-5. Select/deselect individual podcasts as desired (all are selected by default)
-6. Click **Confirm Import** to begin the import process
-7. Monitor the progress bar as podcasts are added to your library
-
-#### Import Process Features
-- **File Validation**: System checks OPML file format and content
-- **Selective Import**: Choose which podcasts to import from the file
-- **Progress Tracking**: Real-time progress updates during import
-- **Duplicate Handling**: System manages already-subscribed podcasts
-
-### Import Progress Monitoring
-
-During import, you'll see:
-- **Progress Bar**: Visual indicator of import completion
-- **Current Podcast**: Name of the podcast currently being processed
-- **Total Count**: Number of podcasts being imported
-- **Status Updates**: Real-time feedback on the import process
+:::tip
+To move your subscriptions and listening progress between Pinepods and another app on an ongoing basis, use [Podcast Sync](../tutorial-extras/gpodder-sync.md) instead of OPML.
+:::

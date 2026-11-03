@@ -1,31 +1,19 @@
-# PodPeopleDB Integration
+# PodPeopleDB
 
-Pinepods integrates with the PodPeopleDB in order to expand host tracking between podcasts. This is a community project that listeners of the given podcasts submit host information to. It's intended as a suppliment for Podcasts that don't currently support the Person Podcasting 2.0 tag. Entering host information for a given podcast will allow others to see these hosts as well. Because of this, maintaining integrety for hosts is vital. There's a simple approval process for submitted hosts to ensure submitteed hosts are actually corrrect and to prevent abuse.
+[PodPeopleDB](https://podpeopledb.com) is a community database of podcast hosts and guests. It fills in people for podcasts whose feeds don't use the Podcasting 2.0 `<podcast:person>` tag. Pinepods syncs credits from it in the background and shows them next to the ones from feeds. See [People](../Features/Person.md) for how they appear in the app.
 
-### Automatic Import via podcast:person Tags
+## Adding people
 
-PodPeopleDB automatically imports host and guest information from podcast feeds that use the podcast:person namespace. If your podcast uses these tags, your host information will be automatically imported when someone looks up your podcast. You won't be allowed to submit hosts for podcasts that support this.
+You don't need to leave Pinepods. On a podcast or episode page, click **Add people**, enter the names and roles, and click **Add**. Your additions go to PodPeopleDB, show up for every Pinepods user, and are marked as unverified until someone reviews them.
 
+Podcasts whose feeds already list their people with `<podcast:person>` get them from the feed:
+
+```xml
 <podcast:person role="host" img="http://example.com/host.jpg">Jane Smith</podcast:person>
+```
 
-### Manual Submission
+## Your own instance
 
-If you open up a podcast without hosts associated with it yet you'll see a link to submit hosts to the PodPeople page for that specific podcast. 
+Pinepods uses the PodPeopleDB at `PEOPLE_API_URL` (`https://people.pinepods.online` in the example compose files). PodPeopleDB is open source; to run your own, see [its self-hosting docs](https://podpeopledb.com/docs/self-host) and point `PEOPLE_API_URL` at it. The Helm chart can deploy one for you (`podpeople.enabled`).
 
-![People Empty Podcast;](/img/peopleempty.png)
-
-Clicking that link will present you with a page to for the podcast where you can enter host information.
-
-    Fill in the host details:
-        Name (required)
-        Role (Host or Guest)
-        Description
-        Link to more information
-        Profile image URL
-    Submit for approval
-
-Please enter all the information if you can. The image url is optional, but should be entered if possible. 
-
-Approval Process
-
-To maintain data quality, all manual submissions are reviewed before being added to the database. This typically takes an hour or two at most. If you'd prefer to add your own hosts without approval you can always self-host PodPeopleDB if you'd prefer.
+To stop syncing credits from PodPeopleDB altogether, set `PEOPLE_SYNC_ENABLED=false`. Credits from feeds keep working.

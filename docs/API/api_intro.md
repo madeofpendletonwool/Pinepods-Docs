@@ -1,6 +1,6 @@
 # API Documentation
 
-There's actually 2 platforms that utilize APIs in Pinepods. I will make documents going over the details on both of them. 
+Pinepods has two APIs: the search service it uses to find new podcasts, and its own API that every Pinepods app talks to. 
 
 ## Search API
 
@@ -8,7 +8,7 @@ The search API is used for finding new podcasts. In order for Pinepods to search
 
 ## Database API
 
-The database API is how the Pinepods clients (web, desktop, and mobile) interact with the database. It is the main **Rust (Axum) API** that runs inside the primary Pinepods container — not a separate Python/FastAPI service. All clients talk to it over the same HTTP API and authenticate with **API keys**: the web UI obtains a key automatically once you sign in, while the desktop and mobile apps require you to enter your server URL and credentials when you first connect. Internally it listens on its own port and is reached through the container's nginx reverse proxy.
+The database API is how the Pinepods clients (web, desktop, and mobile) interact with the database. It is the main **Rust (Axum) API** that runs inside the primary Pinepods container — not a separate Python/FastAPI service. All clients talk to it over the same HTTP API and authenticate with an **API key** in the `Api-Key` header. Signing in to any app gets it a key; for scripts, create one under **Settings → API Keys** ([API Keys](../tutorial-basics/adding-an-api-key.md)). Real-time updates (tasks, notifications, now-playing) use WebSockets under `/ws/api/`. Internally it listens on its own port and is reached through the container's nginx reverse proxy.
 
 The full endpoint reference is **generated directly from the backend source** (OpenAPI 3.1), so it stays in sync with the running code:
 

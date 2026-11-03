@@ -1,10 +1,10 @@
-# PinePods Smart Playlist Creation Options
+# Smart Playlists
 
-This document explains all the available options when creating smart playlists in PinePods and how each option affects the resulting playlist content.
+Smart playlists fill themselves from rules you set. Open them from **Playlists** in the sidebar (or the mobile apps' playlists screen), and click **Create New Playlist** to make one. This page explains each option.
 
 ## Overview
 
-Smart playlists in PinePods are dynamic collections of episodes that are automatically populated based on a set of criteria you define. The playlist content is updated periodically to match your criteria, ensuring fresh and relevant episodes are always available.
+A smart playlist is worked out from its rules each time you open it, so it always reflects what you've listened to and what's new. Playing from a playlist plays its episodes in order (see [What plays next](./Queue.md#what-plays-next)), and each playlist can also be published as an [RSS feed](../tutorial-extras/RSSFeeds.md).
 
 ![Creating a smart playlist in PinePods](/img/screenshots/playlistcreator.png)
 
@@ -13,7 +13,6 @@ Smart playlists in PinePods are dynamic collections of episodes that are automat
 ### Name (Required)
 - **Purpose**: The display name for your playlist
 - **Effect**: This is how your playlist will appear in the interface
-- **Requirements**: Must be unique among your playlists
 
 ### Description (Optional)
 - **Purpose**: A brief description of what the playlist contains
@@ -22,7 +21,7 @@ Smart playlists in PinePods are dynamic collections of episodes that are automat
 
 ### Icon
 - **Purpose**: Visual representation of your playlist
-- **Options**: Choose from 300+ Phosphor icons (music, broadcast, star, etc.)
+- **Options**: Choose from the Phosphor icon set (music, broadcast, star, etc.)
 - **Default**: `ph-playlist`
 - **Effect**: Displayed alongside the playlist name
 
@@ -53,7 +52,7 @@ Smart playlists in PinePods are dynamic collections of episodes that are automat
 #### Include Played
 - **Default**: `false` (disabled)
 - **Purpose**: Include episodes you've already completed
-- **Criteria**: Episodes marked as completed (listen duration >= total duration)
+- **Criteria**: Episodes marked as completed
 - **Effect**: Can create "favorites" or "replay" type playlists
 
 ## Duration Filters
@@ -167,16 +166,17 @@ Determines the order episodes appear in your playlist:
 
 ## System Playlists
 
-PinePods includes seven built-in system playlists that demonstrate advanced filtering and provide ready-to-use collections:
+Every user starts with these built-in playlists. They're marked **(System)** and can't be deleted.
 
-- **Fresh Releases**: Latest episodes from the last 24 hours using time filtering
-- **Currently Listening**: Episodes you've started but haven't finished using progress filtering
-- **Almost Done**: Episodes you're close to finishing (75%+ complete) using high progress thresholds
-- **Quick Listens**: Short episodes under 15 minutes, perfect for quick breaks using duration filtering
-- **Commuter Mix**: Episodes between 20-40 minutes, ideal for average commute times using duration range
-- **Longform**: Extended episodes over 1 hour, ideal for long drives or deep dives using minimum duration
-- **Weekend Marathon**: Longer episodes (30+ minutes) perfect for weekend listening using duration filtering
+| Playlist | Rules |
+|---|---|
+| **Quick Listens** | Episodes under 15 minutes, shortest first. |
+| **Longform** | Episodes over an hour, longest first. |
+| **Currently Listening** | Episodes you've started but not finished, newest first. |
+| **Fresh Releases** | Unplayed episodes from the last 24 hours, newest first. |
+| **Weekend Marathon** | Episodes over 30 minutes, longest first, grouped by podcast. |
+| **Commuter Mix** | Episodes between 15 and 45 minutes, newest first. |
 
-These system playlists cannot be deleted but serve as examples of effective playlist configurations and provide immediate value for different listening scenarios.
+Accounts that already existed when playlists were added to Pinepods also have **Almost Done**: episodes you've listened to at least 75% of.
 
 ![The Commuter Mix smart playlist populated with episodes](/img/screenshots/playlistpage.png)

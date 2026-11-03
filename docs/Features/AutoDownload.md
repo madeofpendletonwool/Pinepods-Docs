@@ -1,29 +1,16 @@
 # Auto-Download
 
-Auto-download keeps the podcasts you care about ready for offline listening
-automatically. When enabled for a podcast, **new episodes are queued for download as
-soon as they're discovered during a refresh** — no manual tapping required.
+With auto-download on for a podcast, each new episode is downloaded to the server as soon as a refresh finds it. It's set per podcast.
 
-## Enabling auto-download
+- **Web:** open the podcast, open its settings (**Podcast Options**), and turn on **Download Future Episodes Automatically**.
+- **Mobile:** on the podcast's page, turn on **Auto-download to server**.
 
-Auto-download is a **per-podcast** setting, so you choose exactly which shows download
-automatically.
+Auto-download only queues anything while **Enable Server Downloads** is on under **Settings → Admin → Download Settings**.
 
-- **Web** — open a podcast and use its Download Settings to toggle auto-download on.
-- **Mobile** — open the podcast detail screen and enable auto-download there.
+Pair it with **Delete downloads when finished** (see [Downloads](./Downloads.md#cleaning-up-server-downloads)) and the server keeps only the episodes you haven't heard yet.
 
-## How it behaves
+Auto-downloading also matters for [AI ad detection](../AI/AdDetection.md): ads are found on the server's copy, which only lines up with what you hear if you play that same copy.
 
-- During each scheduled podcast refresh, PinePods checks your auto-download podcasts for
-  new episodes and enqueues any it finds for download.
-- Downloads run in the background and won't block the rest of the app.
-- Episodes you already have, or have already played, are not re-downloaded.
+## On your phone
 
-## Good to know
-
-- Auto-download respects the server's download settings — if downloads are disabled
-  globally, auto-download won't queue anything.
-- Pair auto-download with a **smart playlist** (for example "Fresh Releases") so new
-  episodes are both downloaded and surfaced in a ready-to-play list.
-- Combine with [Serial Podcasts](./SerialPodcasts.md) for narrative shows you want
-  downloaded and played in order.
+The mobile apps can also download new episodes to the phone itself: **Auto-download to device** on the podcast's page. See [Downloads](./Downloads.md#device-downloads-mobile) for that, for keeping your queue downloaded, and for WiFi-only downloading.

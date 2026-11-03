@@ -1,67 +1,50 @@
 # Server Backup and Restore
 
-Pinepods provides comprehensive server-level backup and restore functionality that allows administrators to create full database backups and restore their entire Pinepods instance. This feature is essential for data protection, server migration, and disaster recovery.
+A backup is a full SQL dump of the Pinepods database: users, subscriptions, episodes, listening history, settings and API keys. Restoring one replaces everything on the server with what the backup contains.
 
-## Overview
+Both live on the **Admin** tab of **Settings**, under **Backup Server** and **Restore Server**. Only admins see them.
 
-The backup and restore system creates complete SQL dumps of your Pinepods database, including:
-- All user accounts and authentication data
-- Complete podcast subscriptions and metadata
-- Episode information and listening history
-- User settings and preferences
-- API keys and integrations
-- Server configuration settings
-- Literally everything
+Backups made on the server are written to `/opt/pinepods/backups` inside the container. Mount it so they survive the container:
 
-## Accessing Backup and Restore
+```yaml
+    volumes:
+      - /home/user/pinepods/backups:/opt/pinepods/backups
+```
 
-**Administrator Access Required**
+## Scheduled backups
 
-1. Navigate to **Settings** in the main menu
-2. Expand the settings sections to find:
-   - **Backup Server Data** section
-   - **Restore Server Data** section
-3. Only users with administrative privileges can access these features
+Under **Scheduled Backups**, pick a **Schedule Time**, turn **Status** on, and set **Keep last N backups**.
 
-## Creating Server Backups
+| Schedule Time | Runs |
+|---|---|
+| Daily at 2:00 AM | every day at 02:00 |
+| Weekly on Sunday at 3:00 AM | Sundays at 03:00 |
+| Monthly on 1st at 1:00 AM | the 1st of each month at 01:00 |
+| Every 6 hours | 00:00, 06:00, 12:00, 18:00 |
+| Every 12 hours | 00:00 and 12:00 |
 
-### Backup Process
+Times are UTC. Each run writes `scheduled_backup_<date>_<time>.sql` to the backup directory. The first run is the next scheduled time after you turn the schedule on; missed runs aren't made up.
 
-The backup feature generates a complete SQL dump of your Pinepods database that can be used to restore your server or migrate to a new instance.
+**Keep last N backups** deletes the oldest scheduled backups beyond that number. `0` keeps all of them. Manual backups are never deleted automatically.
 
-#### Step-by-Step Backup
-1. Locate the **Backup Server Data** section in settings
-2. Enter your **database password** in the provided field
-3. Click the **Download Backup** button
-4. The system will generate a backup file named `server_backup.sql`
-5. The file will automatically download to your device
+## Manual backups
 
-## Restoring Server Data
+- **Download Backup File:** enter the database password and click **Authenticate**. The browser downloads `server_backup.sql`.
+- **Save to Backup Directory:** **Create Backup** writes `manual_backup_<date>_<time>.sql` to the backup directory, using the database credentials the container already has.
 
-### Restore Process
+Large databases take a few minutes. Keep the page open until it finishes.
 
-The restore functionality allows you to restore a complete Pinepods instance from a previously created backup file.
+**Existing Backups** lists the `.sql` files in the backup directory. Delete the ones you no longer need from there.
 
-#### Prerequisites for Restore
-- Valid backup file (`.sql` format from Pinepods backup)
-- Database password used during backup creation
-- Administrative access to the target server
-- Understanding that restore overwrites existing data
+## Restoring
 
-#### Step-by-Step Restore
-1. Locate the **Restore Server Data** section in settings
-2. Click **Choose File** to select your backup file
-3. Enter the **database password** used when creating the backup
-4. Click **Restore Server** to begin the process
-5. The system will process the restore and redirect you to sign out
-6. Log back in with your restored credentials
+:::caution
+A restore deletes everything on the server and replaces it with the backup's contents.
+:::
 
-#### File Limitations
-- **Supported Format**: Only SQL files created by Pinepods backup
-- **File Validation**: System checks file integrity before processing
+Under **Restore Server**, choose a **Restore Method**:
 
-#### Post-Restore Behavior
-- **Automatic Sign-Out**: You'll be logged out after restore begins
-- **Complete Replacement**: All existing data is replaced with backup data
-- **Service Restart**: Server may require restart to complete restoration
-- **Re-Authentication**: You'll need to log in with restored user credentials
+- **Upload Backup File:** choose a `.sql` file, enter the **Database Password**, and click **Restore Server**.
+- **Select From Server Backups:** pick a file from the backup directory and click **Restore From Selected**.
+
+Restoring clears all sign-in sessions, so everyone is signed out. The page shows "Server restore in progress" and reloads when it's done. Sign back in with an account from the backup.

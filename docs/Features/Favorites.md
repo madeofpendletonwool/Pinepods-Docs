@@ -1,31 +1,19 @@
-# Favorites & Favorite Categories
+# Favorite Podcasts
 
-Favorites give you a fast way to spotlight the podcasts and categories you reach for
-most.
+Mark the podcasts you follow most closely as favorites, then narrow your lists to just those shows. Favorites belong to your account, so they're the same on every device.
 
-## Podcast favorites
+## Marking a favorite
 
-Mark any podcast as a **favorite** to surface it quickly. You can toggle favorite status
-from the podcast's detail page, and your favorites are easy to get back to from the
-sidebar / app drawer.
+- **Web:** on the **Podcasts** page, click the star on a podcast's cover, or turn on **Favorite Podcast** in the podcast's settings on its page.
+- **Mobile:** use the favorite toggle on the podcast's page.
 
-- Favoriting doesn't change your subscriptions or what shows up in your feed — it's
-  purely a way to pin your most-loved shows for quick access.
-- Favorite status is part of your account, so it syncs across every device you sign in
-  on.
+Favoriting doesn't change your subscription or anything else about the podcast.
+
+## Showing only favorites
+
+- **Web:** the star button in the top bar switches a favorites-only filter on and off. While it's on (the star turns yellow), **Feed**, **History**, **Queue**, **Collections** and **Podcasts** only show your favorite podcasts and their episodes. It only filters when you have at least one favorite.
+- **Mobile:** **Feed**, **Saved** and **History** each have a favorites-only filter.
 
 ## Favorite categories
 
-Beyond individual podcasts, you can highlight **favorite categories** — the genres or
-topics you care about most — so they're front and center when you're browsing.
-
-## Where favorites show up
-
-- In the **sidebar / app drawer** for one-tap access.
-- On the **podcast detail page**, where you toggle the favorite star.
-- In your **user stats**, which can reflect your favorite podcasts and categories.
-
-## Tips
-
-- Use favorites for shows you listen to every week, and lean on
-  [smart playlists](./smart-playlists.md) for automatic, rule-based collections.
+**Favorite Categories** on your [statistics page](./Statistics.md) isn't something you set. It's the five podcast categories you've spent the most time listening to.

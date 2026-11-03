@@ -1,15 +1,32 @@
-# People
+# People: Hosts and Guests
 
-Pinepods supports the Person tag as defined by the PodcastIndex Namespace in addition to the PodPeopleDB. Any podcast that either includes the Person tag or is associated with a host in the PodPeopleDB will show hosts on the main podcast page in a dropdown:
+Pinepods shows who's on a podcast and on each episode, and lets you follow a person across every show they appear on.
 
 ![People Podcast;](/img/people.png)
 
-In addition, you'll find individual episodes show guests as part of the people shown on the episode view:
+## Where the names come from
+
+- **The feed itself.** Podcasts that use the Podcasting 2.0 `<podcast:person>` tag list their hosts and guests. Pinepods reads them whenever the feed refreshes.
+- **[PodPeopleDB](../tutorial-extras/podpeopledb.md).** A community database of hosts and guests for podcasts whose feeds don't list them. Pinepods syncs credits from it in the background. Admins can turn this off with `PEOPLE_SYNC_ENABLED=false`.
+
+A podcast's page shows its hosts ("Hosted by"); an episode's page shows the people on that episode, including **Guests**.
 
 ![Guest Podcast;](/img/peopleepisode.png)
 
-The PodPeople DB is used in addition to the Person tag to suppliment podcasts that don't yet support the tag. PodPeopleDB is a community contribution and any podcasts that don't have hosts associated with them or a person tag will give an option to add hosts manually. Which looks like this:
+## Adding people
 
-![People Empty Podcast;](/img/peopleempty.png)
+When nobody is listed, or someone is missing, use **Add people** on the podcast or episode page ("Who's on this show?" / "Who's on this episode?"). Type a name, or paste several (`Alice, Bob and Carol`), pick each person's **Role** (**Host**, **Co-host** or **Guest**), and click **Add**.
 
-If you do see a podcast that looks like this and are willing to help out please click the link and add information on the hosts that are part of your favorite podcasts! This will allow you to subscribe to feeds from your favorite hosts and will allow anyone else in the future to get the host data as well! 
+What you add is shared with PodPeopleDB so every Pinepods user sees it. It's marked as an unverified community submission until someone reviews it.
+
+## A person's page
+
+Click a person to open their page: their shows, their latest episodes, and which are **In your library** and which are **Elsewhere** (shows you don't subscribe to, found through PodPeopleDB and the Podcast Index). You can play episodes from either list.
+
+## Following people
+
+Click **Follow** on a person's page. **People You Follow** in the sidebar (the **People** tab on mobile) then lists the people you follow and their new episodes on any show, including shows you don't subscribe to.
+
+## Discover
+
+**Discover** in the sidebar has a **Discover Hosts** section with **Top Hosts**, **Recently Added** hosts and **Popular Podcasts** from PodPeopleDB.

@@ -1,108 +1,58 @@
-# Setting Up Notifications
+# Notifications
 
-Pinepods provides comprehensive push notification support to keep you informed about new podcast episodes, system updates, and other important events. The notification system supports multiple platforms and authentication methods to fit your preferred notification workflow.
+Pinepods tells you about things in two places:
 
-## Overview
+- **Push notifications** to your phone or desktop through [ntfy](https://ntfy.sh), [Gotify](https://gotify.net) or any HTTP endpoint (a webhook, a Telegram bot, a home-automation hook), for new episodes of the podcasts you choose.
+- **The Activity panel** in the web app, for downloads and other background work, and for messages from the server such as a feed that stopped updating.
 
-Pinepods supports push notifications through two popular notification platforms:
-- **ntfy**: A simple, lightweight notification service (default)
-- **Gotify**: A self-hosted notification server for privacy-focused users
+## Push notifications for new episodes
 
-Both platforms allow you to receive real-time notifications on your mobile devices, desktop computers, and other connected devices.
+Push notifications are set up per user and turned on per podcast.
 
-## Supported Notification Platforms
+### 1. Set up a platform
 
-### ntfy (Recommended)
-- **Public Service**: Uses the free ntfy.sh service by default
-- **Self-Hosted Option**: Supports custom ntfy server installations
-- **Multi-Device**: Send notifications to multiple devices using the same topic
-- **Authentication**: Supports both username/password and access token authentication (Optional)
-- **Cross-Platform**: Available on iOS, Android, and desktop
+Under **Settings → Notification Settings**, pick a **Notification Platform** and switch on **Enable Notifications**.
 
-### Gotify
-- **Self-Hosted**: Requires your own Gotify server installation
-- **Privacy Focused**: Complete control over your notification data
-- **Token-Based**: Uses application tokens for secure authentication
-- **Web Interface**: Manage notifications through Gotify's web interface
+**ntfy**
 
-## Accessing Notification Settings
+| Field | |
+|---|---|
+| **ntfy Topic** | The topic to publish to. Anyone who knows a topic on a public server can read it, so pick something hard to guess. Subscribe to the same topic in the ntfy app. |
+| **ntfy Server URL** | `https://ntfy.sh` by default, or your own ntfy server. |
+| **Authentication (Optional)** | For a protected topic: either **Username** and **Password**, or an **Access Token**. Not both. |
 
-1. Navigate to **Settings** in the main menu
-2. Expand the **Notification Settings** section
-3. Configure your preferred notification platform and credentials
+**Gotify**
 
-## Setting Up ntfy Notifications
+| Field | |
+|---|---|
+| **Gotify Server URL** | Your Gotify server, for example `https://gotify.example.com`. |
+| **Gotify App Token** | Create an application in Gotify's web interface and paste its token. |
 
-### Basic ntfy Setup
+**HTTP**
 
-#### Step 1: Choose Platform
-1. In Notification Settings, ensure **ntfy** is selected as the platform
-2. Check the **Enable Notifications** checkbox to activate notifications
+| Field | |
+|---|---|
+| **HTTP Endpoint URL** | Where to send it. |
+| **Auth Token** | Optional. Sent as `Authorization: Bearer <token>`. |
+| **HTTP Method** | **POST** sends JSON: `{"title": "New Podcast Episode", "message": "…", "text": "…"}`. **GET** adds `?message=…` to the URL. |
 
-#### Step 2: Configure ntfy Topic
-1. **Topic Name**: Enter a unique topic name for your notifications
-   - Use something personal and unique (e.g., `pinepods-johnsmith-2024`)
-   - Avoid common words to prevent receiving other users' notifications
-   - Topic names are case-sensitive and can include letters, numbers, and hyphens
+For a Telegram bot, use `https://api.telegram.org/bot<bot token>/sendMessage` as the URL, **POST**, and `<bot token>:<chat id>` as the token; Pinepods then sends Telegram's `chat_id` and `text` instead.
 
-#### Step 3: Set Server URL
-1. **Default Server**: Leave as `https://ntfy.sh` to use the free public service
-2. **Custom Server**: Enter your self-hosted ntfy server URL if you have one
-3. Ensure the URL includes the protocol (`https://` or `http://`)
+Click **Save Settings**, then **Send Test Notification** to check it arrives.
 
-### ntfy Authentication (Optional)
+### 2. Choose the podcasts
 
-ntfy supports two authentication methods - choose one:
+Notifications are off for every podcast until you turn them on. Open the podcast, open its settings, and turn on **Get Notifications For New Episodes**.
 
-#### Option 1: Username and Password
-1. Enter your **ntfy username** in the Username field
-2. Enter your **ntfy password** in the Password field
-3. Leave the Access Token field empty
+When a refresh finds new episodes of that podcast, you get one notification per episode: "New episode available for *podcast*: *episode*".
 
-#### Option 2: Access Token
-1. Leave Username and Password fields empty
-2. Enter your **ntfy access token** in the Access Token field
-3. Access tokens can be generated in your ntfy account settings
+## The Activity panel
 
-**Note**: You can only use one authentication method at a time. The interface will automatically disable the other method when you start entering credentials.
+The bell in the web app's top bar opens the Activity panel. The number on the bell counts what's running and anything that needs your attention.
 
-## Setting Up Gotify Notifications
+It lists:
 
-### Prerequisites
-- A running Gotify server installation
-- Administrative access to create application tokens
+- **Tasks:** downloads, YouTube downloads, OPML imports, adding a podcast, backups and restores, sync runs and feed refreshes, with their progress. Related tasks, such as the episodes of a bulk download, are grouped.
+- **Messages** from the server, for example a podcast that has [stopped updating](../Features/feed-updates.md#feed-problems) and when it works again, or a podcast from a sync app that couldn't be added. Click a message to go to the related page.
 
-### Gotify Setup Process
-
-#### Step 1: Choose Platform
-1. In Notification Settings, select **Gotify** as the platform
-2. Check the **Enable Notifications** checkbox
-
-#### Step 2: Configure Server
-1. **Gotify Server URL**: Enter your Gotify server's complete URL
-   - Include the protocol: `https://your-gotify-server.com`
-   - Include the port if non-standard: `https://gotify.example.com:8080`
-
-#### Step 3: Application Token
-1. **Create Token**: Log into your Gotify server's web interface
-2. **Navigate to Apps**: Go to the Applications section
-3. **Create Application**: Create a new application for Pinepods
-4. **Copy Token**: Copy the generated application token
-5. **Enter Token**: Paste the token into the Gotify App Token field in Pinepods
-
-## Testing Your Notification Setup
-
-### Test Notification Feature
-Once you've configured your notification settings:
-
-1. **Save Settings**: Click **Save Settings** to apply your configuration
-2. **Test Button**: A **Send Test Notification** button will appear
-3. **Send Test**: Click the button to send a test notification
-4. **Verify Receipt**: Check your device to confirm the test notification was received
-
-## Notification Types
-
-### Episode Notifications
-Pinepods can send notifications for:
-- **New Episodes**: When new episodes are available for your subscribed podcasts
-(More notification options coming in the future)
+The **All**, **Active** and **Done** tabs filter the list. Finished tasks move to **Done** and stay until you clear them. Dismiss a message with its **×**. Messages also expire on their own: information after a day, warnings and errors after 30 days.

@@ -67,15 +67,17 @@ services:
 
 ### PinePods Integration
 
-Update your PinePods configuration:
+Point PinePods at it with `SEARCH_API_URL`:
 
 ```yaml
 # For local deployment
-API_URL: 'http://localhost:5000/api/search'
+SEARCH_API_URL: 'http://localhost:5000/api/search'
 
 # For production with domain
-API_URL: 'https://your-domain.com/api/search'
+SEARCH_API_URL: 'https://your-domain.com/api/search'
 ```
+
+Pinepods also reads [Podping](../Features/feed-updates.md#podping) announcements from the same service (`SEARCH_API_URL` without `/api/search`), unless `PINEPODS_PODPING_URL` points elsewhere.
 
 ---
 
@@ -198,7 +200,48 @@ curl -X GET 'http://localhost:5000/api/youtube/channel?id=UCXuqSBlHAE6Xw-yeJA0Tu
 
 ---
 
-### 4. API Statistics
+### 4. Trending Podcasts
+
+**Endpoint:** `GET /api/trending`
+
+**Description:** Trending podcasts from the Podcast Index. Pinepods' Discover page uses it.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `cat` | string | No | Only these categories (Podcast Index category names or ids, comma-separated) |
+| `notcat` | string | No | Leave out these categories |
+| `lang` | string | No | Language code |
+| `max` | integer | No | How many to return |
+| `since` | integer | No | Only podcasts trending since this Unix time |
+
+```bash
+curl 'http://localhost:5000/api/trending?cat=Technology&max=24'
+```
+
+---
+
+### 5. Categories
+
+**Endpoint:** `GET /api/categories`
+
+**Description:** The Podcast Index category list.
+
+---
+
+### 6. Podping Relay
+
+**Endpoints:** `GET /api/podping/updates`, `GET /api/podping/status`
+
+The service follows [Podping](https://podping.org) announcements on the Hive blockchain and keeps the last day of announced feed addresses. Pinepods servers read them from here; see [Podping](../Features/feed-updates.md#podping).
+
+- `/api/podping/updates?after=<seq>&limit=<n>`: announcements after sequence number `after` (default `0`), at most `limit` (up to 1000) at a time. The response carries the announced URLs, the `next` sequence number to ask for, whether there are `more`, and the relay's `epoch` (it changes when the service restarts).
+- `/api/podping/status`: whether the relay is keeping up with the chain.
+
+With `PODPING_ENABLED=false`, `/api/podping/updates` answers `404`.
+
+---
+
+### 7. API Statistics
 
 **Endpoint:** `GET /api/stats`
 
@@ -390,6 +433,8 @@ API_KEY not set
 | `API_KEY` | Yes (for PodcastIndex) | - | PodcastIndex API Key |
 | `API_SECRET` | Yes (for PodcastIndex) | - | PodcastIndex API Secret |
 | `RUST_LOG` | No | `info` | Logging level (`error`, `warn`, `info`, `debug`, `trace`) |
+| `PODPING_ENABLED` | No | `true` | Follow Podping and serve `/api/podping/*`. `false`, `0` or `no` turns it off. |
+| `HIVE_API_NODES` | No | `https://api.hive.blog,https://api.deathwing.me,https://api.openhive.network` | Hive API nodes to read Podping from, tried in turn. |
 
 iTunes and YouTube require no environment configuration — iTunes is keyless and YouTube
 is served by the bundled `yt-dlp`.
@@ -398,9 +443,8 @@ is served by the bundled `yt-dlp`.
 
 - **Port**: `5000` (configurable in source)
 - **Binding**: `0.0.0.0:5000` (all interfaces)
-- **CORS**: Enabled for all origins (self-hosted friendly)
-- **Timeout**: 30 seconds for external API calls
-- **User-Agent**: `PodPeopleDB/1.0`
+- **CORS**: Enabled for all origins
+- **User-Agent** sent to the Podcast Index: `PodPeopleDB/1.0`
 
 ---
 
@@ -516,16 +560,10 @@ The API provides built-in usage tracking accessible via the `/api/stats` endpoin
 - **Timestamp Tracking**: When statistics were generated
 - **Total Aggregation**: Combined usage across all providers
 
-Integrate with your monitoring solution:
+For example, to pull the total into a monitoring script:
 
 ```bash
-# Prometheus metrics endpoint (manual implementation)
-curl http://localhost:5000/api/stats
-
-# Example integration with monitoring script
-#!/bin/bash
-STATS=$(curl -s http://localhost:5000/api/stats)
-echo "pinepods_api_total_requests $(echo $STATS | jq '.api_usage.total_hits')"
+curl -s http://localhost:5000/api/stats | jq '.api_usage.total_hits'
 ```
 
 ---

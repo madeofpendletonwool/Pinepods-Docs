@@ -1,6 +1,6 @@
 # Transcripts
 
-Pinepods supports Transcripts as defined by the PodcastIndex Namespace. Any podcast episode that you play that supports this field will automatically show links to the episode transcript in the episode view as seen below:
+Pinepods supports Transcripts as defined by the PodcastIndex Namespace. When an episode's feed includes a transcript, its episode page shows **View Transcript**, which opens the transcript in Pinepods. Episodes with both a published and an AI transcript let you switch between **Built-in** and **AI**.
 
 ![Chapters Button](/img/transcript.png)
 

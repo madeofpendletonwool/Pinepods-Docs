@@ -1,28 +1,11 @@
 # Custom Theme Creator
 
-PinePods ships with many built-in themes, but if none of them is quite right, the
-**Custom Theme Creator** lets you build your own color scheme from scratch.
+When none of the [built-in themes](../tutorial-basics/Theming.md) fits, build your own under **Settings → Custom Themes**.
 
 ![PinePods ships with many built-in themes](/img/screenshots/tonsofthemes.png)
 
-> Looking to just switch between the built-in themes? See
-> [Theming](../tutorial-basics/Theming.md). This page covers building a brand-new theme.
+1. Give it a **Theme Name**.
+2. Set the colors. Each has a color picker: Background, Secondary Background, Container Background, Button, Container Button, Button Text, Text, Secondary Text, Border, Accent, Progress Bar, Standout, Hover, Link, Thumb / Scrollbar, Unfilled, Checkbox, Bonus and Error.
+3. Check the **Preview**, then click **Create Theme**.
 
-## Creating a theme
-
-Open the **Custom Theme Creator** in Settings and adjust the theme's colors to taste.
-As you change colors, the theme updates so you can dial in exactly the look you want —
-backgrounds, accents, text, and the rest of the palette.
-
-## Where your theme applies
-
-Your custom theme is part of your user settings, so it follows your account across
-devices, just like the built-in themes. Each user on the server picks their own theme,
-so your color scheme is yours alone.
-
-## Tips
-
-- Start from the built-in theme closest to what you want, then tweak — it's faster than
-  building a palette from a blank slate.
-- Aim for enough contrast between text and background colors so show notes and episode
-  lists stay easy to read.
+The theme appears under **My Themes** in **Change Theme**. Click it to use it, or delete it from its card. Custom themes belong to your account; other users on the server don't see them.

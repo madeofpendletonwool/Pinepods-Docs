@@ -6,7 +6,7 @@
     "license": {
       "name": "GPL-3.0-or-later"
     },
-    "version": "0.9.0"
+    "version": "0.9.1"
   },
   "servers": [
     {
@@ -3853,6 +3853,43 @@
         ]
       }
     },
+    "/api/data/get_auto_delete_on_complete": {
+      "post": {
+        "tags": [
+          "settings"
+        ],
+        "summary": "Get delete-downloads-when-finished",
+        "operationId": "get_auto_delete_on_complete",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAutoDeleteOnCompleteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "`enabled` and, for a podcast, whether it is `customized`",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
     "/api/data/get_auto_download_delete_days": {
       "post": {
         "tags": [
@@ -5048,6 +5085,19 @@
             "required": true,
             "schema": {
               "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "podcast_id",
+            "in": "query",
+            "description": "Return a key that only covers this podcast's feed.",
+            "required": false,
+            "schema": {
+              "type": [
+                "integer",
+                "null"
+              ],
               "format": "int32"
             }
           }
@@ -6266,6 +6316,48 @@
         ]
       }
     },
+    "/api/data/oidc_discovery": {
+      "post": {
+        "tags": [
+          "settings"
+        ],
+        "summary": "Discover oidc provider endpoints",
+        "operationId": "discover_oidc_provider",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OidcDiscoveryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OidcDiscovery"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Discovery document could not be fetched or parsed"
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
     "/api/data/people/contribute": {
       "post": {
         "tags": [
@@ -6785,6 +6877,43 @@
                 "schema": {
                   "$ref": "#/components/schemas/NotificationStatusResponse"
                 }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/api/data/podcast/set_auto_delete_on_complete": {
+      "post": {
+        "tags": [
+          "settings"
+        ],
+        "summary": "Set or clear a podcast's delete-downloads-when-finished",
+        "operationId": "set_podcast_auto_delete_on_complete",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetAutoDeleteOnCompletePodcast"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {}
               }
             }
           },
@@ -7886,6 +8015,49 @@
                 "schema": {}
               }
             }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/api/data/refresh_podcast_details": {
+      "post": {
+        "tags": [
+          "podcasts"
+        ],
+        "summary": "Refresh a podcast's details from its feed",
+        "description": "Reads the podcast's feed in full now, even if it looks unchanged, and updates its name, artwork, author, description, website and episodes. Details the user edited are kept unless `reset_edits` is set.",
+        "operationId": "refresh_podcast_details",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshPodcastDetailsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdatePodcastInfoResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          },
+          "404": {
+            "description": "No such podcast"
           }
         },
         "security": [
@@ -10336,6 +10508,43 @@
         ]
       }
     },
+    "/api/data/user/set_auto_delete_on_complete": {
+      "post": {
+        "tags": [
+          "settings"
+        ],
+        "summary": "Set delete-downloads-when-finished (user default)",
+        "operationId": "set_auto_delete_on_complete_user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetAutoDeleteOnCompleteUser"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
     "/api/data/user/set_auto_download_delete_days": {
       "post": {
         "tags": [
@@ -10570,6 +10779,43 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/SetThemeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid or missing API key"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/api/data/user/set_use_gravatar": {
+      "post": {
+        "tags": [
+          "settings"
+        ],
+        "summary": "Set whether the user's Gravatar is shown",
+        "operationId": "set_use_gravatar",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetUseGravatar"
               }
             }
           },
@@ -14305,6 +14551,10 @@
           },
           "force": {
             "type": "boolean"
+          },
+          "download_first": {
+            "type": "boolean",
+            "description": "Download the episode to the server first (when it isn't) and detect ads on that copy, so\nad times match what the user plays."
           }
         }
       },
@@ -15051,6 +15301,25 @@
         "properties": {
           "url": {
             "type": "string"
+          }
+        }
+      },
+      "GetAutoDeleteOnCompleteRequest": {
+        "type": "object",
+        "required": [
+          "user_id"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "podcast_id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -15865,6 +16134,56 @@
           }
         }
       },
+      "OidcDiscovery": {
+        "type": "object",
+        "description": "The parts of an OpenID Provider configuration document that PinePods uses.",
+        "required": [
+          "authorization_endpoint",
+          "token_endpoint",
+          "userinfo_endpoint"
+        ],
+        "properties": {
+          "issuer": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "authorization_endpoint": {
+            "type": "string"
+          },
+          "token_endpoint": {
+            "type": "string"
+          },
+          "userinfo_endpoint": {
+            "type": "string"
+          },
+          "scopes_supported": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "claims_supported": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "OidcDiscoveryRequest": {
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Issuer URL or full .well-known/openid-configuration URL"
+          }
+        }
+      },
       "OidcProviderRequest": {
         "type": "object",
         "required": [
@@ -16532,7 +16851,8 @@
           "feedurl",
           "explicit",
           "is_favorite",
-          "is_video"
+          "is_video",
+          "play_count"
         ],
         "properties": {
           "podcastid": {
@@ -16603,6 +16923,22 @@
           },
           "is_video": {
             "type": "boolean"
+          },
+          "oldest_episode_date": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "newest_episode_date": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "play_count": {
+            "type": "integer",
+            "format": "int64"
           }
         }
       },
@@ -17036,6 +17372,22 @@
           "podcast_id": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "RefreshPodcastDetailsRequest": {
+        "type": "object",
+        "required": [
+          "podcast_id"
+        ],
+        "properties": {
+          "podcast_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reset_edits": {
+            "type": "boolean",
+            "description": "Also hand the details the user edited (name, artwork, ...) back to the feed."
           }
         }
       },
@@ -17784,6 +18136,46 @@
           }
         }
       },
+      "SetAutoDeleteOnCompletePodcast": {
+        "type": "object",
+        "required": [
+          "user_id",
+          "podcast_id"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "podcast_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "enabled": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "`null` goes back to the user's default."
+          }
+        }
+      },
+      "SetAutoDeleteOnCompleteUser": {
+        "type": "object",
+        "required": [
+          "user_id",
+          "enabled"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "enabled": {
+            "type": "boolean"
+          }
+        }
+      },
       "SetAutoDownloadDeleteDaysPodcast": {
         "type": "object",
         "required": [
@@ -18009,6 +18401,22 @@
           }
         }
       },
+      "SetUseGravatar": {
+        "type": "object",
+        "required": [
+          "user_id",
+          "enabled"
+        ],
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "enabled": {
+            "type": "boolean"
+          }
+        }
+      },
       "SetUsernameRequest": {
         "type": "object",
         "required": [
@@ -18094,6 +18502,12 @@
             ]
           },
           "code_verifier": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "redirect_uri": {
             "type": [
               "string",
               "null"
@@ -19166,7 +19580,8 @@
       "UserDetails": {
         "type": "object",
         "required": [
-          "UserID"
+          "UserID",
+          "UseGravatar"
         ],
         "properties": {
           "UserID": {
@@ -19204,6 +19619,10 @@
               "null"
             ],
             "description": "Always null; kept for response compatibility."
+          },
+          "UseGravatar": {
+            "type": "boolean",
+            "description": "Whether the clients show the user's Gravatar. Off by default."
           }
         }
       },

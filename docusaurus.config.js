@@ -74,7 +74,7 @@ module.exports = {
           // update the `current` label below to the next in-progress version.
           versions: {
             current: {
-              label: "0.9.1 (Next 🚧)",
+              label: "0.9.2 (Next 🚧)",
               path: "next",
               banner: "unreleased",
             },
@@ -138,10 +138,6 @@ module.exports = {
         // Preserve inbound links after restructuring. `to` targets are
         // validated against real routes at build time.
         //
-        // Note: the "Firewood (CLI)" -> "Firewood CLI" directory rename only
-        // exists in the unreleased `next` version; the currently-served default
-        // (0.9.0) still uses the parenthesized path as its live URL, so no
-        // redirect is needed until 0.9.1 becomes the default version.
         redirects: [
           // Deleted default-tutorial pages (early template) -> docs home
           {
@@ -158,7 +154,32 @@ module.exports = {
             ],
             to: "/docs/intro",
           },
-          // Pages renamed or merged in the unreleased version
+          // Pages renamed or merged in 0.9.1: the default /docs/ paths (0.9.0
+          // URLs) and the /docs/next/ paths that existed before the rename.
+          {
+            from: "/docs/Firewood (CLI)/UsingPinepodsFirewood",
+            to: "/docs/Firewood CLI/UsingPinepodsFirewood",
+          },
+          {
+            from: "/docs/tutorial-basics/ChangingLoginPage",
+            to: "/docs/tutorial-basics/display-settings",
+          },
+          {
+            from: "/docs/tutorial-basics/AdjustingUserSettings",
+            to: "/docs/tutorial-basics/user-management",
+          },
+          {
+            from: "/docs/Features/SerialPodcasts",
+            to: "/docs/Features/Queue",
+          },
+          {
+            from: "/docs/Features/gpodder-sync",
+            to: "/docs/tutorial-extras/gpodder-sync",
+          },
+          {
+            from: "/docs/tutorial-basics/searching-and-adding",
+            to: "/docs/Features/Search",
+          },
           {
             from: "/docs/next/tutorial-basics/ChangingLoginPage",
             to: "/docs/next/tutorial-basics/display-settings",

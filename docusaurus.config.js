@@ -74,7 +74,7 @@ module.exports = {
           // update the `current` label below to the next in-progress version.
           versions: {
             current: {
-              label: "0.9.2 (Next 🚧)",
+              label: "0.9.3 (Next 🚧)",
               path: "next",
               banner: "unreleased",
             },

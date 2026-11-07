@@ -232,7 +232,7 @@ services:
 
 Mount the data directory. Without it, the database is lost when the container is recreated.
 
-There's no built-in move between databases yet: an existing PostgreSQL or MariaDB server can't be restored onto SQLite, or the other way round.
+Already running PostgreSQL or MariaDB? See [Moving to SQLite](./tutorial-basics/Backup-Restore.md#moving-to-sqlite).
 
 Make sure you change these variables to variables specific to yourself at a minimum.
 

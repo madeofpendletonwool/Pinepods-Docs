@@ -51,10 +51,27 @@ Restoring clears all sign-in sessions, so everyone is signed out. The page shows
 
 ## SQLite
 
-On a SQLite server, backups are `.sql` files too, and every option above works the same way. There's no database password: **Download Backup File** and **Upload Backup File** accept any text in that field.
+On a SQLite server, backups are `.sql` files too, and every option above works the same way, except that there's no database password to enter.
 
-- A SQLite server restores only its own backups, not a PostgreSQL or MariaDB dump, and its backups don't restore on those servers.
+- A SQLite server restores only its own backups, not a PostgreSQL or MariaDB dump (see [Moving to SQLite](#moving-to-sqlite) for those), and its backups don't restore on those servers.
 - A backup from an older Pinepods version restores fine. One from a newer version is refused; upgrade first.
 - A failed restore changes nothing: the old data stays until the new data has fully loaded.
 
 You can also stop Pinepods and copy the database file (`DB_PATH`). Copy it with the `-wal` and `-shm` files beside it, if there are any.
+
+## Moving to SQLite
+
+A PostgreSQL or MariaDB server can move to SQLite. The old server's database is exported as a SQLite backup, which a new SQLite server restores.
+
+1. Upgrade the old server to the Pinepods version you'll run on SQLite, and let it start once.
+2. Export its database from inside the running container. The file lands in the backup directory:
+
+   ```bash
+   docker exec pinepods pinepods-db-setup --export-sqlite /opt/pinepods/backups/sqlite_export.sql
+   ```
+
+3. Start the new SQLite server (see [Getting Started](../intro.md)), create a temporary admin account, and restore `sqlite_export.sql` under **Restore Server**. Mount the same backup directory to pick it from **Select From Server Backups**, or upload it.
+4. Sign back in with your old account. Users, subscriptions, episodes, history, playlists, settings and API keys all come across; everyone has to sign in again.
+
+Downloaded episode files aren't in the database: mount the old downloads directory on the new server too.
+

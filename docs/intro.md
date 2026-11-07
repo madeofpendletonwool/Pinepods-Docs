@@ -184,38 +184,40 @@ services:
       - valkey
 ```
 
-#### Compose File - SQLite (No Database Server)
+#### Single Container - SQLite (No Database Server)
 
-SQLite keeps the whole database in one file, so there's no database container to run. It suits a single household. For many users or a busy instance, use PostgreSQL.
+SQLite keeps the whole database in one file, and without a Valkey server Pinepods keeps its caches in memory, so one container is the whole install. It suits a single household. For many users or a busy instance, use PostgreSQL.
+
+```bash
+docker run -d --name pinepods -p 8040:8040 \
+  -v /home/user/pinepods/data:/opt/pinepods/data \
+  -v /home/user/pinepods/downloads:/opt/pinepods/downloads \
+  -v /home/user/pinepods/backups:/opt/pinepods/backups \
+  madeofpendletonwool/pinepods:latest
+```
+
+Open `http://localhost:8040` and create your admin account. Or with compose:
 
 ```yaml
 services:
-  valkey:
-    image: valkey/valkey:8-alpine
-    restart: always
-
   pinepods:
     image: madeofpendletonwool/pinepods:latest
     ports:
       - "8040:8040"
     environment:
-      # Basic Server Info
-      SEARCH_API_URL: "https://search.pinepods.online/api/search"
-      PEOPLE_API_URL: "https://people.pinepods.online"
+      # The URL you reach Pinepods at, used in RSS feed links. Optional: without it, links use
+      # the address each request came in on.
       HOSTNAME: "http://localhost:8040"
-      # Database Vars: the database is one file inside the data volume below
+      # The database is one file in the data volume below. Without DB_HOST, SQLite is the
+      # default, so these two lines are optional.
       DB_TYPE: sqlite
       DB_PATH: /opt/pinepods/data/pinepods.db
-      # Valkey Settings
-      VALKEY_HOST: valkey
-      VALKEY_PORT: 6379
-      # Enable or Disable Debug Mode for additional Printing
+      # Caches, task progress and now-playing are kept in memory. To use a Valkey server
+      # instead, set VALKEY_HOST (and VALKEY_PORT) or VALKEY_URL.
       DEBUG_MODE: false
       PUID: ${UID:-911}
       PGID: ${GID:-911}
-      # Add timezone configuration
       TZ: "America/New_York"
-      # Language Configuration
       DEFAULT_LANGUAGE: "en"
     volumes:
       # The database. Without this mount it's lost when the container is recreated.
@@ -226,11 +228,9 @@ services:
       # Mount local media files to use the Add Local Podcast feature (optional)
       - /home/user/pinepods/local-media:/opt/pinepods/local-media
     restart: always
-    depends_on:
-      - valkey
 ```
 
-Mount the data directory, as above. Without it, the database is lost when the container is recreated. The `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD` and `DB_NAME` variables aren't used.
+Mount the data directory. Without it, the database is lost when the container is recreated.
 
 There's no built-in move between databases yet: an existing PostgreSQL or MariaDB server can't be restored onto SQLite, or the other way round.
 

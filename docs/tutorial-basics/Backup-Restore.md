@@ -48,3 +48,13 @@ Under **Restore Server**, choose a **Restore Method**:
 - **Select From Server Backups:** pick a file from the backup directory and click **Restore From Selected**.
 
 Restoring clears all sign-in sessions, so everyone is signed out. The page shows "Server restore in progress" and reloads when it's done. Sign back in with an account from the backup.
+
+## SQLite
+
+On a SQLite server, backups are `.sql` files too, and every option above works the same way. There's no database password: **Download Backup File** and **Upload Backup File** accept any text in that field.
+
+- A SQLite server restores only its own backups, not a PostgreSQL or MariaDB dump, and its backups don't restore on those servers.
+- A backup from an older Pinepods version restores fine. One from a newer version is refused; upgrade first.
+- A failed restore changes nothing: the old data stays until the new data has fully loaded.
+
+You can also stop Pinepods and copy the database file (`DB_PATH`). Copy it with the `-wal` and `-shm` files beside it, if there are any.

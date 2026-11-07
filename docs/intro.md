@@ -184,6 +184,56 @@ services:
       - valkey
 ```
 
+#### Compose File - SQLite (No Database Server)
+
+SQLite keeps the whole database in one file, so there's no database container to run. It suits a single household. For many users or a busy instance, use PostgreSQL.
+
+```yaml
+services:
+  valkey:
+    image: valkey/valkey:8-alpine
+    restart: always
+
+  pinepods:
+    image: madeofpendletonwool/pinepods:latest
+    ports:
+      - "8040:8040"
+    environment:
+      # Basic Server Info
+      SEARCH_API_URL: "https://search.pinepods.online/api/search"
+      PEOPLE_API_URL: "https://people.pinepods.online"
+      HOSTNAME: "http://localhost:8040"
+      # Database Vars: the database is one file inside the data volume below
+      DB_TYPE: sqlite
+      DB_PATH: /opt/pinepods/data/pinepods.db
+      # Valkey Settings
+      VALKEY_HOST: valkey
+      VALKEY_PORT: 6379
+      # Enable or Disable Debug Mode for additional Printing
+      DEBUG_MODE: false
+      PUID: ${UID:-911}
+      PGID: ${GID:-911}
+      # Add timezone configuration
+      TZ: "America/New_York"
+      # Language Configuration
+      DEFAULT_LANGUAGE: "en"
+    volumes:
+      # The database. Without this mount it's lost when the container is recreated.
+      - /home/user/pinepods/data:/opt/pinepods/data
+      # Mount the download and backup locations on the server
+      - /home/user/pinepods/downloads:/opt/pinepods/downloads
+      - /home/user/pinepods/backups:/opt/pinepods/backups
+      # Mount local media files to use the Add Local Podcast feature (optional)
+      - /home/user/pinepods/local-media:/opt/pinepods/local-media
+    restart: always
+    depends_on:
+      - valkey
+```
+
+Mount the data directory, as above. Without it, the database is lost when the container is recreated. The `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD` and `DB_NAME` variables aren't used.
+
+There's no built-in move between databases yet: an existing PostgreSQL or MariaDB server can't be restored onto SQLite, or the other way round.
+
 Make sure you change these variables to variables specific to yourself at a minimum.
 
 ```

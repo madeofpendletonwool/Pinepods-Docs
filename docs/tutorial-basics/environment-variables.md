@@ -22,13 +22,16 @@ PinePods builds absolute RSS feed URLs (`<link>`, `<guid>`, `<enclosure>`) from 
 
 | Variable | Default Value | Required | Description |
 |----------|---------------|----------|-------------|
-| `DB_TYPE` | - | **Yes** | Database type: `postgresql` or `mariadb` (`mysql` also works) |
+| `DB_TYPE` | - | **Yes** | Database type: `postgresql`, `mariadb` (`mysql` also works) or `sqlite` |
+| `DB_PATH` | `/opt/pinepods/data/pinepods.db` | No | SQLite only: the database file. Keep its directory on a mounted volume |
 | `DB_HOST` | - | **Yes** | Database host address. A path starting with `/` (e.g., `/var/run/postgresql`) connects through a Unix socket in that directory |
 | `DB_PORT` | - | **Yes** | Database port: usually `5432` for PostgreSQL, `3306` for MariaDB/MySQL |
 | `DB_USER` | - | **Yes** | Database username |
 | `DB_PASSWORD` | - | **Yes** | Database password |
 | `DB_NAME` | - | **Yes** | Database name, usually `pinepods_database` |
 | `DB_WAIT_TIMEOUT` | `300` | No | Seconds to wait at startup for the database to accept connections before giving up. `0` waits forever. Raise it if your database starts slowly (first boot, slow hosts) |
+
+With `DB_TYPE: sqlite`, only `DB_PATH` applies; the other database variables aren't used.
 
 ### PostgreSQL over TLS or with client certificates
 
@@ -170,6 +173,9 @@ DB_PORT: 5432  # or 3306 for MariaDB
 DB_USER: postgres  # or root for MariaDB
 DB_PASSWORD: "your_secure_password"
 DB_NAME: pinepods_database
+# Or, with no database server:
+# DB_TYPE: sqlite
+# DB_PATH: /opt/pinepods/data/pinepods.db  # mount /opt/pinepods/data
 
 # Valkey/Redis (required)
 VALKEY_HOST: valkey

@@ -13,7 +13,6 @@ module.exports = {
   tutorialSidebar: [
     'intro',
     'choosing-a-setup',
-    'choosing-a-setup',
     {
       type: 'category',
       label: 'Tutorial - Basics',

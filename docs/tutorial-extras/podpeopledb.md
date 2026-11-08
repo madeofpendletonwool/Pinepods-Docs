@@ -14,6 +14,6 @@ Podcasts whose feeds already list their people with `<podcast:person>` get them 
 
 ## Your own instance
 
-Pinepods uses the PodPeopleDB at `PEOPLE_API_URL` (`https://people.pinepods.online` in the example compose files). PodPeopleDB is open source; to run your own, see [its self-hosting docs](https://podpeopledb.com/docs/self-host) and point `PEOPLE_API_URL` at it. The Helm chart can deploy one for you (`podpeople.enabled`).
+Pinepods uses the PodPeopleDB at `PEOPLE_API_URL` (by default the hosted `https://people.pinepods.online`). PodPeopleDB is open source; to run your own, see [its self-hosting docs](https://podpeopledb.com/docs/self-host) and point `PEOPLE_API_URL` at it. The Helm chart can deploy one for you (`podpeople.enabled`).
 
 To stop syncing credits from PodPeopleDB altogether, set `PEOPLE_SYNC_ENABLED=false`. Credits from feeds keep working.

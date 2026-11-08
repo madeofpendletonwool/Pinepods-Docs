@@ -7,7 +7,7 @@ PinePods is a Rust based podcast management system that manages podcasts with mu
 
 ## Features
 
-Pinepods is a complete podcast management system and allows you to play, download, and keep track of podcasts you (or any of your users) enjoy. It allows for searching and subscribing to hosts and podcasts using The Podcast Index or Itunes and provides a modern looking UI to browse through shows and episodes. In addition, Pinepods provides simple user management and can be used by multiple users at once using a browser or app version. Everything is saved into a MySQL or Postgres database including user settings, podcasts and episodes. It's fully self-hosted, open-sourced, and I provide an option to use a hosted search API or you can also get one from the Podcast Index and use your own. There's even many different themes to choose from! Everything is fully dockerized and I provide a simple guide found below explaining how to install and run Pinepods on your own system.
+Pinepods is a complete podcast management system and allows you to play, download, and keep track of podcasts you (or any of your users) enjoy. It allows for searching and subscribing to hosts and podcasts using The Podcast Index or Itunes and provides a modern looking UI to browse through shows and episodes. In addition, Pinepods provides simple user management and can be used by multiple users at once using a browser or app version. Everything is saved into a database (SQLite, PostgreSQL or MySQL/MariaDB) including user settings, podcasts and episodes. It's fully self-hosted, open-sourced, and I provide an option to use a hosted search API or you can also get one from the Podcast Index and use your own. There's even many different themes to choose from! Everything is fully dockerized and I provide a simple guide found below explaining how to install and run Pinepods on your own system.
 
 ## Try it out! :zap:
 
@@ -20,14 +20,66 @@ There's potentially a few steps to getting Pinepods fully installed. After you g
 
 ### Server Installation :floppy_disk:
 
-First, the server. You have multiple options for deploying Pinepods:
+First, the server. There are two ways to run it:
 
-  - [Using Docker Compose :whale:](#docker-compose)
-  - [Using Helm for Kubernetes :anchor:](#helm-deployment)
+  - [Quick start: one container :zap:](#quick-start-one-container) — a single `docker run`, with SQLite inside the container. The easiest way to get going.
+  - **Production** — Pinepods with a PostgreSQL database (MySQL/MariaDB also works) and a Valkey cache, using [Docker Compose :whale:](#production-docker-compose-with-postgresql) or [Helm for Kubernetes :anchor:](#helm-deployment). This is the recommended setup for a server you rely on: it handles many users and busy libraries, lets several Pinepods instances share one database, and works with the standard PostgreSQL tooling for backups and upgrades.
 
-You can also choose to use MySQL/MariaDB or Postgres as your database. Examples for both are provided below.
+Not sure which? See [Choosing a Database and Cache](./choosing-a-setup.md).
 
-### Docker Compose
+### Quick Start: One Container
+
+The easiest way to get off the ground. With no database settings, Pinepods keeps its whole database in one SQLite file and its caches in memory, so one container is the whole install, with nothing else to run.
+
+```bash
+docker run -d --name pinepods -p 8040:8040 \
+  -v /home/user/pinepods/data:/opt/pinepods/data \
+  -v /home/user/pinepods/downloads:/opt/pinepods/downloads \
+  -v /home/user/pinepods/backups:/opt/pinepods/backups \
+  madeofpendletonwool/pinepods:latest
+```
+
+Open `http://localhost:8040` and create your admin account. Or with compose:
+
+```yaml
+services:
+  pinepods:
+    image: madeofpendletonwool/pinepods:latest
+    ports:
+      - "8040:8040"
+    environment:
+      # The URL you reach Pinepods at, used in RSS feed links. Optional: without it, links use
+      # the address each request came in on.
+      HOSTNAME: "http://localhost:8040"
+      # The database is one file in the data volume below. Without DB_HOST, SQLite is the
+      # default, so these two lines are optional.
+      DB_TYPE: sqlite
+      DB_PATH: /opt/pinepods/data/pinepods.db
+      # Caches, task progress and now-playing are kept in memory. To use a Valkey server
+      # instead, set VALKEY_HOST (and VALKEY_PORT) or VALKEY_URL.
+      DEBUG_MODE: false
+      PUID: ${UID:-911}
+      PGID: ${GID:-911}
+      TZ: "America/New_York"
+      DEFAULT_LANGUAGE: "en"
+    volumes:
+      # The database. Without this mount it's lost when the container is recreated.
+      - /home/user/pinepods/data:/opt/pinepods/data
+      # Mount the download and backup locations on the server
+      - /home/user/pinepods/downloads:/opt/pinepods/downloads
+      - /home/user/pinepods/backups:/opt/pinepods/backups
+      # Mount local media files to use the Add Local Podcast feature (optional)
+      - /home/user/pinepods/local-media:/opt/pinepods/local-media
+    restart: always
+```
+
+Mount the data directory. Without it, the database is lost when the container is recreated.
+
+Search, PodPeople credits and RSS links work without any settings. Every other option in this guide (admin bootstrap, timezone, PUID/PGID, OIDC) works the same here.
+
+This suits trying Pinepods out and a single household. When you outgrow it, the [Production](#production-docker-compose-with-postgresql) setup below is the way to go, and an existing PostgreSQL or MariaDB server can also [move to SQLite](./tutorial-basics/Backup-Restore.md#moving-to-sqlite).
+
+### Production: Docker Compose with PostgreSQL
 
 :::note PostgreSQL 18 data path
 The `postgres:18` image moved its data directory and declared `VOLUME` to
@@ -184,60 +236,11 @@ services:
       - valkey
 ```
 
-#### Single Container - SQLite (No Database Server)
-
-SQLite keeps the whole database in one file, and without a Valkey server Pinepods keeps its caches in memory, so one container is the whole install. It suits a single household. For many users or a busy instance, use PostgreSQL.
-
-```bash
-docker run -d --name pinepods -p 8040:8040 \
-  -v /home/user/pinepods/data:/opt/pinepods/data \
-  -v /home/user/pinepods/downloads:/opt/pinepods/downloads \
-  -v /home/user/pinepods/backups:/opt/pinepods/backups \
-  madeofpendletonwool/pinepods:latest
-```
-
-Open `http://localhost:8040` and create your admin account. Or with compose:
-
-```yaml
-services:
-  pinepods:
-    image: madeofpendletonwool/pinepods:latest
-    ports:
-      - "8040:8040"
-    environment:
-      # The URL you reach Pinepods at, used in RSS feed links. Optional: without it, links use
-      # the address each request came in on.
-      HOSTNAME: "http://localhost:8040"
-      # The database is one file in the data volume below. Without DB_HOST, SQLite is the
-      # default, so these two lines are optional.
-      DB_TYPE: sqlite
-      DB_PATH: /opt/pinepods/data/pinepods.db
-      # Caches, task progress and now-playing are kept in memory. To use a Valkey server
-      # instead, set VALKEY_HOST (and VALKEY_PORT) or VALKEY_URL.
-      DEBUG_MODE: false
-      PUID: ${UID:-911}
-      PGID: ${GID:-911}
-      TZ: "America/New_York"
-      DEFAULT_LANGUAGE: "en"
-    volumes:
-      # The database. Without this mount it's lost when the container is recreated.
-      - /home/user/pinepods/data:/opt/pinepods/data
-      # Mount the download and backup locations on the server
-      - /home/user/pinepods/downloads:/opt/pinepods/downloads
-      - /home/user/pinepods/backups:/opt/pinepods/backups
-      # Mount local media files to use the Add Local Podcast feature (optional)
-      - /home/user/pinepods/local-media:/opt/pinepods/local-media
-    restart: always
-```
-
-Mount the data directory. Without it, the database is lost when the container is recreated.
-
-Already running PostgreSQL or MariaDB? See [Moving to SQLite](./tutorial-basics/Backup-Restore.md#moving-to-sqlite).
-
-Make sure you change these variables to variables specific to yourself at a minimum.
+For the production compose files, change at least these to your own values.
 
 ```
-      # The url you reach the site at. Used to build RSS feed and shared links
+      # The url you reach the site at, used in RSS feed and shared links. Optional: without
+      # it, links use the address each request came in on.
       HOSTNAME: 'http://localhost:8040'
       # These next 4 are optional. They allow you to set an admin without setting on the first boot
       USERNAME: pinepods
@@ -262,7 +265,7 @@ First of all, the USERNAME, PASSWORD, FULLNAME, and EMAIL vars are your details 
 
 #### Note on the Search API
 
-Let's talk quickly about the searching API. This allows you to search for new podcasts and it queries iTunes, the Podcast Index, or YouTube for new content. Only the Podcast Index needs an API key; iTunes needs none, and YouTube searches run through `yt-dlp` inside the search service. The search service also relays [Podping](./Features/feed-updates.md#podping) announcements to your server. If you'd rather not mess with the API at all simply set `SEARCH_API_URL` to the one below.
+Let's talk quickly about the searching API. This allows you to search for new podcasts and it queries iTunes, the Podcast Index, or YouTube for new content. Only the Podcast Index needs an API key; iTunes needs none, and YouTube searches run through `yt-dlp` inside the search service. The search service also relays [Podping](./Features/feed-updates.md#podping) announcements to your server. If you'd rather not mess with the API at all, leave `SEARCH_API_URL` unset: it defaults to the one below.
 
 ```
 SEARCH_API_URL: 'https://search.pinepods.online/api/search'

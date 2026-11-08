@@ -72,7 +72,7 @@ Running several Pinepods replicas behind a load balancer? They need a shared Val
 
 | Variable | Default Value | Required | Description |
 |----------|---------------|----------|-------------|
-| `VALKEY_MODE` | - | No | `memory` to run without Valkey on any database, `valkey` to require it. Unset, a configured URL or host means Valkey; otherwise SQLite uses memory |
+| `VALKEY_MODE` | - | No | `memory` to run without Valkey on any database, `valkey` to require it. Unset, a configured URL or host means Valkey; otherwise SQLite uses memory. See [Choosing a Database and Cache](../choosing-a-setup.md) |
 | `VALKEY_URL` | - | No | Complete connection URL, e.g. `redis://user:password@valkey:6379/0`. When set, it's used instead of the variables below |
 | `VALKEY_HOST` | `valkey` (not on SQLite) | **Yes** (with Valkey, without `VALKEY_URL`) | Valkey/Redis host |
 | `VALKEY_PORT` | `6379` | No | Valkey/Redis port |

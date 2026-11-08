@@ -13,6 +13,23 @@ Each podcast is refreshed on its own schedule, based on how often it actually pu
 
 A feed several people subscribe to is fetched once for all of them. **Refresh** in the app, **Refresh now** on a feed problem, adding a podcast and [Podping](#podping) refresh straight away; the next scheduled refresh follows from there.
 
+### Refreshing one podcast
+
+The refresh button on a podcast's page (**Check for new episodes**; in the mobile app, the podcast's **⋯** menu) refreshes just that podcast now, whatever it is: a feed, a [YouTube channel](#youtube-channels) or a [local folder](./LocalPodcasts.md#adding-new-files). Unlike **Refresh** in the app, it doesn't skip a podcast that was refreshed a moment ago, and if a refresh of it is already running it waits for that one and then looks again. The one thing it won't do is fetch a feed whose host asked Pinepods to wait (`Retry-After`); it says so instead.
+
+### Turning automatic refresh off
+
+Each podcast has a **Refresh automatically** switch in its [options](./PodcastOptions.md#podcast-options), on by default. With it off, the podcast keeps its episodes but:
+
+- the scheduled refresh, **Refresh** in the app and Podping leave it alone;
+- it isn't listed under [Feed problems](#feed-problems) and you don't get messages about it.
+
+It's meant for podcasts you want to keep whose feed is gone or broken. The refresh button on its page still refreshes it, and when someone else subscribes to the same feed with refresh on, the feed is still refreshed for them.
+
+### Local podcasts
+
+[Local podcasts](./LocalPodcasts.md) are on the same schedule, at a fixed 15 minutes (they don't publish on a pattern): Pinepods lists the folder and adds the files it hasn't seen. A missing folder counts as a feed that's gone.
+
 | Variable | Default | Meaning |
 |---|---|---|
 | `PINEPODS_REFRESH_MAX_INTERVAL` | `24h` | The longest any podcast waits between refreshes. Minutes (`90`) or a number with `s`, `m`, `h` or `d` (`6h`). Set it lower to have even quiet podcasts checked more often; anything below 15 minutes makes every podcast refresh at that interval. |
@@ -47,7 +64,7 @@ When a feed keeps failing, you see it instead of the podcast quietly going stale
   - the host can't be reached, or keeps answering with an error;
   - the host asked Pinepods to slow down (it's then left alone for as long as it asks).
 
-  **Refresh now** tries straight away. **Unsubscribe** removes the podcast.
+  **Refresh now** tries straight away. **Stop refreshing** keeps the podcast and its episodes but turns off its [automatic refresh](#turning-automatic-refresh-off), which takes it off this list. **Unsubscribe** removes the podcast.
 - **Podcasts from sync apps that couldn't be added.** A podcast an app subscribed to through the [PinePods gpodder server](../tutorial-extras/gpodder-sync.md) (or that came from your external sync server) is retried after an hour, six hours, and then daily for about a week. **Try again** starts it now, **Unsubscribe** removes it from your sync apps too, **Dismiss** only hides it here.
 
 You also get **one message in the activity panel** when a podcast has failed to update for a day (a feed that's gone is reported after three tries), and another when it works again. The podcast's own page shows a note while it's failing.

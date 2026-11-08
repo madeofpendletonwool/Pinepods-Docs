@@ -48,3 +48,50 @@ Under **Restore Server**, choose a **Restore Method**:
 - **Select From Server Backups:** pick a file from the backup directory and click **Restore From Selected**.
 
 Restoring clears all sign-in sessions, so everyone is signed out. The page shows "Server restore in progress" and reloads when it's done. Sign back in with an account from the backup.
+
+## SQLite
+
+On a SQLite server, backups are `.sql` files too, and every option above works the same way, except that there's no database password to enter.
+
+- A SQLite server restores only its own backups, not a PostgreSQL or MariaDB dump (see [Moving to SQLite](#moving-to-sqlite) for those), and its backups don't restore on those servers (see [Moving from SQLite to PostgreSQL or MariaDB](#moving-from-sqlite-to-postgresql-or-mariadb)).
+- A backup from an older Pinepods version restores fine. One from a newer version is refused; upgrade first.
+- A failed restore changes nothing: the old data stays until the new data has fully loaded.
+
+You can also stop Pinepods and copy the database file (`DB_PATH`). Copy it with the `-wal` and `-shm` files beside it, if there are any.
+
+## Moving to SQLite
+
+A PostgreSQL or MariaDB server can move to SQLite. The old server's database is exported as a SQLite backup, which a new SQLite server restores.
+
+1. Upgrade the old server to the Pinepods version you'll run on SQLite, and let it start once.
+2. Export its database from inside the running container. The file lands in the backup directory:
+
+   ```bash
+   docker exec pinepods pinepods-db-setup --export-sqlite /opt/pinepods/backups/sqlite_export.sql
+   ```
+
+3. Start the new SQLite server (see [Getting Started](../intro.md)), create a temporary admin account, and restore `sqlite_export.sql` under **Restore Server**. Mount the same backup directory to pick it from **Select From Server Backups**, or upload it.
+4. Sign back in with your old account. Users, subscriptions, episodes, history, playlists, settings and API keys all come across; everyone has to sign in again.
+
+Downloaded episode files aren't in the database: mount the old downloads directory on the new server too.
+
+## Moving from SQLite to PostgreSQL or MariaDB
+
+When a SQLite server outgrows one container, it can move to the [production setup](../choosing-a-setup.md). The new server's database is filled from the SQLite server's database file or one of its backups.
+
+1. Upgrade the SQLite server to the Pinepods version the new server will run, and let it start once. Both have to be on the same version.
+2. Get the data, either:
+   - a backup: **Download Backup File** under Backup Server, or a scheduled backup from the backup directory, or
+   - the database file: stop the SQLite server, then take `pinepods.db` from its data directory (with the `-wal` and `-shm` files beside it, if there are any).
+3. Start the new server with PostgreSQL or MariaDB (see [Getting Started](../intro.md)). There's no need to create an admin account. Put the file somewhere the container can read, such as its backup directory.
+4. Import it from inside the running container:
+
+   ```bash
+   docker exec pinepods pinepods-db-setup --import-sqlite /opt/pinepods/backups/server_backup.sql
+   ```
+
+   Everything in the new server's database is replaced. If it already has podcasts, the import stops and asks you to add `--replace`.
+5. Restart the container (`docker restart pinepods`) and sign in with your existing account. Users, subscriptions, episodes, history, playlists, settings and API keys all come across; everyone has to sign in again.
+
+As with the move to SQLite, mount the old downloads directory on the new server too.
+

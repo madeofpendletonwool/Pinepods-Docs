@@ -8,9 +8,9 @@ Below are all the environment variables supported by PinePods. These should be c
 
 | Variable | Default Value | Required | Description |
 |----------|---------------|----------|-------------|
-| `SEARCH_API_URL` | - | **Yes** | URL of the search API. Use `https://search.pinepods.online/api/search`, or your own search service if you run one |
-| `PEOPLE_API_URL` | - | **Yes** | URL of the people/person lookup API. Use `https://people.pinepods.online` |
-| `HOSTNAME` | - | **Yes** | The URL where you will access the app (e.g., `https://pods.example.com`). Used for RSS feed sharing and callbacks |
+| `SEARCH_API_URL` | `https://search.pinepods.online/api/search` | No | URL of the search API. Change it only if you run your own search service |
+| `PEOPLE_API_URL` | `https://people.pinepods.online` | No | URL of the people/person lookup API |
+| `HOSTNAME` | - | No | The URL where you will access the app (e.g., `https://pods.example.com`), used in RSS feed links. Without it, links use the address each request came in on; set it behind a reverse proxy that doesn't pass `X-Forwarded-Host` |
 | `SERVER_URL` | (falls back to `HOSTNAME`) | No | Explicit public URL for building absolute RSS feed links. Checked before `HOSTNAME`; set it if your container platform overrides `HOSTNAME` (see note below) |
 | `DEFAULT_LANGUAGE` | `en` | No | Language the web app uses until a user picks their own. A language code such as `en`, `de`, `fr`, `pt-BR` or `zh-Hans` |
 
@@ -22,13 +22,16 @@ PinePods builds absolute RSS feed URLs (`<link>`, `<guid>`, `<enclosure>`) from 
 
 | Variable | Default Value | Required | Description |
 |----------|---------------|----------|-------------|
-| `DB_TYPE` | - | **Yes** | Database type: `postgresql` or `mariadb` (`mysql` also works) |
+| `DB_TYPE` | `sqlite` without `DB_HOST` | **Yes** (with `DB_HOST`) | Database type: `postgresql`, `mariadb` (`mysql` also works) or `sqlite` |
+| `DB_PATH` | `/opt/pinepods/data/pinepods.db` | No | SQLite only: the database file. Keep its directory on a mounted volume |
 | `DB_HOST` | - | **Yes** | Database host address. A path starting with `/` (e.g., `/var/run/postgresql`) connects through a Unix socket in that directory |
 | `DB_PORT` | - | **Yes** | Database port: usually `5432` for PostgreSQL, `3306` for MariaDB/MySQL |
 | `DB_USER` | - | **Yes** | Database username |
 | `DB_PASSWORD` | - | **Yes** | Database password |
 | `DB_NAME` | - | **Yes** | Database name, usually `pinepods_database` |
 | `DB_WAIT_TIMEOUT` | `300` | No | Seconds to wait at startup for the database to accept connections before giving up. `0` waits forever. Raise it if your database starts slowly (first boot, slow hosts) |
+
+With `DB_TYPE: sqlite`, only `DB_PATH` applies; the other database variables aren't used.
 
 ### PostgreSQL over TLS or with client certificates
 
@@ -61,13 +64,18 @@ PostgreSQL clients refuse a private key that other users can read. Make the key 
 
 ## Redis/Valkey Configuration
 
-PinePods requires Valkey (or Redis). Set either a connection URL or a host and port. Every `VALKEY_*` variable can also be spelled `REDIS_*`; when both are set, `VALKEY_*` wins.
+PinePods keeps caches, task progress and now-playing state in Valkey (or Redis). On SQLite it doesn't need one: with no Valkey settings, that state is kept in memory, and it's lost on restart (nothing that matters: running imports and logins in progress, cached images). PostgreSQL and MariaDB installs look for a Valkey host named `valkey` unless told otherwise.
+
+Set either a connection URL or a host and port. Every `VALKEY_*` variable can also be spelled `REDIS_*`; when both are set, `VALKEY_*` wins.
+
+Running several Pinepods replicas behind a load balancer? They need a shared Valkey server; don't use `memory`.
 
 | Variable | Default Value | Required | Description |
 |----------|---------------|----------|-------------|
+| `VALKEY_MODE` | - | No | `memory` to run without Valkey on any database, `valkey` to require it. Unset, a configured URL or host means Valkey; otherwise SQLite uses memory. See [Choosing a Database and Cache](../choosing-a-setup.md) |
 | `VALKEY_URL` | - | No | Complete connection URL, e.g. `redis://user:password@valkey:6379/0`. When set, it's used instead of the variables below |
-| `VALKEY_HOST` | `valkey` | **Yes** (without `VALKEY_URL`) | Valkey/Redis host |
-| `VALKEY_PORT` | `6379` | **Yes** (without `VALKEY_URL`) | Valkey/Redis port |
+| `VALKEY_HOST` | `valkey` (not on SQLite) | **Yes** (with Valkey, without `VALKEY_URL`) | Valkey/Redis host |
+| `VALKEY_PORT` | `6379` | No | Valkey/Redis port |
 | `VALKEY_PASSWORD` | - | No | Password, if your Valkey/Redis server requires one |
 | `VALKEY_USERNAME` | - | No | Username, if your server uses named users (ACLs) |
 | `VALKEY_DATABASE` | `0` | No | Database number to use |
@@ -170,14 +178,14 @@ DB_PORT: 5432  # or 3306 for MariaDB
 DB_USER: postgres  # or root for MariaDB
 DB_PASSWORD: "your_secure_password"
 DB_NAME: pinepods_database
+# Or, with no database server, leave all of the above out: SQLite is the default
+# (mount /opt/pinepods/data, where the database file lives).
 
-# Valkey/Redis (required)
+# Valkey/Redis (not needed on SQLite)
 VALKEY_HOST: valkey
 VALKEY_PORT: 6379
 
-# External APIs (required)
-SEARCH_API_URL: "https://search.pinepods.online/api/search"
-PEOPLE_API_URL: "https://people.pinepods.online"
+# Optional: the URL you reach Pinepods at, for RSS feed links
 HOSTNAME: "https://yourdomain.com:8040"
 ```
 

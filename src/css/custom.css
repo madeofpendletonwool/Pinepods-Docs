@@ -79,3 +79,32 @@ html[data-theme='dark'] .docusaurus-highlight-code-line {
     transition-duration: 0.001ms !important;
   }
 }
+
+/* Navbar: keep labels on one line and the title whole; tighten spacing until the
+   menu collapses at 996px. */
+.navbar__brand {
+  flex-shrink: 0;
+}
+.navbar__item,
+.navbar__link {
+  white-space: nowrap;
+}
+@media (min-width: 997px) and (max-width: 1400px) {
+  .navbar__item {
+    padding: var(--ifm-navbar-item-padding-vertical) 0.5rem;
+    font-size: 0.9rem;
+  }
+  .navbar__brand {
+    margin-right: 0.5rem;
+  }
+}
+@media (min-width: 997px) and (max-width: 1200px) {
+  .navbar__title {
+    display: none;
+  }
+  .navbar__items--right .navbar__item.navbar__link[href*="discord"],
+  .navbar__items--right .navbar__item.navbar__link[href*="github"] {
+    padding-left: 0.35rem;
+    padding-right: 0.35rem;
+  }
+}

@@ -53,9 +53,11 @@ Schema creation, migrations, and validation are performed by a small standalone 
 `pinepods-db-setup`. It is written in Python but **compiled to a single executable with
 PyInstaller at build time**, so the runtime image contains no Python interpreter. It runs
 **once on every startup** before the services launch, is idempotent, and supports
-SQLite, PostgreSQL and MySQL/MariaDB. It also exports a PostgreSQL or MariaDB database for
-a move to SQLite (`pinepods-db-setup --export-sqlite FILE`, see
-[Moving to SQLite](../tutorial-basics/Backup-Restore.md#moving-to-sqlite)).
+SQLite, PostgreSQL and MySQL/MariaDB. It also moves data between them:
+`pinepods-db-setup --export-sqlite FILE` writes a PostgreSQL or MariaDB database out for a
+SQLite server ([Moving to SQLite](../tutorial-basics/Backup-Restore.md#moving-to-sqlite)), and
+`pinepods-db-setup --import-sqlite FILE` fills a PostgreSQL or MariaDB database from a
+SQLite one ([Moving from SQLite](../tutorial-basics/Backup-Restore.md#moving-from-sqlite-to-postgresql-or-mariadb)).
 
 ### 4. Database layer
 

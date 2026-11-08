@@ -51,7 +51,9 @@ Fully supported, and the same as PostgreSQL in what it can do. Pick it if you al
 ### Changing your mind later
 
 - **PostgreSQL or MariaDB → SQLite:** supported. Export the database and restore it on a new SQLite server; see [Moving to SQLite](./tutorial-basics/Backup-Restore.md#moving-to-sqlite).
-- **SQLite → PostgreSQL or MariaDB:** there's no tool for this yet, and each database's backups restore only on the same kind of database. If you expect to grow past a household, start on PostgreSQL.
+- **SQLite → PostgreSQL or MariaDB:** supported. Import the SQLite database or a backup of it into the new server; see [Moving from SQLite](./tutorial-basics/Backup-Restore.md#moving-from-sqlite-to-postgresql-or-mariadb).
+
+So starting on SQLite doesn't lock you in: begin with one container and move to PostgreSQL when you grow.
 
 ## The cache
 

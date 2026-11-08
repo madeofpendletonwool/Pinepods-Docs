@@ -77,7 +77,7 @@ Mount the data directory. Without it, the database is lost when the container is
 
 Search, PodPeople credits and RSS links work without any settings. Every other option in this guide (admin bootstrap, timezone, PUID/PGID, OIDC) works the same here.
 
-This suits trying Pinepods out and a single household. When you outgrow it, the [Production](#production-docker-compose-with-postgresql) setup below is the way to go, and an existing PostgreSQL or MariaDB server can also [move to SQLite](./tutorial-basics/Backup-Restore.md#moving-to-sqlite).
+This suits trying Pinepods out and a single household. When you outgrow it, [move it](./tutorial-basics/Backup-Restore.md#moving-from-sqlite-to-postgresql-or-mariadb) to the [Production](#production-docker-compose-with-postgresql) setup below; your data comes along. An existing PostgreSQL or MariaDB server can also [move to SQLite](./tutorial-basics/Backup-Restore.md#moving-to-sqlite).
 
 ### Production: Docker Compose with PostgreSQL
 

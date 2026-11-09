@@ -4,6 +4,14 @@ Pinepods supports Transcripts as defined by the PodcastIndex Namespace. When an 
 
 ![Chapters Button](/img/transcript.png)
 
+In the **Transcript** tab:
+
+- **Find in transcript** highlights a word or phrase in the transcript. Press Enter (Shift+Enter) or use the arrows to move between matches.
+- While the episode plays, the line being said is highlighted.
+- Clicking a line's timestamp plays the episode from there.
+
+Published transcripts are also stored on your server so you can [search inside them](./Search.md#searching-inside-transcripts).
+
 ## AI-generated transcripts
 
 Even when a podcast doesn't publish its own transcript, Pinepods can **generate one with AI**

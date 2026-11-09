@@ -38,6 +38,9 @@ skimming or finding a specific moment.
 If an episode has both a **built-in** (feed-provided) transcript and an **AI-generated** one,
 a small source selector lets you switch between them.
 
+The tab also has a **find** box, and AI transcripts can be searched across your whole library:
+see [Searching inside transcripts](../Features/Search.md#searching-inside-transcripts).
+
 ## How it works (and what's shared)
 
 - Transcripts are **content-level**: a given episode is transcribed **once**, and the result

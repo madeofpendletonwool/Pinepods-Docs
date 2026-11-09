@@ -205,6 +205,8 @@ Make sure you change these variables to variables specific to yourself at a mini
 
 Most of those are pretty obvious, but let's break a couple of them down.
 
+Every variable Pinepods reads, including optional ones such as `PINEPODS_SYNC_CRON`, `PINEPODS_PUBLIC_URL` and `DB_WAIT_TIMEOUT`, is listed with its default on the [Environment Variables](./tutorial-basics/environment-variables.md) page.
+
 #### Admin User Info
 
 First of all, the USERNAME, PASSWORD, FULLNAME, and EMAIL vars are your details for your default admin account. This account will have admin credentials and will be able to log in right when you start up the app. Once started you'll be able to create more users and even more admins, but you need one account to kick things off. If you don't specify these credentials in the compose file, PinePods will prompt you to create your first admin account when you open the web UI for the first time — so setting them is optional.

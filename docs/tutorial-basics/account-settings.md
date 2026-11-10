@@ -8,7 +8,7 @@ Every user manages their own account under **Settings → Account Settings**. Ch
 | **Full Name** | |
 | **Email** | Used for [password resets](../tutorial-extras/PasswordResets.md). |
 | **Change Password** | Enter the **New Password** twice. At least 6 characters. |
-| **Language** | The language of the web app. |
+| **Language** | The language of the web and mobile apps. The mobile app's own **Language** setting changes this too. |
 | **Timezone** | Times in the app are shown in this timezone. |
 | **Date Format** | MM-DD-YYYY, DD-MM-YYYY, YYYY-MM-DD, YY/DDD (Julian), ISO 8601, MM/DD/YYYY or DD.MM.YYYY. |
 | **Time Format** | 12 Hour or 24 Hour. |

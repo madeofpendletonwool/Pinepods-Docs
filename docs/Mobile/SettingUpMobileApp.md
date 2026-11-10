@@ -29,12 +29,16 @@ The app's own **Settings** hold choices that apply to this device:
 
 | Group | Settings |
 |---|---|
-| **Personalisation** | Theme (shared with your account, see [Themes](../tutorial-basics/Theming.md)), **Show my Gravatar**, **Artwork colours** and the card style. |
+| **Personalisation** | **Language**, theme (shared with your account, see [Themes](../tutorial-basics/Theming.md)), **Show my Gravatar**, **Artwork colours** and the card style. |
 | **Navigation** | **Reorganize Bottom Bar** to choose and order the bottom navigation items. |
 | **Playback** | **Full screen player mode on episode start**, **Fast-forward interval** (10–60 s) and **Rewind interval** (5–45 s), **Search provider**. |
 | **Download Management** | WiFi-only, server-copy downloads, queue auto-download, mirroring and cleanup. See [Downloads](../Features/Downloads.md#device-downloads-mobile). |
 | **Server Downloads** | Your defaults for cleaning up server downloads. |
 | **Debug** | **App Logs** with debug logs and device information, useful for bug reports. |
 | **Certificates** | Server CA and client certificate, as above. |
+
+### Language
+
+The app follows your account's [Language](../tutorial-basics/account-settings.md) once you sign in. If your account is on the server's default language, the app uses your phone's language instead, or English if it isn't available. Choosing a language under **Settings → Personalisation → Language** changes it on your account as well; **System default** goes back to your phone's language. On Android 13 and later you can also pick the app's language in the system settings. Text that hasn't been translated yet shows in English. To help translate, see [Weblate](https://hosted.weblate.org).
 
 More mobile pages: [CarPlay](./CarPlay.md), [Android Auto](./AndroidAuto.md), [Offline Action Queue](./OfflineQueue.md).

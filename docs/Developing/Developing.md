@@ -17,7 +17,7 @@ Everything is in the [PinePods repository](https://github.com/madeofpendletonwoo
 | `web/` | The web app: Rust and [Yew](https://yew.rs), compiled to WebAssembly with [Trunk](https://trunkrs.dev). The same code builds the desktop app with Tauri. User-visible strings live in `web/src/translations/`. |
 | `rust-api/` | The server: a Rust ([Axum](https://docs.rs/axum)) API. It includes the gpodder sync server, feed refreshes and the background scheduler. Routes are in `src/lib.rs`, handlers in `src/handlers/`, background services in `src/services/`. |
 | `database_functions/`, `startup/` | Database migrations (Python, compiled into the image as `pinepods-db-setup`) and the container's startup scripts, nginx config and Horust services. |
-| `mobile/` | The Android and iOS apps, in Flutter. |
+| `mobile/` | The Android and iOS apps, in Flutter. User-visible strings live in `mobile/lib/l10n/app_en.arb`. |
 | `pinepods-ai/` | The optional AI container for transcripts and ad detection. See [AI Setup](../AI/Setup.md). |
 | `deployment/` | Docker Compose files and the Helm chart. |
 
@@ -72,7 +72,7 @@ These run in CI on every pull request:
 
 - **Server integration tests** boot the real API against a fresh Postgres or MariaDB database for each test: `bash rust-api/scripts/integration-tests.sh` (add `--db postgres` or `--db mariadb` for one database, and `-- <name>` to filter). They need Docker. See `rust-api/tests/README.md`.
 - **API spec:** `rust-api/openapi.json` is generated from the code. After changing an endpoint, regenerate it with `cd rust-api && cargo run -- --dump-openapi openapi.json`; CI fails if it's out of date. The [API reference](/docs/API/reference/) on this site is built from it.
-- **Translations:** web UI text goes through `i18n.t("…")` with the English string in `web/src/translations/en.json`. CI flags new hard-coded strings and keys missing from `en.json`; other languages fall back to English.
+- **Translations:** web UI text goes through `i18n.t("…")` with the English string in `web/src/translations/en.json`. Mobile UI text goes through `L.of(context)!.some_key` (or `L.current.some_key` where there's no `BuildContext`, such as after an `await`) with the English string in `mobile/lib/l10n/app_en.arb`. Only edit the English files; the other languages are translated on [Weblate](https://hosted.weblate.org). CI flags new hard-coded strings in both apps, and untranslated text falls back to English. Mark a string that isn't UI text with `// i18n-ignore`.
 - **Mobile:** `cd mobile && flutter test`.
 
 ---

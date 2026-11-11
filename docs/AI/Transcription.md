@@ -26,7 +26,8 @@ it's done, the transcript appears in the tab.
 On a podcast's page, click **Select**, tick the episodes, and click **Transcribe**. Each one
 shows up as a queued job, and they run one at a time so the AI container isn't overloaded.
 Episodes that already have an AI transcript are skipped. The selection stays, so you can add
-the same episodes to a [collection](../Features/Collections.md) afterwards.
+the same episodes to a [collection](../Features/Collections.md) afterwards. The mobile app has
+the same **Transcribe** action in a podcast's select mode.
 
 ### Automatically, per podcast
 

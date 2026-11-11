@@ -21,6 +21,13 @@ it's done, the transcript appears in the tab.
   temporarily, transcribes it, and cleans up.
 - You can **Regenerate** at any time to replace an existing AI transcript.
 
+### Several episodes at once
+
+On a podcast's page, click **Select**, tick the episodes, and click **Transcribe**. Each one
+shows up as a queued job, and they run one at a time so the AI container isn't overloaded.
+Episodes that already have an AI transcript are skipped. The selection stays, so you can add
+the same episodes to a [collection](../Features/Collections.md) afterwards.
+
 ### Automatically, per podcast
 
 In a podcast's settings, turn on **Auto-transcribe new episodes**. From then on, new

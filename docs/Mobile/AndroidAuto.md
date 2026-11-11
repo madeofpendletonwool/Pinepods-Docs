@@ -1,6 +1,6 @@
 # Android Auto
 
-The Android app works with Android Auto. Install it from the [Google Play Store](https://play.google.com/store/apps/details?id=com.gooseberrydevelopment.pinepods), [IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/com.gooseberrydevelopment.pinepods) or [Obtainium](https://github.com/madeofpendletonwool/PinePods/releases), sign in to your server, and connect your phone to the car. Pinepods appears with the other media apps.
+The Android app works with Android Auto. Install it from the [Google Play Store](https://play.google.com/store/apps/details?id=com.gooseberrydevelopment.pinepods), [IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/com.gooseberrydevelopment.pinepods) or [Obtainium](https://github.com/madeofpendletonwool/PinePods/releases), sign in to your server, and connect your phone to the car. Pinepods appears with the other media apps. You don't need to open the app on the phone first: Pinepods loads your episodes when the car connects.
 
 The media browser shows:
 

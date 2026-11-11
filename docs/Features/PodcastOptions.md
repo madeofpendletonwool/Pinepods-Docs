@@ -6,7 +6,7 @@ Open a podcast from **Podcasts**, a search result or an episode to see its page:
 
 - **Sort:** **Newest First**, **Oldest First**, **Shortest First**, **Longest First**, **Title A-Z**, **Title Z-A**.
 - **Filter** completed episodes: **All**, **Hide** completed, or **Show Only** completed, plus **In Progress**.
-- **Select** turns on checkboxes. Use **Select All**, **Select Unplayed** or **Select In Progress**, then **Mark Complete**, **Queue** or **Download** the selected episodes.
+- **Select** turns on checkboxes. Use **Select All**, **Select Unplayed** or **Select In Progress**, then **Mark Complete**, **Save**, **Add to Collection**, **Queue** or **Download** the selected episodes. With the [AI container](../AI/Setup.md) running, **Transcribe** queues AI transcripts for them too. In the mobile app, the select button in the episode toolbar does the same: tick episodes (or **Select all**) and use the bar at the bottom.
 
 ## Buttons on the page
 

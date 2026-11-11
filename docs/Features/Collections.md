@@ -4,7 +4,9 @@ Collections are named groups of episodes you put together yourself: "Episodes to
 
 Open them from **Collections** in the sidebar. Each collection is a tab, with search, sorting (**Newest First**, **Oldest First**, **Shortest First**, **Longest First**, **Title A-Z**, **Title Z-A**) and filters for **Completed** and **In Progress** episodes.
 
-Collections are on the web and desktop apps. The mobile apps show the **Saved** collection.
+## In the mobile app
+
+Open **Saved** (from the bottom bar or **More → Saved & Collections**). The row of chips under the title switches between **Saved** and your collections; **New** makes one, and the pencil button edits or deletes the one shown. Long-press an episode and choose **Add to Collection…** (or **More → Add to collection** on an episode's page), and inside a collection long-press offers **Remove from Collection**. On a podcast's page, tap the select button in the episode toolbar, tick episodes, and tap **Collection** to add them all.
 
 ## Making a collection
 
@@ -13,6 +15,8 @@ Click **New collection** and give it a **Collection name**, and optionally a **D
 ## Adding episodes
 
 Open an episode's three-dot menu and choose **Add to Collection**. Tick a collection to add the episode, untick it to take it out; changes apply straight away. You can create a new collection from there too.
+
+To add many episodes at once, use **Select** on a podcast's page, tick the episodes, and click **Add to Collection**. Pick a collection (or create one) and every selected episode is added to it.
 
 How that menu works is set under **Settings → Display Settings → Collection add mode**: **Modal picker** opens a dialog, **Sub-menu flyout** lists your collections inside the menu.
 

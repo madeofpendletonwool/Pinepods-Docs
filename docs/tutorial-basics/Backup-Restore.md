@@ -29,7 +29,7 @@ Times are UTC. Each run writes `scheduled_backup_<date>_<time>.sql` to the backu
 
 ## Manual backups
 
-- **Download Backup File:** enter the database password and click **Authenticate**. The browser downloads `server_backup.sql`.
+- **Download Backup File:** enter the database password and click **Authenticate**. The browser downloads `server_backup.sql`. A wrong password shows an "Incorrect database password" error and nothing is downloaded. On SQLite there is no database password: the button is just **Download**.
 - **Save to Backup Directory:** **Create Backup** writes `manual_backup_<date>_<time>.sql` to the backup directory, using the database credentials the container already has.
 
 Large databases take a few minutes. Keep the page open until it finishes.
@@ -44,7 +44,7 @@ A restore deletes everything on the server and replaces it with the backup's con
 
 Under **Restore Server**, choose a **Restore Method**:
 
-- **Upload Backup File:** choose a `.sql` file, enter the **Database Password**, and click **Restore Server**.
+- **Upload Backup File:** choose a `.sql` file, enter the **Database Password** (not asked on SQLite), and click **Restore Server**.
 - **Select From Server Backups:** pick a file from the backup directory and click **Restore From Selected**.
 
 Restoring clears all sign-in sessions, so everyone is signed out. The page shows "Server restore in progress" and reloads when it's done. Sign back in with an account from the backup.

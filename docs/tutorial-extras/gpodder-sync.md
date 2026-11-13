@@ -14,7 +14,7 @@ If your other apps can talk to a gpodder server, use the PinePods gpodder server
 ## What gets synced
 
 - **Subscriptions.** Adding or removing a podcast on one side adds or removes it on the other. A podcast an app subscribes to is imported in the background, so it can take a moment to show up in Pinepods.
-- **Episode progress.** Play position, and episodes marked played or unplayed. When two devices disagree, the most recent change wins.
+- **Episode progress.** Play position, and episodes marked played or unplayed. When two devices disagree, the most recent change wins, including when it moves an episode backwards. A change an app dates in the future (its clock is ahead) is treated as happening when it arrives.
 
 Changes you make in Pinepods (web, desktop or mobile) are recorded the moment you make them, so an app sees them on its next sync.
 

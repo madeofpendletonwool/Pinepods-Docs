@@ -11,6 +11,7 @@ Open a podcast from **Podcasts**, a search result or an episode to see its page:
 ## Buttons on the page
 
 - **Subscribe / Subscribed** adds or removes the podcast.
+- **Check for new episodes** (the circular arrows) looks for new episodes now: it reads the podcast's feed, checks the YouTube channel, or looks for new files in a [local podcast's](./LocalPodcasts.md) folder. It works even when **Refresh automatically** is off, and tells you how many episodes it added. In the mobile app it's in the podcast's **⋯** menu.
 - **Download all** downloads every episode to the server, after asking you to confirm.
 - **RSS** shows a feed for just this podcast. See [RSS Feeds](../tutorial-extras/RSSFeeds.md#one-podcasts-feed).
 - **Podcast settings** (the gear) opens **Podcast Options**, below.
@@ -24,6 +25,7 @@ All of these are per user: changing them doesn't affect anyone else who subscrib
 | **Download Future Episodes Automatically** | Downloads each new episode to the server. See [Auto-Download](./AutoDownload.md). |
 | **Auto-play next episode** | When an episode ends, plays the next newer episode of this podcast you haven't finished. See [What plays next](./Queue.md#what-plays-next). |
 | **Auto-add new episodes to queue** | Adds each new episode to the end of your queue. |
+| **Refresh automatically** | On by default. Off: the [scheduled refresh](./feed-updates.md#when-feeds-are-refreshed) and **Refresh** in the app skip this podcast, and it's left out of [Feed problems](./feed-updates.md#feed-problems). Use it to keep a podcast whose feed is gone, with its episodes, without the errors. **Check for new episodes** on the page still works. |
 | **Get Notifications For New Episodes** | Sends a push notification per new episode. See [Notifications](../tutorial-extras/SettingUpNotifications.md). |
 | **Favorite Podcast** | See [Favorites](./Favorites.md). |
 | **Default Playback Speed** | This podcast's speed, 0.5x–2.0x. **Reset** goes back to your default from **Settings → Playback Settings**. |
@@ -49,5 +51,5 @@ How it works depends on where you listen:
 
 **Edit Podcast Info** changes the **Podcast Name**, **Description**, **Author**, **Artwork URL**, **Website URL** and **Podcast Index ID**, and the **Feed URL** with its **Username** and **Password** for protected feeds. Your edits stay when the feed refreshes.
 
-- **Refresh from Feed** reads the whole feed now, updating the details you haven't edited and picking up new episodes.
+- **Refresh from Feed** reads the whole feed now, even if it looks unchanged, updating the details you haven't edited and picking up new episodes. To only check for new episodes, use the refresh button on the page.
 - **Reset to Feed Details** throws away your edits to the name, artwork, author, description and website and uses what the feed has now.

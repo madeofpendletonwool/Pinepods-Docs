@@ -23,6 +23,10 @@ it's done, the transcript appears in the tab.
 
 ### Several episodes at once
 
+On a podcast's page, use **Select**, tick the episodes and click **Transcribe**. They're transcribed one at a time, and each waits in the [Activity panel](../tutorial-extras/SettingUpNotifications.md#the-activity-panel) as **Queued**. Click a queued episode's **×** to cancel it before it starts.
+
+### Several episodes at once
+
 On a podcast's page, click **Select**, tick the episodes, and click **Transcribe**. Each one
 shows up as a queued job, and they run one at a time so the AI container isn't overloaded.
 Episodes that already have an AI transcript are skipped. The selection stays, so you can add

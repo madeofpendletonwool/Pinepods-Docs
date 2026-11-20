@@ -70,7 +70,8 @@ Sign in to your development server from the app, using your computer's LAN addre
 
 These run in CI on every pull request:
 
-- **Server integration tests** boot the real API against a fresh Postgres or MariaDB database for each test: `bash rust-api/scripts/integration-tests.sh` (add `--db postgres` or `--db mariadb` for one database, and `-- <name>` to filter). They need Docker. See `rust-api/tests/README.md`.
+- **Server integration tests** boot the real API against a fresh Postgres, MariaDB or SQLite database for each test: `bash rust-api/scripts/integration-tests.sh` (add `--db postgres`, `--db mariadb` or `--db sqlite` for one database, and `-- <name>` to filter). They need Docker. See `rust-api/tests/README.md`.
+- **Database changes:** write queries with `dialect_match!` in `rust-api/src/database/`. The `pg` arm also runs on SQLite, translated at runtime, so check it with `--db sqlite`. A new migration needs a SQLite branch and `sqlite=True`. Then regenerate `database_functions/sqlite_baseline.sql` with `python -m database_functions.sqlite_baseline <freshly migrated Postgres DSN>`; the tests fail until you do.
 - **API spec:** `rust-api/openapi.json` is generated from the code. After changing an endpoint, regenerate it with `cd rust-api && cargo run -- --dump-openapi openapi.json`; CI fails if it's out of date. The [API reference](/docs/API/reference/) on this site is built from it.
 - **Translations:** web UI text goes through `i18n.t("…")` with the English string in `web/src/translations/en.json`. CI flags new hard-coded strings and keys missing from `en.json`; other languages fall back to English.
 - **Mobile:** `cd mobile && flutter test`.

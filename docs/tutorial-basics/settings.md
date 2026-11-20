@@ -19,7 +19,7 @@ Each section has a **?** button with a short description.
 | **AI** | Status of the AI features; admins also choose models here. [AI Setup](../AI/Setup.md) |
 | **MFA Settings** | Two-factor sign-in. [MFA](./SettingUpMFA.md) |
 | **Export/Backup Podcasts** and **Import Podcasts** | OPML export and import. [OPML Import and Export](./Importing-Exporting.md) |
-| **Display Settings** | Start page, podcast covers, Gravatar, collection add mode. [Display Settings](./display-settings.md) |
+| **Display Settings** | Start page, podcast episode count, podcast covers, Gravatar, collection add mode. [Display Settings](./display-settings.md) |
 | **Notification Settings** | Push notifications through ntfy or Gotify. [Notifications](../tutorial-extras/SettingUpNotifications.md) |
 | **Add Custom Feed** | Add a podcast or YouTube channel by URL. [Adding a Feed by URL](./CustomFeeds.md) |
 | **Add Local Podcast** | Turn a folder of audio on the server into a podcast. [Local Podcasts](../Features/LocalPodcasts.md) |

@@ -54,6 +54,7 @@ module.exports = {
         'Features/PodcastOptions',
         'Features/smart-playlists',
         'Features/Queue',
+        'Features/ListeningProgress',
         'Features/RemoteDevices',
         'Features/Collections',
         'Features/Downloads',

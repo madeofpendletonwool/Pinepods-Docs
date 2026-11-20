@@ -6,6 +6,8 @@ Each user has a statistics page. To open it, click your avatar at the top of the
 
 **User Statistics** shows when your account was created, **Podcasts Played**, **Time Listened**, **Podcasts Added**, **Episodes Saved** and **Episodes Downloaded**.
 
+**Time Listened**, **Top Podcasts**, **Favorite Categories** and **Listening by Day of Week** count time audio was actually playing: not paused time, and not episodes you skipped through or marked as played. See [Listening Progress](ListeningProgress.md#listening-time).
+
 **Listening Insights**:
 
 | Item | What it is |

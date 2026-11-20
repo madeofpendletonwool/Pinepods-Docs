@@ -5,8 +5,9 @@
 PinePods ships as a **single Docker image** that runs several cooperating processes
 under a lightweight process supervisor. Everything an instance needs at runtime — the
 web UI, the main API (which includes the gpodder sync server), and the reverse proxy — lives in that one
-container. It talks to two external services you provide: a **database** (PostgreSQL or
-MySQL/MariaDB) and a **Valkey/Redis** cache.
+container. By default it also keeps its data there, in a **SQLite** database under
+`/opt/pinepods/data`, with an in-memory cache. Larger installs point it at a **database**
+they run (PostgreSQL or MySQL/MariaDB) and a **Valkey/Redis** cache.
 
 This page documents how the container is put together and what a "native" (non-Docker)
 deployment would need to replicate.
@@ -51,19 +52,32 @@ exposed directly.
 Schema creation, migrations, and validation are performed by a small standalone binary,
 `pinepods-db-setup`. It is written in Python but **compiled to a single executable with
 PyInstaller at build time**, so the runtime image contains no Python interpreter. It runs
-**once on every startup** before the services launch, is idempotent, and supports both
-PostgreSQL and MySQL/MariaDB.
+**once on every startup** before the services launch, is idempotent, and supports
+SQLite, PostgreSQL and MySQL/MariaDB. It also moves data between them:
+`pinepods-db-setup --export-sqlite FILE` writes a PostgreSQL or MariaDB database out for a
+SQLite server ([Moving to SQLite](../tutorial-basics/Backup-Restore.md#moving-to-sqlite)), and
+`pinepods-db-setup --import-sqlite FILE` fills a PostgreSQL or MariaDB database from a
+SQLite one ([Moving from SQLite](../tutorial-basics/Backup-Restore.md#moving-from-sqlite-to-postgresql-or-mariadb)).
 
-### 4. Database layer (external)
+### 4. Database layer
 
-Supports **PostgreSQL** (recommended) and **MySQL/MariaDB**. Stores users, podcast and
-episode metadata, listening history, playlists, settings, queue, downloads, and gpodder
-sync state. You run this yourself (or via the bundled Helm/Compose examples); it is not
-part of the PinePods image.
+Stores users, podcast and episode metadata, listening history, playlists, settings, queue,
+downloads, and gpodder sync state. Supports:
 
-### 5. Valkey / Redis cache (external)
+- **SQLite** (the default when `DB_HOST` isn't set): a file at `DB_PATH`
+  (`/opt/pinepods/data/pinepods.db`), inside the container. Nothing else to run.
+- **PostgreSQL** and **MySQL/MariaDB**: you run these yourself (or via the bundled
+  Helm/Compose examples); they aren't part of the PinePods image.
 
-Used for caching and coordination. Configured via `VALKEY_HOST` / `VALKEY_PORT`.
+### 5. Cache: in memory or Valkey / Redis
+
+Holds short-lived state: login and sync tokens, task progress, now-playing sessions.
+
+- **In memory** (`VALKEY_MODE=memory`, the default with SQLite): kept inside the API
+  process, so it's lost on restart, which only means pending tokens and progress reset.
+- **Valkey/Redis** (the default with PostgreSQL/MariaDB, or whenever `VALKEY_HOST` /
+  `VALKEY_URL` is set): an external service, needed when more than one PinePods
+  instance shares a database.
 
 ### 6. nginx
 
@@ -177,6 +191,7 @@ The image is built in several stages and assembled into a small Alpine final ima
 └── current_version
 
 /opt/pinepods/
+├── data/                 # SQLite database (persist this)
 ├── downloads/            # downloaded episodes (persist this)
 ├── backups/              # backups (persist this)
 ├── certs/
@@ -185,25 +200,31 @@ The image is built in several stages and assembled into a small Alpine final ima
 /var/log/pinepods/service.log   # Horust service logs (production mode)
 ```
 
-## Required Environment Variables
+## Environment Variables
+
+None are required: with nothing set, PinePods runs on SQLite with the in-memory cache and
+the hosted search and PodPeople services. See
+[Environment Variables](../tutorial-basics/environment-variables.md) for the full list.
 
 ```bash
-# Database
-DB_TYPE=<postgresql|mariadb|mysql>
+# Database (leave DB_HOST unset for SQLite)
+DB_TYPE=<sqlite|postgresql|mariadb|mysql>
+DB_PATH=<SQLite file, default /opt/pinepods/data/pinepods.db>
 DB_HOST=<host or Unix socket directory>
 DB_PORT=<port>
 DB_USER=<user>
 DB_PASSWORD=<password>
 DB_NAME=<database>
 
-# Cache
+# Cache (default: memory with SQLite, Valkey otherwise)
+VALKEY_MODE=<memory|valkey>
 VALKEY_HOST=<host>
 VALKEY_PORT=<port>
 
-# Server / behavior
-HOSTNAME=<public URL, used for RSS feed links>
-SEARCH_API_URL=<search API endpoint>
-PEOPLE_API_URL=<PodPeople DB endpoint>
+# Server / behavior (all optional)
+HOSTNAME=<public URL for RSS feed links; default: the address the request came in on>
+SEARCH_API_URL=<search API endpoint; default: the hosted service>
+PEOPLE_API_URL=<PodPeople DB endpoint; default: the hosted service>
 DEBUG_MODE=<true|false>
 TZ=<IANA timezone, optional>
 
@@ -225,8 +246,8 @@ URLs, claim mappings). See the [OIDC setup guide](../tutorial-extras/OIDC-setup.
 
 To run PinePods natively you would reproduce what the container does:
 
-1. **Provide a database** (PostgreSQL or MySQL/MariaDB) and a **Valkey/Redis** instance,
-   and set the environment variables above.
+1. **Pick a database**: a SQLite file (set `DB_PATH`), or PostgreSQL / MySQL/MariaDB plus
+   a Valkey/Redis instance, and set the environment variables above.
 2. **Run the database setup** once on startup (idempotent) — the compiled
    `pinepods-db-setup`, or the equivalent `setup_database_new.py` with
    `database_functions/` available.

@@ -30,7 +30,7 @@ When an episode ends, Pinepods picks the next one in this order:
 
 1. **Playing from a playlist:** the next episode in that [playlist](./smart-playlists.md).
 2. **Auto-play next episode** is on for the podcast: the next newer episode of the same podcast you haven't finished. Use this for shows meant to be heard in order, like audio dramas or courses. It's off by default and set per podcast in the podcast's settings, and switching it on while an episode of that podcast is playing applies to that episode too. The next episode isn't added to your queue. After the newest episode there's nothing newer, so the queue takes over.
-3. Otherwise: the next unfinished episode in your queue.
+3. Otherwise: the next unfinished episode in your queue. In the mobile apps you can turn this off with **Settings → Playback → Play the queue automatically**; playback then stops at the end of the episode, while playlists and **Auto-play next episode** still carry on.
 
 If none of these finds anything, playback stops.
 

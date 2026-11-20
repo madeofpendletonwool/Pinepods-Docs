@@ -8,4 +8,4 @@ Themes you build yourself show up under **My Themes** in the same section. See [
 
 ## Artwork colours
 
-Episode cards on the web and desktop apps can take an accent colour from each episode's artwork, for the play button, podcast name and progress. It's on by default. Turn it off with the **Artwork colours** switch under **Settings → Change Theme**. Unlike the theme, this choice is saved in each browser rather than on your account. See [Episode Cards](../Features/EpisodeCards.md).
+Episode cards on the web and desktop apps can take an accent colour from each episode's artwork, for the play button, podcast name and progress. Episode pages and podcast pages use their artwork's colour too, for the play and subscribe buttons, tabs, chapters and progress. It's on by default. Turn it off with the **Artwork colours** switch under **Settings → Change Theme**. Unlike the theme, this choice is saved in each browser rather than on your account. See [Episode Cards](../Features/EpisodeCards.md).

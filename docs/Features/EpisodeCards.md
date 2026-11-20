@@ -14,6 +14,8 @@ Episode lists on the web and desktop apps (Home, Feed, Saved, History, Queue, Do
 
 Cards take an accent colour from each episode's artwork and use it for the podcast name, play ring, progress and highlight. The colour is adjusted for your theme, so it stays readable on light and dark themes alike. Artwork with no real colour (black and white covers, for example) uses your theme's accent instead.
 
+Episode pages and podcast pages do the same with their artwork: the play or subscribe button, tabs, chapters, progress and other highlights take its colour, and the episode page's header sits on a blurred copy of the artwork.
+
 To turn this off, go to **Settings → Change Theme** and switch off **Artwork colours**. The choice is saved in that browser, and signing out keeps it.
 
 Colours are worked out in your browser from a copy of the artwork that your Pinepods server fetches. Each cover is only analysed once per browser.

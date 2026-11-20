@@ -38,6 +38,24 @@ skimming or finding a specific moment.
 If an episode has both a **built-in** (feed-provided) transcript and an **AI-generated** one,
 a small source selector lets you switch between them.
 
+## Downloading the transcript
+
+Transcripts are kept in the Pinepods database, not as files next to the audio. To get one as a
+file, open the episode's **Transcript** tab and click **SRT**, **VTT** or **TXT** beside
+**Download transcript**:
+
+- **SRT** and **VTT** are subtitle files with a timestamp for every line, for video players and
+  subtitle tools.
+- **TXT** is the plain text.
+
+In the mobile apps, tap **Export transcript** in the episode's AI section and pick a format; the
+share sheet lets you save the file or send it to another app. Only AI transcripts can be
+downloaded this way; a podcast's own transcript is already a file on its website.
+
+Scripts can fetch the same files from
+`GET /api/data/episode_transcript_export?episode_id=…&user_id=…&format=srt|vtt|txt` with your
+API key in the `Api-Key` header.
+
 ## How it works (and what's shared)
 
 - Transcripts are **content-level**: a given episode is transcribed **once**, and the result

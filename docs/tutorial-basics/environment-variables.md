@@ -1,3 +1,8 @@
+---
+sidebar_label: Environment Variables
+keywords: [environment variables, env, docker compose, configuration, PINEPODS_SYNC_CRON, PINEPODS_PUBLIC_URL, PINEPODS_REFRESH_MAX_INTERVAL, DB_WAIT_TIMEOUT]
+---
+
 # PinePods Environment Variables Guide
 
 Complete reference for all PinePods configuration options

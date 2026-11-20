@@ -20,7 +20,17 @@ The sidebar of the web and desktop apps has these pages:
 
 At the top of every page are the search box for finding new podcasts ([Searching](../Features/Search.md)), the favorites filter star ([Favorites](../Features/Favorites.md)), the Activity bell ([Notifications](../tutorial-extras/SettingUpNotifications.md#the-activity-panel)) and, on wide screens, the devices button ([Playing on Other Devices](../Features/RemoteDevices.md)).
 
-The player sits at the bottom; click it for the full-screen player. Its **Queue** button opens the queue panel ([The Queue](../Features/Queue.md)), and episodes with chapters get a **Chapters** button ([Chapters](../Features/Chapters.md)).
+The player sits at the bottom; click it, or drag it up with the mouse or a finger, for the full-screen player, and drag that down (or press **Esc**) to close it. Click the podcast name above the episode title to go to that podcast's page. Its **Queue** button opens the queue panel ([The Queue](../Features/Queue.md)), and episodes with chapters get a **Chapters** button ([Chapters](../Features/Chapters.md)) and notches on the progress bar.
+
+Drag or click anywhere on the progress bar to jump; a bubble shows the time (and chapter) you'll land on, and the jump happens when you let go. Click the total length to show the time remaining instead. The **speed** button in the full-screen player has presets from 0.75× to 2.5× and a slider from 0.5× to 3×; on a computer, volume sits beside it and on the right of the bar.
+
+| Key | Does |
+|---|---|
+| **Space** | Play or pause |
+| **←** / **→** | Back or forward 15 seconds |
+| **Esc** | Close the full-screen player |
+
+With the progress bar focused, the arrow keys move 5 seconds, **Page Up** / **Page Down** 30, and **Home** / **End** jump to the start or end.
 
 ## Podcasts
 

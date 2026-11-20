@@ -21,6 +21,14 @@ it's done, the transcript appears in the tab.
   temporarily, transcribes it, and cleans up.
 - You can **Regenerate** at any time to replace an existing AI transcript.
 
+### Several episodes at once
+
+On a podcast's page, click **Select**, tick the episodes, and click **Transcribe**. Each one
+shows up as a queued job, and they run one at a time so the AI container isn't overloaded.
+Episodes that already have an AI transcript are skipped. The selection stays, so you can add
+the same episodes to a [collection](../Features/Collections.md) afterwards. The mobile app has
+the same **Transcribe** action in a podcast's select mode.
+
 ### Automatically, per podcast
 
 In a podcast's settings, turn on **Auto-transcribe new episodes**. From then on, new
@@ -40,6 +48,24 @@ a small source selector lets you switch between them.
 
 The tab also has a **find** box, and AI transcripts can be searched across your whole library:
 see [Searching inside transcripts](../Features/Search.md#searching-inside-transcripts).
+
+## Downloading the transcript
+
+Transcripts are kept in the Pinepods database, not as files next to the audio. To get one as a
+file, open the episode's **Transcript** tab and click **SRT**, **VTT** or **TXT** beside
+**Download transcript**:
+
+- **SRT** and **VTT** are subtitle files with a timestamp for every line, for video players and
+  subtitle tools.
+- **TXT** is the plain text.
+
+In the mobile apps, tap **Export transcript** in the episode's AI section and pick a format; the
+share sheet lets you save the file or send it to another app. Only AI transcripts can be
+downloaded this way; a podcast's own transcript is already a file on its website.
+
+Scripts can fetch the same files from
+`GET /api/data/episode_transcript_export?episode_id=…&user_id=…&format=srt|vtt|txt` with your
+API key in the `Api-Key` header.
 
 ## How it works (and what's shared)
 

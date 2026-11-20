@@ -6,10 +6,12 @@ The CarPlay screen has these tabs:
 
 | Tab | |
 |---|---|
+| **Home** | **Up Next** across the top: artwork for the next episodes in your queue. Tap one to play it, or tap **Up Next** for the whole queue. Below it, the episode playing now, episodes you're in the middle of and recent episodes. |
 | **Now Playing** | The current episode. |
-| **Current** | Episodes you're in the middle of. |
 | **Saved** | Your saved episodes. |
 | **More** | **Queue**, **Downloads**, **History**, **Podcasts** and **Playlists**. |
+
+The queue in CarPlay is the same queue you see in the app and on the web.
 
 The car's controls, the steering-wheel buttons and the lock screen all control the same playback. Skipping forward and back uses the **Fast-forward interval** and **Rewind interval** from the app's **Settings**.
 

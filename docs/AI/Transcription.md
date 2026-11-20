@@ -46,6 +46,9 @@ skimming or finding a specific moment.
 If an episode has both a **built-in** (feed-provided) transcript and an **AI-generated** one,
 a small source selector lets you switch between them.
 
+The tab also has a **find** box, and AI transcripts can be searched across your whole library:
+see [Searching inside transcripts](../Features/Search.md#searching-inside-transcripts).
+
 ## Downloading the transcript
 
 Transcripts are kept in the Pinepods database, not as files next to the audio. To get one as a

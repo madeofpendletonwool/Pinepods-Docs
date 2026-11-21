@@ -34,6 +34,8 @@ Each section has a **?** button with a short description.
 
 Podcasts you added by feed URL or OPML may not be linked to their [Podcast Index](https://podcastindex.org) entry. This section lists them. **Click To Search Podcast Index for Matches** looks for candidates; pick the right one and click **Match**. If nothing turns up, use **Manual Search**: **Search by Name**, or **Search By Podcast Index ID**. **Ignore** hides a podcast you don't want to match; **Restore** brings it back from **Ignored Podcasts**.
 
+While any podcasts are unlinked, the web app leaves a notice in the Activity center (the bell) that opens Settings. Dismiss it and it stays hidden until the number of unlinked podcasts changes.
+
 ## Admin Settings
 
 | Section | What it's for |

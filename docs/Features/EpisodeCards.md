@@ -36,3 +36,5 @@ Press **Esc**, click outside the preview or click the close button to close it. 
 Home, Feed and Podcasts show what you saw last time as soon as you open them, then update in the background when the server answers. This mostly helps on slower servers: you don't wait on a loading spinner for every visit, including right after reloading the page or reopening the desktop app.
 
 The saved copy stays in your browser and belongs to your account on that server. Signing out deletes it.
+
+Artwork in lists and grids loads as small thumbnails that your Pinepods server makes from the original and keeps for a day, instead of the full-size image. Pages full of podcast covers, like **Podcasts** and **Home**, download a fraction of what they used to. If the server can't fetch an image (some covers hosted on a local network, for example), the app loads the original directly.

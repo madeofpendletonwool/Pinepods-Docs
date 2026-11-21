@@ -1,22 +1,25 @@
 # Finding Your Way Around
 
-The sidebar of the web and desktop apps has these pages:
+The sidebar of the web and desktop apps starts with your avatar and name (click for your [statistics](../Features/Statistics.md)), then groups its pages. The page you're on is highlighted.
 
 | Page | What's on it |
 |---|---|
-| **Home** | Continue listening, your week, up next, top podcasts and playlists. [Home](./sign-in-homescreen.md#the-home-page) |
+| **Listen** | |
+| **Home** | Continue listening, your week, recent episodes, top podcasts, collections and playlists. [Home](./sign-in-homescreen.md#the-home-page) |
 | **Feed** | Episodes from all your podcasts and YouTube channels published in the last 30 days, newest first. |
-| **Search** | Search your own library. [Searching](../Features/Search.md#searching-your-library) |
-| **Queue** | Your up-next list. [The Queue](../Features/Queue.md) |
 | **Collections** | Saved episodes and your own collections. [Collections](../Features/Collections.md) |
 | **Playlists** | Smart playlists. [Smart Playlists](../Features/smart-playlists.md) |
 | **History** | Episodes you've listened to, with search. |
 | **Downloads** | Episodes downloaded to the server. [Downloads](../Features/Downloads.md) |
 | **Local Downloads** | Desktop app only: episodes saved to your computer. |
-| **People You Follow** | New episodes from hosts and guests you follow. [People](../Features/Person.md) |
-| **Discover** | **For You** recommendations, **Trending Now** by category, and hosts from PodPeopleDB. |
+| **Library** | |
 | **Podcasts** | Everything you subscribe to. |
-| **Settings** | [The Settings Page](./settings.md) |
+| **People You Follow** | New episodes from hosts and guests you follow. [People](../Features/Person.md) |
+| **Search** | Search your own library. [Searching](../Features/Search.md#searching-your-library) |
+| **Explore** | |
+| **Discover** | **For You** recommendations, **Trending Now** by category, and hosts from PodPeopleDB. |
+
+**Settings** ([The Settings Page](./settings.md)) and **Sign Out** sit at the bottom. The queue opens from the queue button in the top bar ([The Queue](../Features/Queue.md)).
 
 At the top of every page are the search box for finding new podcasts ([Searching](../Features/Search.md)), the favorites filter star ([Favorites](../Features/Favorites.md)), the Activity bell ([Notifications](../tutorial-extras/SettingUpNotifications.md#the-activity-panel)) and, on wide screens, the devices button ([Playing on Other Devices](../Features/RemoteDevices.md)).
 

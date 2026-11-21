@@ -49,6 +49,14 @@ Pinepods' apps also report the time you save:
 
 Apps send these as `speed_saved`, `silence_skipped` and `ads_skipped` (seconds) with each update on `POST /api/data/progress`. On Android, silence trimmed by the player's own audio effect, rather than skipped from detected ranges, isn't counted.
 
+### Downloads, sessions and first plays
+
+- Apps also say whether the audio was **played from a download** on the device (`downloaded: true` on an update) or streamed. The desktop and mobile apps do; the web app always streams.
+- Listening is grouped into **sessions**: stretches with no gap longer than 10 minutes, across episodes and apps. Every source counts, sync and older apps included.
+- Pinepods remembers when you **first played** each episode, and when it was released, so the statistics can show how soon after release you listen.
+
+These start when your server is updated.
+
 ## Older apps
 
 Apps released before this change (0.9.2 and earlier) keep working with a newer server:

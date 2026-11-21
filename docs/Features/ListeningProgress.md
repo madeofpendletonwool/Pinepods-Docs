@@ -36,6 +36,8 @@ Playing a completed episode again keeps it marked completed while its position f
 
 Statistics from before this was introduced were estimated from episode positions and are kept as they were.
 
+Each day's listening is also kept per hour (in your timezone) and per app (web, desktop, Android, iOS, or podcast sync), for the statistics page and the yearly recap. Apps tell the server which one they are with `client` on `POST /api/data/progress`; older apps are recorded without one. This record starts when your server is updated; listening from before then is only in the per-episode history.
+
 ## Older apps
 
 Apps released before this change (0.9.2 and earlier) keep working with a newer server:
@@ -48,4 +50,4 @@ Newer apps also work with an older server, using the earlier behaviour.
 
 ## Other podcast apps
 
-With [Podcast Sync](../tutorial-extras/gpodder-sync.md) on, positions reach AntennaPod, gPodder and Nextcloud the same way, rewinds included.
+With [Podcast Sync](../tutorial-extras/gpodder-sync.md) on, positions reach AntennaPod, gPodder and Nextcloud the same way, rewinds included. Listening done in those apps counts toward your listening time too: each play they report covers the stretch from where it started to where it stopped.

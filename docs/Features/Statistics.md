@@ -4,23 +4,31 @@ Each user has a statistics page. To open it, click your avatar at the top of the
 
 ![The PinePods user statistics dashboard](/img/screenshots/userstats.png)
 
-**User Statistics** shows when your account was created, **Podcasts Played**, **Time Listened**, **Podcasts Added**, **Episodes Saved** and **Episodes Downloaded**.
+The top of the page shows your name, when you started (your account's creation date), your **Listening Style** and your total **Time Listened**.
 
-**Time Listened**, **Top Podcasts**, **Favorite Categories** and **Listening by Day of Week** count time audio was actually playing: not paused time, and not episodes you skipped through or marked as played. See [Listening Progress](ListeningProgress.md#listening-time).
-
-**Listening Insights**:
+**Time Listened**, the activity charts, **Top Podcasts** and **Favorite Categories** count time audio was actually playing: not paused time, and not episodes you skipped through or marked as played. See [Listening Progress](ListeningProgress.md#listening-time).
 
 | Item | What it is |
 |---|---|
-| **Top Podcasts** | The five podcasts you've spent the most time on. |
-| **Favorite Categories** | The five categories you've spent the most time on. |
-| **Completion Rate** | The share of episodes in your history you listened to at least 90% of. |
-| **Longest Episode Listened** | |
-| **Listening Style** | Night Owl, Evening, Afternoon or Morning Listener, from the average time of day you listen. |
-| **Total Data Downloaded** | |
-| **Day Streak** | How many days in a row you've listened. |
+| **Listened in (year)** | Listening time this calendar year. |
+| **Episodes Finished** | Episodes you listened to at least 90% of, with that as a share of every episode you started (the completion rate). |
+| **Day Streak** | How many days in a row you've listened, with your best run underneath. |
+| **Days Listened** | How many different days you've listened on. |
+| **Episodes Played** | How many different episodes you've started. |
+| **Left to Hear** | Episodes in your subscriptions you haven't started, and how long they'd take to hear. |
+| **Activity** | A calendar of the last six months, darker on days you listened more. |
+| **Time of Day** | Listening by hour, with your busiest hour highlighted. |
 | **Listening by Day of Week** | |
+| **Last 12 Months** | Listening per month. |
+| **Top Podcasts** | The five podcasts you've spent the most time on. |
+| **Favorite Categories** | The five categories you've spent the most time on, as a share of their combined time. |
+| **Longest Episode Listened** | |
+| **Library** | Podcasts you subscribe to, how many of them you've played, episodes saved and downloaded (with their size), and which [sync](../tutorial-extras/gpodder-sync.md) you use. |
 
-**Podcast Sync Status** says which sync you use: the internal gpodder server, an external gpodder server, Nextcloud, or none. See [Podcast Sync](../tutorial-extras/gpodder-sync.md).
+**Listening Style** is Night Owl, Evening, Afternoon or Morning Listener, from the average time of day you listen.
+
+These numbers are counted from your library and listening history, so podcasts and plays that arrive through [Podcast Sync](../tutorial-extras/gpodder-sync.md) count the same as ones from Pinepods' own apps.
+
+Days and hours use the timezone in your [account settings](../tutorial-basics/account-settings.md). Pinepods keeps one history entry per episode, so the day-by-day charts count each episode's listening on the day you last played it.
 
 The page also shows the server's Pinepods version and links to the documentation and the GitHub repository.

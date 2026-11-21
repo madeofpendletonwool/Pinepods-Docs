@@ -24,12 +24,13 @@ In the desktop and mobile apps, you also enter your server's address: the same U
 
 ![The PinePods home dashboard](/img/screenshots/homepage.png)
 
-- **Continue Listening:** episodes you've started.
-- **This Week:** how much you've listened and completed this week.
-- **Up Next:** the start of your [queue](../Features/Queue.md).
+- **Continue Listening:** the episode you were last in the middle of, as a large card tinted with its artwork colour ([Artwork colours](./Theming.md)). **Resume** picks up where you left off; click the title for the episode page or the podcast name for the podcast. Up to two more started episodes are listed under it.
+- **This Week:** one line with how much you've listened and how many episodes you finished this week (click it for your [statistics](../Features/Statistics.md)), next to shortcuts to Feed, Downloads and History.
+- **Recent Episodes:** a row of the newest episodes from your podcasts. Hover a cover (or tap the button on a phone) to play.
 - **Top Podcasts:** the podcasts you listen to most.
+- **Collections:** your [collections](../Features/Collections.md); click one to open it.
 - **Smart Playlists:** your [playlists](../Features/smart-playlists.md).
-- **Recent Episodes:** the newest episodes from your podcasts.
-- **Quick Links** to Saved, Downloads, History, Feed and Podcasts.
+
+Each row scrolls sideways, and **See all** opens the full page.
 
 Until you subscribe to something, Home shows a welcome page with ways to get started instead.

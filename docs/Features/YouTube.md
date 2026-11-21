@@ -32,3 +32,9 @@ YouTube changes often break yt-dlp until a new yt-dlp comes out, so the copy ins
 | **Update now** | Updates straight away. |
 
 If YouTube videos stop downloading, try **Update now** first.
+
+## When subscribing fails
+
+If a channel can't be read, the error says why, using yt-dlp's own message. A message saying **YouTube is blocking requests from this server's IP address** means YouTube asked yt-dlp to sign in or prove it isn't a bot. That's YouTube refusing the server's connection, which is common behind a VPN or on a datacenter or VPS connection, even when yt-dlp works on another computer on a different route. Pinepods can't get around it. Try sending the server's traffic out a different way, for example by leaving it off the VPN.
+
+If the subscription goes through but the channel's videos can't be loaded, a message in the [Activity panel](../tutorial-extras/SettingUpNotifications.md#the-activity-panel) says so, with the reason. The channel then tries again on its normal refreshes.

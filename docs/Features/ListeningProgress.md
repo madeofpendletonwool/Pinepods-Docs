@@ -38,6 +38,17 @@ Statistics from before this was introduced were estimated from episode positions
 
 Each day's listening is also kept per hour (in your timezone) and per app (web, desktop, Android, iOS, or podcast sync), for the statistics page and the yearly recap. Apps tell the server which one they are with `client` on `POST /api/data/progress`; older apps are recorded without one. This record starts when your server is updated; listening from before then is only in the per-episode history.
 
+The record also keeps the podcast, title and artwork each episode had when you played it, so your history still says what you listened to after you unsubscribe from a podcast or it is removed.
+
+### Time saved
+
+Pinepods' apps also report the time you save:
+
+- **By speed**: playing at 1.5x for an hour covers 90 minutes of episode, saving 30. Playing slower than 1x counts against it.
+- **By skipping silence and ads**: the stretches the player jumps over when [silence trimming](PodcastOptions.md#trim-silence) or ad skipping is on.
+
+Apps send these as `speed_saved`, `silence_skipped` and `ads_skipped` (seconds) with each update on `POST /api/data/progress`. On Android, silence trimmed by the player's own audio effect, rather than skipped from detected ranges, isn't counted.
+
 ## Older apps
 
 Apps released before this change (0.9.2 and earlier) keep working with a newer server:
@@ -50,4 +61,4 @@ Newer apps also work with an older server, using the earlier behaviour.
 
 ## Other podcast apps
 
-With [Podcast Sync](../tutorial-extras/gpodder-sync.md) on, positions reach AntennaPod, gPodder and Nextcloud the same way, rewinds included. Listening done in those apps counts toward your listening time too: each play they report covers the stretch from where it started to where it stopped.
+With [Podcast Sync](../tutorial-extras/gpodder-sync.md) on, positions reach AntennaPod, gPodder and Nextcloud the same way, rewinds included. Listening done in those apps counts toward your listening time too: each play they report covers the stretch from where it started to where it stopped. A play that arrives after you've done something newer with the episode still counts as listening, even though its position doesn't replace yours.

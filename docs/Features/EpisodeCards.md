@@ -37,4 +37,4 @@ Home, Feed and Podcasts show what you saw last time as soon as you open them, th
 
 The saved copy stays in your browser and belongs to your account on that server. Signing out deletes it.
 
-Artwork in lists and grids loads as small thumbnails that your Pinepods server makes from the original and keeps for a day, instead of the full-size image. Pages full of podcast covers, like **Podcasts** and **Home**, download a fraction of what they used to. If the server can't fetch an image (some covers hosted on a local network, for example), the app loads the original directly.
+Artwork in lists and grids loads as small thumbnails that your Pinepods server makes from the original and keeps for a day, instead of the full-size image. Pages full of podcast covers, like **Podcasts** and **Home**, download a fraction of what they used to. If the server can't fetch an image (some covers hosted on a local network, for example), the app loads the original directly. The mobile app does the same once you're signed in to a server.

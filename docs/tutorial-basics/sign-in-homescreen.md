@@ -34,3 +34,7 @@ In the desktop and mobile apps, you also enter your server's address: the same U
 Each row scrolls sideways, and **See all** opens the full page.
 
 Until you subscribe to something, Home shows a welcome page with ways to get started instead.
+
+### In the mobile app
+
+The mobile Home has the same parts, top to bottom: your saved, downloaded and queued counts, the **This Week** line (tap it for your statistics), **Continue Listening** with the latest episode as a large card and a **Resume** button, **Top Podcasts**, **Up Next** from your queue, **Collections**, **Smart Playlists** and **Recent Episodes**. Tap a collection to open it, or **See all** for every collection and Saved.

@@ -63,3 +63,9 @@ These numbers are counted from your library and listening history, so podcasts a
 Days and hours use the timezone in your [account settings](../tutorial-basics/account-settings.md). The calendar, time of day, day of week, monthly and streak figures come from the [listening record](ListeningProgress.md#listening-time), which counts each day and hour you actually listened. It starts when your server is updated to a version that keeps it; for listening before then, Pinepods only has one history entry per episode, so that time counts on the day you last played each episode.
 
 The page also shows the server's Pinepods version and links to the documentation and the GitHub repository.
+
+## In the mobile app
+
+The mobile app's statistics page has the same periods and sections. Pick **All time**, a year or a month from the chips at the top. The **Activity** calendar for a year scrolls sideways. Tap a podcast to open it, or a person to see their page. Pull down to refresh.
+
+Servers older than the listening record show the all-time figures only. Servers older than that show the account totals and **Library**.

@@ -34,6 +34,14 @@ A smart playlist is worked out from its rules each time you open it, so it alway
   - Select specific podcasts = Only include episodes from those podcasts
 - **Effect**: Acts as a primary filter - only episodes from selected podcasts will be considered for other criteria
 
+### Labels (Optional)
+- **Purpose**: Limit the playlist to episodes you've given certain [labels](./Inbox.md#labels)
+- **Options**:
+  - None selected = No label filter
+  - Select labels = Only include episodes that have at least one of them
+- **Effect**: Combines with every other filter, so "Listen" plus a 168-hour time filter gives "everything labeled Listen from the last 7 days"
+- **Where**: The label chips in the create and edit forms (web), and when creating a playlist in the mobile apps. Make labels first under **Settings → Inbox & labels**.
+
 ### Episode State Filters
 
 #### Include Unplayed

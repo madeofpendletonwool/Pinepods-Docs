@@ -6,6 +6,7 @@ The sidebar of the web and desktop apps has these pages:
 |---|---|
 | **Home** | Continue listening, your week, up next, top podcasts and playlists. [Home](./sign-in-homescreen.md#the-home-page) |
 | **Feed** | Episodes from all your podcasts and YouTube channels published in the last 30 days, newest first. |
+| **Inbox** | New episodes you haven't played, queued, saved or dismissed yet, with one-click triage and labels. [Inbox and Labels](../Features/Inbox.md) |
 | **Search** | Search your own library. [Searching](../Features/Search.md#searching-your-library) |
 | **Queue** | Your up-next list. [The Queue](../Features/Queue.md) |
 | **Collections** | Saved episodes and your own collections. [Collections](../Features/Collections.md) |

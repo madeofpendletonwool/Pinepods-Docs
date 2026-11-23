@@ -12,7 +12,7 @@ The search box at the top of every page looks for podcasts to subscribe to. Pick
 | **iTunes** | Apple's directory. |
 | **YouTube** | YouTube channels. See [YouTube Channels](./YouTube.md). |
 
-Open a result to see its episodes, and subscribe with the button on the podcast's page.
+Open a result to see its episodes, and subscribe with the button on the podcast's page. You can also play, queue or download its episodes without subscribing: see [Listening Without Subscribing](./ListenWithoutSubscribing.md).
 
 The search goes through your Pinepods server to the search service set by `SEARCH_API_URL`, either the hosted one or [your own](../API/search_api.md).
 
@@ -24,7 +24,7 @@ If a podcast isn't in any directory, add it by its feed URL: see [Adding a Feed 
 
 ## Searching your library
 
-**Search** in the sidebar searches what you already have: episode titles, show notes and descriptions across everything you subscribe to.
+**Search** in the sidebar searches what you already have: episode titles, show notes and descriptions across everything you subscribe to, plus episodes of other podcasts you've played, saved, queued or downloaded.
 
 - **Filter by status:** **All**, **Unplayed**, **In Progress**, **Saved**, **Downloaded**.
 - **Recent searches** are kept so you can run them again.

@@ -45,6 +45,8 @@ On Android, **Pause for interruptions** (on by default) pauses playback while an
 
 When you stream an episode, the app loads about ten minutes ahead of where you're listening, so a short loss of signal (a tunnel, a dead zone on the way out of the house) doesn't stop playback. For anything longer, download the episode first.
 
+The app opens public `http` episode, artwork and chapter links over `https`. Links to your own Pinepods server and to local addresses stay on `http`: private and Tailscale (`100.64.0.0/10`) IPs, single-word hostnames and names ending in `.local`, `.lan`, `.home.arpa`, `.internal` or `.ts.net`. A public feed served only over plain `http` won't play in the app.
+
 ### Language
 
 The app follows your account's [Language](../tutorial-basics/account-settings.md) once you sign in. If your account is on the server's default language, the app uses your phone's language instead, or English if it isn't available. Choosing a language under **Settings → Personalisation → Language** changes it on your account as well; **System default** goes back to your phone's language. On Android 13 and later you can also pick the app's language in the system settings. Text that hasn't been translated yet shows in English. To help translate, see [Weblate](https://hosted.weblate.org).

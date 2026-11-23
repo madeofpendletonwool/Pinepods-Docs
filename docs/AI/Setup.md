@@ -126,7 +126,22 @@ pick and change models from **Settings → AI** in the web UI (below) — no res
 ## 3. The AI Settings page
 
 Once the container is reachable, an admin can open **Settings → AI** in the web app. It has
-three parts:
+the **AI features** switch and three parts below it:
+
+### Turning AI off
+
+**AI features** at the top of the page turns every AI feature off for the whole server, even
+with the container still running. While it's off:
+
+- Users don't see AI controls: no transcribe or ad-detection buttons on episodes, no AI
+  options in podcast settings, and no **AI** category in their settings.
+- Nothing AI runs, including podcasts that opted into automatic transcription or ad
+  detection. Their opt-in is kept and takes effect again when AI is turned back on.
+- Transcripts and ad times made earlier are kept and still used: a finished transcript can
+  still be read and searched, and ads already found are still skipped.
+
+Admins see only the switch until AI is turned back on. The mobile apps follow the same
+switch. It's on by default.
 
 ### Connection & capabilities
 

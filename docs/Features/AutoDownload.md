@@ -5,7 +5,7 @@ With auto-download on for a podcast, each new episode is downloaded to the serve
 - **Web:** open the podcast, open its settings (**Podcast Options**), and turn on **Download Future Episodes Automatically**.
 - **Mobile:** on the podcast's page, turn on **Auto-download to server**.
 
-Auto-download only queues anything while **Enable Server Downloads** is on under **Settings → Admin → Download Settings**.
+Auto-download only queues anything while **Enable Server Downloads** is on under **Settings → Downloads → Download Settings**.
 
 Pair it with **Delete downloads when finished** (see [Downloads](./Downloads.md#cleaning-up-server-downloads)) and the server keeps only the episodes you haven't heard yet.
 

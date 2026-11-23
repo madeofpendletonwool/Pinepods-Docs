@@ -4,7 +4,7 @@ MFA adds a one-time code from an authenticator app to your sign-in. Any app that
 
 ## Turning it on
 
-1. Go to **Settings → MFA Settings** and switch on **Enable MFA**.
+1. Go to **Settings → Account & security → MFA Settings** and switch on **Enable MFA**.
 2. **Setup MFA** shows a QR code. Scan it with your authenticator app, or type the code shown below it into the app by hand.
 3. Enter the 6-digit code the app now shows under **Verify Code** and click **Verify**.
 
@@ -18,4 +18,4 @@ After your username and password, Pinepods asks for the current code from your a
 
 ## Turning it off
 
-Switch **Enable MFA** off under **Settings → MFA Settings**.
+Switch **Enable MFA** off under **Settings → Account & security → MFA Settings**.

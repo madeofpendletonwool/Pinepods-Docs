@@ -2,7 +2,7 @@
 
 An API key signs a program in to Pinepods as you, with the same access your account has. Use one for scripts, for the [API](../API/api_intro.md), or for apps that ask for a key instead of a password.
 
-Manage them under **Settings → API Keys**.
+Manage them under **Settings → Account & security → API Keys**.
 
 ## Creating a key
 

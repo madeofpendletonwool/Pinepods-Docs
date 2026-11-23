@@ -1,6 +1,6 @@
 # Custom Theme Creator
 
-When none of the [built-in themes](../tutorial-basics/Theming.md) fits, build your own under **Settings → Custom Themes**.
+When none of the [built-in themes](../tutorial-basics/Theming.md) fits, build your own under **Settings → Appearance → Custom Themes**.
 
 ![PinePods ships with many built-in themes](/img/screenshots/tonsofthemes.png)
 

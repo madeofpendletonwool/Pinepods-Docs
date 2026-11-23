@@ -30,7 +30,7 @@ All of these are per user: changing them doesn't affect anyone else who subscrib
 | **Refresh automatically** | On by default. Off: the [scheduled refresh](./feed-updates.md#when-feeds-are-refreshed) and **Refresh** in the app skip this podcast, and it's left out of [Feed problems](./feed-updates.md#feed-problems). Use it to keep a podcast whose feed is gone, with its episodes, without the errors. **Check for new episodes** on the page still works. |
 | **Get Notifications For New Episodes** | Sends a push notification per new episode. See [Notifications](../tutorial-extras/SettingUpNotifications.md). |
 | **Favorite Podcast** | See [Favorites](./Favorites.md). |
-| **Default Playback Speed** | This podcast's speed, 0.5x–2.0x. **Reset** goes back to your default from **Settings → Playback Settings**. |
+| **Default Playback Speed** | This podcast's speed, 0.5x–2.0x. **Reset** goes back to your default from **Settings → Playback → Playback Settings**. |
 | **Auto-Delete Downloads After** and **Delete Downloads When Finished** | Override your defaults for this podcast. See [Downloads](./Downloads.md#cleaning-up-server-downloads). |
 | **Use Podcast Covers** | Shows the podcast's cover instead of each episode's artwork. |
 | **Auto Skip Intros and Outros** | **Start Skip** starts episodes this many seconds in (or where you left off, if that's later); **End Skip** treats the episode as finished this many seconds before the end, marks it complete and moves on. Click **Confirm** to save. |

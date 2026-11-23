@@ -18,7 +18,7 @@ Open an episode's three-dot menu and choose **Add to Collection**. Tick a collec
 
 To add many episodes at once, use **Select** on a podcast's page, tick the episodes, and click **Add to Collection**. Pick a collection (or create one) and every selected episode is added to it.
 
-How that menu works is set under **Settings → Display Settings → Collection add mode**: **Modal picker** opens a dialog, **Sub-menu flyout** lists your collections inside the menu.
+How that menu works is set under **Settings → Appearance → Display Settings → Collection add mode**: **Modal picker** opens a dialog, **Sub-menu flyout** lists your collections inside the menu.
 
 ## Adding episodes automatically
 

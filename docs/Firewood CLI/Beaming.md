@@ -22,7 +22,7 @@ It signs in with the session saved by running `pinepods_firewood` once in a term
 | Variable | |
 |---|---|
 | `FIREWOOD_SERVER` | The server's URL. |
-| `FIREWOOD_API_KEY` | An API key, from **Settings → API Keys** in the web app. |
+| `FIREWOOD_API_KEY` | An API key, from **Settings → Account & security → API Keys** in the web app. |
 | `FIREWOOD_API_KEY_FILE` | A file holding the API key, instead of `FIREWOOD_API_KEY`. |
 
 Headless Firewood keeps retrying until the network and the server are up, so it can start before them; a key the server rejects stops it. It logs to stderr as well as the log file, and saves the position and exits on SIGTERM, SIGINT or SIGHUP. Volume, audio output and device name come from the same settings as the terminal interface.

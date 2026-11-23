@@ -1,6 +1,6 @@
 # Account Settings
 
-Every user manages their own account under **Settings → Account Settings**. Change what you want and click **Save Changes**.
+Every user manages their own account under **Settings → Account & security → Account Settings**. Change what you want and click **Save Changes**.
 
 | Setting | Notes |
 |---|---|

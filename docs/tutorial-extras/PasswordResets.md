@@ -6,7 +6,7 @@ Email is configured in the app, not with environment variables. The `SMTP_*` and
 
 ## Setting up email (admins)
 
-Go to **Settings → Admin → Email Settings**. **Current Settings** shows what's saved now. Fill in:
+Go to **Settings → Email Settings**. **Current Settings** shows what's saved now. Fill in:
 
 | Field | |
 |---|---|

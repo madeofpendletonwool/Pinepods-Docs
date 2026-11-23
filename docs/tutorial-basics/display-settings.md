@@ -1,6 +1,6 @@
 # Display Settings
 
-**Settings → Display Settings** holds a few per-user choices about how the web app looks and where it opens. They're saved to your account.
+**Settings → Appearance → Display Settings** holds a few per-user choices about how the web app looks and where it opens. They're saved to your account.
 
 | Setting | What it does |
 |---|---|

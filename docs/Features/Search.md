@@ -24,7 +24,7 @@ If a podcast isn't in any directory, add it by its feed URL: see [Adding a Feed 
 
 ## Searching your library
 
-**Search** in the sidebar searches what you already have: episode titles, show notes and descriptions across everything you subscribe to.
+**Search** in the sidebar searches what you already have: episode titles, show notes and descriptions across everything you subscribe to. Links and web addresses in show notes aren't searched. To search one podcast's episodes, use the search box on its page (see [The episode list](./PodcastOptions.md#the-episode-list)).
 
 - **Filter by status:** **All**, **Unplayed**, **In Progress**, **Saved**, **Downloaded**.
 - **Recent searches** are kept so you can run them again.

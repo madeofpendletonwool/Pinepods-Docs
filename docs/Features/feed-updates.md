@@ -4,9 +4,10 @@
 
 Each podcast is refreshed on its own schedule, based on how often it actually publishes. Pinepods checks once a minute for podcasts that are due.
 
-- **How often:** an eighth of the typical gap between its last ten episodes, between 15 minutes and 6 hours. A daily show is checked about every 3 hours, a weekly one every 6 hours, one that posts twice a day about every 90 minutes.
+- **How often:** an eighth of the typical gap between its last ten episodes, between 15 minutes and an hour. Most shows, daily or weekly, are checked every hour; one that posts every few hours is checked every 15 to 30 minutes.
+- **Usual release times:** when most of a show's recent episodes came out around the same time of day (a weekly show every Monday around 11:00, a news show every weekday morning), Pinepods checks it every 15 minutes from shortly before that time until two hours after, on the days it usually publishes, and goes back to its usual schedule once the new episode is in. This is learned from the episodes' publish dates, so a show whose dates are off doesn't get it.
 - **Quiet podcasts** (no new episode in 90 days, or marked as finished by the feed) are checked once a day.
-- **The feed and its host can slow this down:** a `Cache-Control: max-age` from the host, or the feed's `<sy:updatePeriod>`/`<sy:updateFrequency>`, set the shortest gap, up to the 6 hours above. Neither makes a podcast refresh more often than its publishing pattern.
+- **The feed and its host can slow this down:** a `Cache-Control: max-age` from the host, or the feed's `<sy:updatePeriod>`/`<sy:updateFrequency>`, set the shortest gap, up to the hour above. Neither makes a podcast refresh more often than its publishing pattern.
 - **Announced release times:** a feed with `<podcast:updateFrequency>` (for example "weekly on Mondays") is checked about 10 minutes after each announced time, even if that's sooner than usual.
 - **Failures and "slow down" answers** push the next refresh further out (see below). A host asking Pinepods to wait (`Retry-After`) is left alone that long.
 - Refresh times vary by up to 10% so feeds don't all come due at once.

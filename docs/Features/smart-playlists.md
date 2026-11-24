@@ -1,12 +1,25 @@
 # Smart Playlists
 
-Smart playlists fill themselves from rules you set. Open them from **Playlists** in the sidebar (or the mobile apps' playlists screen), and click **Create New Playlist** to make one. This page explains each option.
+Smart playlists fill themselves from rules you set. Open them from **Playlists** in the sidebar (or the mobile apps' playlists screen), and click **New playlist** to make one. This page explains each option.
 
 ## Overview
 
 A smart playlist is worked out from its rules each time you open it, so it always reflects what you've listened to and what's new. Playing from a playlist plays its episodes in order (see [What plays next](./Queue.md#what-plays-next)), and each playlist can also be published as an [RSS feed](../tutorial-extras/RSSFeeds.md).
 
 ![Creating a smart playlist in PinePods](/img/screenshots/playlistcreator.png)
+
+## The playlists page
+
+Each playlist gets a card showing:
+
+- a mosaic of the covers of its next few episodes, with the playlist's icon;
+- how many episodes it holds, how much listening time is left once your progress is taken off, how many podcasts they come from, and how many you've started;
+- its rules in plain words, such as **Unplayed + In progress**, **Under 15 min**, **Last 7 days**, **3 chosen podcasts** or **Newest First**;
+- **Up next**: the first three episodes, with the time left on each and a progress bar for ones you've started. Click one to play it; the rest of the playlist plays after it.
+
+The round play button plays the playlist from its first unfinished episode. Click anywhere else on a card to open the full playlist. The bin icon (shown when you hover over a card) deletes it, and **Select** lets you delete several at once.
+
+The totals respect **Max Episodes**, so a playlist capped at 20 counts only those 20. Since playlists can share episodes, the page doesn't add their times together.
 
 ## Basic Information
 
@@ -33,6 +46,14 @@ A smart playlist is worked out from its rules each time you open it, so it alway
   - None selected = Include episodes from ALL podcasts
   - Select specific podcasts = Only include episodes from those podcasts
 - **Effect**: Acts as a primary filter - only episodes from selected podcasts will be considered for other criteria
+
+### Labels (Optional)
+- **Purpose**: Limit the playlist to episodes you've given certain [labels](./Inbox.md#labels)
+- **Options**:
+  - None selected = No label filter
+  - Select labels = Only include episodes that have at least one of them
+- **Effect**: Combines with every other filter, so "Listen" plus a 168-hour time filter gives "everything labeled Listen from the last 7 days"
+- **Where**: The label chips in the create and edit forms (web), and when creating a playlist in the mobile apps. Make labels first under **Settings → Inbox & labels**.
 
 ### Episode State Filters
 

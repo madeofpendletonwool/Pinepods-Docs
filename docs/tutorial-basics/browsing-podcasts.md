@@ -6,6 +6,7 @@ The sidebar of the web and desktop apps has these pages:
 |---|---|
 | **Home** | Continue listening, your week, up next, top podcasts and playlists. [Home](./sign-in-homescreen.md#the-home-page) |
 | **Feed** | Episodes from all your podcasts and YouTube channels published in the last 30 days, newest first. |
+| **Inbox** | New episodes you haven't played, queued, saved or dismissed yet, with one-click triage and labels. [Inbox and Labels](../Features/Inbox.md) |
 | **Search** | Search your own library. [Searching](../Features/Search.md#searching-your-library) |
 | **Queue** | Your up-next list. [The Queue](../Features/Queue.md) |
 | **Collections** | Saved episodes and your own collections. [Collections](../Features/Collections.md) |
@@ -14,7 +15,7 @@ The sidebar of the web and desktop apps has these pages:
 | **Downloads** | Episodes downloaded to the server. [Downloads](../Features/Downloads.md) |
 | **Local Downloads** | Desktop app only: episodes saved to your computer. |
 | **People You Follow** | New episodes from hosts and guests you follow. [People](../Features/Person.md) |
-| **Discover** | **For You** recommendations, **Trending Now** by category, and hosts from PodPeopleDB. |
+| **Discover** | Trending shows, fresh episodes you can play without subscribing, **For You** picks, the charts, categories and hosts. |
 | **Podcasts** | Everything you subscribe to. |
 | **Settings** | [The Settings Page](./settings.md) |
 
@@ -40,7 +41,19 @@ Click a podcast to open its page. See [Podcast Page and Podcast Options](../Feat
 
 ## Discover
 
-**For You** suggests podcasts similar to the ones you listen to, based on your subscriptions, how much you listen to them, and their categories. It's worked out on your server and needs a few subscriptions before it shows anything. **Trending Now** lists popular podcasts from the Podcast Index, filtered by category.
+Discover shows what's popular on the Podcast Index and what's new on it. From top to bottom:
+
+- **Category and language filters.** Pick a category to narrow the spotlight, fresh episodes and charts to it (**More categories** shows the full Podcast Index list). The language menu limits them to shows in one language; it starts at your Pinepods language and remembers what you pick.
+- **Spotlight.** The five top trending shows take turns in a large banner (hover over it to pause). **Play latest** plays the show's newest episode, **Follow** subscribes, and **Open show** opens its page so you can look through its episodes first.
+- **Fresh episodes.** The newest episodes from the trending shows, at most two per show. Press play on one to listen without subscribing; Pinepods still keeps your progress. Click the card to open the episode's page.
+- **For You.** Podcasts similar to the ones you listen to, grouped by why they were picked ("Because you listen to…"). It's worked out on your server from your subscriptions, how much you listen to them and their categories, so it needs a few subscriptions first. Hidden while a category is selected.
+- **Top charts.** Trending shows six to twenty-five, with their main category.
+- **Browse by category.** Large tiles for the popular categories; clicking one selects it above.
+- **Discover Hosts.** Hosts from PodPeopleDB with the most shows. See [People](../Features/Person.md).
+
+The **+** on a show subscribes to it, and turns into a check once you follow it. Click it again to unsubscribe.
+
+Fresh episodes need a search service that has the `/api/episodes` endpoint (see [Search API](../API/search_api.md)). With an older one the row is left out and a note says why; the rest of Discover still works.
 
 ## Episode actions
 

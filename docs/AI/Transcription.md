@@ -102,3 +102,8 @@ volume.
   that the sidecar is healthy (Settings → AI shows the connection status).
 - **Nothing transcribes automatically.** Auto-transcribe is off by default; enable it per
   podcast.
+- **Several episodes at once.** Transcriptions run one at a time; the rest wait their turn
+  (`PINEPODS_AI_MAX_TRANSCRIBE_JOBS` raises the limit). A job cut off by a restart is marked
+  failed and can be started again; automatic jobs retry once on their own.
+- **`libcublas.so.12` not found.** You set `WHISPER_DEVICE: "cuda"` on the CPU image. Use the
+  `-cuda` image (see [GPU acceleration](./Setup.md#gpu-acceleration)).

@@ -40,7 +40,8 @@ for ads unless **you opt in**, either per-podcast or per-episode.
 ## What you'll need
 
 - The **`pinepods-ai` container** running and reachable from the main server
-  (see [Setup](./Setup.md)).
+  (see [Setup](./Setup.md)). Use the regular image, or the larger `-cuda` image if you have
+  an NVIDIA GPU (see [Which image?](./Setup.md#which-image)).
 - For **transcription**: nothing extra — a sensible Whisper model (`base`) is the default
   and downloads automatically on first use.
 - For **ad detection**: a language model. You either **pull a small local model** into the

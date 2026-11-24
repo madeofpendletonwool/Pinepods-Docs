@@ -3,7 +3,7 @@
 When a podcast isn't in the search indexes (a premium or private feed, a small independent show), add it by its feed address. You can do this under **Settings → Add Custom Feed**, or with the **Custom Feed** button on the **Podcasts** page, which opens the same form.
 
 1. Enter the RSS feed URL, for example `https://bestpodcast.com/feed.xml`.
-2. If the feed needs a login, fill in **Username (optional)** and **Password (optional)**. Pinepods sends them as HTTP Basic authentication every time it fetches the feed. Leave both empty for public feeds.
+2. If the feed needs a login, fill in **Username (optional)** and **Password (optional)**. Pinepods sends them as HTTP Basic authentication every time it fetches the feed. Leave both empty for public feeds: no login is sent then, which matters for hosts that turn away a request carrying an empty one.
 3. Click **Add Feed**.
 
 The podcast then works like any other: it refreshes on its own schedule (see [Feed updates](../Features/feed-updates.md)) and shows up in your Podcasts list.

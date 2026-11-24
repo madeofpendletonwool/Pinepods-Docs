@@ -29,7 +29,7 @@ PinePods builds absolute RSS feed URLs (`<link>`, `<guid>`, `<enclosure>`) from 
 |----------|---------------|----------|-------------|
 | `DB_TYPE` | `sqlite` without `DB_HOST` | **Yes** (with `DB_HOST`) | Database type: `postgresql`, `mariadb` (`mysql` also works) or `sqlite` |
 | `DB_PATH` | `/opt/pinepods/data/pinepods.db` | No | SQLite only: the database file. Keep its directory on a mounted volume |
-| `DB_HOST` | - | **Yes** | Database host address. A path starting with `/` (e.g., `/var/run/postgresql`) connects through a Unix socket in that directory |
+| `DB_HOST` | - | **Yes** | Database host address. A path starting with `/` connects through a Unix socket: for PostgreSQL the socket's directory (e.g., `/var/run/postgresql`), for MariaDB/MySQL the socket file or its directory (e.g., `/var/run/mysqld`, which uses `mysqld.sock` in it). Mount that directory into the container |
 | `DB_PORT` | - | **Yes** | Database port: usually `5432` for PostgreSQL, `3306` for MariaDB/MySQL |
 | `DB_USER` | - | **Yes** | Database username |
 | `DB_PASSWORD` | - | **Yes** | Database password |

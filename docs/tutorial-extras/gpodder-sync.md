@@ -131,7 +131,7 @@ The first three only affect external servers.
 
 ### Sync history
 
-Pinepods keeps a history of sync changes; it's what apps download. After 90 days, changes that a newer one replaced are dropped (once every external server has them). The latest state of every podcast and episode is always kept, so a newly connected app still gets everything. Apps syncing with the PinePods gpodder server decide for themselves when to sync.
+Pinepods keeps a history of sync changes; it's what apps download. After 90 days, changes that a newer one replaced are dropped (once every external server has them). The latest state of every podcast and episode is always kept, so a newly connected app still gets everything. An app's first sync gets just that latest state (the newest position and the newest of each other action per episode, without the older positions behind them), and it starts arriving straight away, so a long history doesn't make the app give up waiting. Apps syncing with the PinePods gpodder server decide for themselves when to sync.
 
 ## Statistics
 

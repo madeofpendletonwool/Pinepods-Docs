@@ -31,15 +31,21 @@ The app's own **Settings** hold choices that apply to this device:
 |---|---|
 | **Personalisation** | **Language**, theme (shared with your account, see [Themes](../tutorial-basics/Theming.md)), **Show my Gravatar**, **Artwork colours** and the card style. |
 | **Navigation** | **Reorganize Bottom Bar** to choose and order the bottom navigation items. |
-| **Playback** | **Full screen player mode on episode start**, **Fast-forward interval** (10–60 s) and **Rewind interval** (5–45 s), **Play the queue automatically** (see [What plays next](../Features/Queue.md#what-plays-next)), where **Add to queue** puts episodes, **Search provider**. |
+| **Playback** | **Full screen player mode on episode start**, **Fast-forward interval** (10–60 s) and **Rewind interval** (5–45 s), **Play the queue automatically** (see [What plays next](../Features/Queue.md#what-plays-next)), **Pause for interruptions** (Android, see [Interruptions](#interruptions-android)), where **Add to queue** puts episodes, **Search provider**. |
 | **Download Management** | WiFi-only, server-copy downloads, queue auto-download, mirroring and cleanup. See [Downloads](../Features/Downloads.md#device-downloads-mobile). |
 | **Server Downloads** | Your defaults for cleaning up server downloads. |
 | **Debug** | **App Logs** with debug logs and device information, useful for bug reports. |
 | **Certificates** | Server CA and client certificate, as above. |
 
+### Interruptions (Android)
+
+On Android, **Pause for interruptions** (on by default) pauses playback while another app plays a short sound, such as a notification, and resumes afterwards. Turn it off to keep playing at a lower volume instead. Phone calls and apps that start their own playback still pause Pinepods either way.
+
 ### Streaming
 
 When you stream an episode, the app loads about ten minutes ahead of where you're listening, so a short loss of signal (a tunnel, a dead zone on the way out of the house) doesn't stop playback. For anything longer, download the episode first.
+
+The app opens public `http` episode, artwork and chapter links over `https`. Links to your own Pinepods server and to local addresses stay on `http`: private and Tailscale (`100.64.0.0/10`) IPs, single-word hostnames and names ending in `.local`, `.lan`, `.home.arpa`, `.internal` or `.ts.net`. A public feed served only over plain `http` won't play in the app.
 
 ### Language
 

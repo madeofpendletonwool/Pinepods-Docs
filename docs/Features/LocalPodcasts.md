@@ -33,6 +33,7 @@ Pinepods reads the folder (not its subfolders):
 
 - **Episodes:** every `.mp3`, `.m4a`, `.ogg`, `.flac`, `.wav`, `.aac` and `.opus` file.
 - **Episode details** come from the files' tags: title, description, date and track number. A file without a date uses its modification time.
+- **Length** comes from each file's header (an `.aac` file without a container has none), so adding a big folder only reads the start of each file, not the whole thing.
 - **Order:** by track number, then by file name.
 - **Cover:** the artwork you uploaded; otherwise a `cover.jpg`, `cover.jpeg`, `cover.png`, `folder.jpg`, `folder.jpeg`, `artwork.jpg` or `artwork.png` in the folder, or artwork embedded in the files.
 

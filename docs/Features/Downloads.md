@@ -44,6 +44,8 @@ The value in Settings is your default; a podcast's own setting overrides it, and
 
 Download an episode from its menu or the download button on its card. The **Downloads** screen lists what's on the device, and download activity shows progress while files come in.
 
+Download activity lists device and server downloads, plus transcriptions queued on the server. A queued transcription has a **Cancel** button. Swipe a finished server task away to dismiss it, or tap the broom to clear every finished one. Clearing works the same as **Clear** in the web app's Activity panel, so cleared tasks are gone there too.
+
 Settings for this live in the app's **Settings → Download Management**:
 
 | Setting | What it does |

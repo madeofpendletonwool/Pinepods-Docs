@@ -4,6 +4,19 @@ The AI features run in the optional **`pinepods-ai`** container. This page cover
 it, the environment variables, and the **AI Settings** page where you choose and manage
 models at runtime.
 
+## Which image?
+
+The AI container comes in two flavours. Pick one; everything else on this page is the same.
+
+| Image tag | Use it when | Platforms | Size |
+| --- | --- | --- | --- |
+| `latest` / `<version>` | No NVIDIA GPU (most setups). Transcription and ad detection run on the CPU. | amd64, arm64 | Regular |
+| `latest-cuda` / `<version>-cuda` | You have an NVIDIA GPU and want fast transcription. Adds the CUDA libraries Whisper needs. | amd64 only | Several GB larger |
+
+The CUDA libraries are large, so they live only in the `-cuda` image and the regular image
+stays small. See [GPU acceleration](#gpu-acceleration) for the extra settings the `-cuda`
+image needs.
+
 ## 1. Run the `pinepods-ai` container
 
 The container is disabled by default in every deployment method. You enable it by:
@@ -30,16 +43,11 @@ services:
     # ...
 
   pinepods-ai:
-    image: madeofpendletonwool/pinepods-ai:latest
+    image: madeofpendletonwool/pinepods-ai:latest   # :latest-cuda for an NVIDIA GPU
     environment:
-      WHISPER_MODEL: "base"          # tiny|base|small|medium|large-v3
-      WHISPER_DEVICE: "cpu"          # "cuda" if you use a GPU-enabled image/node
-      WHISPER_COMPUTE_TYPE: "int8"
-      # Ad-detection LLM defaults (usually left blank and configured from the UI):
-      # AI_LLM_MODEL: ""             # local GGUF filename under /models
-      # AI_LLM_URL: "http://ollama:11434/v1"
-      # AI_LLM_API_KEY: ""
-      # AI_LLM_MODEL_NAME: "qwen2.5:3b"
+      WHISPER_DEVICE: "cpu"          # "cuda" with the :latest-cuda image
+      WHISPER_COMPUTE_TYPE: "int8"   # "float16" on a GPU
+      # PINEPODS_AI_IDLE_UNLOAD: "300"   # free models after this many idle seconds (0 = keep)
     volumes:
       # SAME downloads path as the main app, read-only
       - /home/user/pinepods/downloads:/opt/pinepods/downloads:ro
@@ -70,15 +78,9 @@ ai:
   service:
     port: 8100
   whisper:
-    model: "base"
-    device: "cpu"
-    computeType: "int8"
-  # Ad-detection LLM defaults (optional; usually set from the UI):
-  llm:
-    model: ""          # local GGUF filename under /models
-    url: ""            # e.g. http://ollama:11434/v1
-    modelName: ""      # e.g. qwen2.5:3b
-    apiKey: ""
+    device: "cpu"        # "cuda" with the latest-cuda image tag on a GPU node
+    computeType: "int8"  # "float16" on a GPU
+  idleUnloadSeconds: 300 # free models after this many idle seconds (0 = keep)
   persistence:
     enabled: true
     size: 5Gi          # holds Whisper weights + any local LLM models
@@ -102,14 +104,11 @@ Raw Kubernetes manifests are also provided (`pinepods-ai.yml`) for non-Helm inst
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `WHISPER_MODEL` | `base` | Default transcription model (`tiny`/`base`/`small`/`medium`/`large-v3`, …). Also configurable from the UI. |
-| `WHISPER_DEVICE` | `cpu` | `cpu`, or `cuda` for GPU images. |
+| `WHISPER_DEVICE` | `cpu` | `cpu`, or `cuda` with the `-cuda` image. |
 | `WHISPER_COMPUTE_TYPE` | `int8` | Compute precision (`int8`, `float16`, …). |
 | `WHISPER_BEAM_SIZE` | `5` | Whisper beam size. |
-| `AI_LLM_MODEL` | *(empty)* | Default **local** LLM (GGUF filename under `/models`) for ad detection. |
-| `AI_LLM_URL` | *(empty)* | Default **remote** OpenAI-compatible endpoint for ad detection. |
-| `AI_LLM_MODEL_NAME` | *(empty)* | Default remote model id (e.g. `qwen2.5:3b`). |
-| `AI_LLM_API_KEY` | *(empty)* | API key for the remote endpoint, if required. |
+| `PINEPODS_AI_IDLE_UNLOAD` | `300` | Seconds a model may sit unused before its memory (RAM or GPU) is freed. `0` keeps models loaded. |
+| `PINEPODS_AI_MAX_TRANSCRIBE_JOBS` | `1` | Transcriptions that run at once; the rest wait their turn. Local ad detection always runs one at a time. |
 | `AI_LLM_N_CTX` | `8192` | Local LLM context window. |
 | `AI_LLM_MAX_TOKENS` | `1024` | Max tokens the LLM may return per request. |
 | `PINEPODS_AI_MODELS_DIR` | `/models` | Where model files are stored (falls back to `HF_HOME`). |
@@ -118,9 +117,10 @@ Raw Kubernetes manifests are also provided (`pinepods-ai.yml`) for non-Helm inst
 | `PINEPODS_AI_PORT` | `8100` | Port the sidecar listens on. |
 | `HF_TOKEN` | *(empty)* | Hugging Face token, only needed to pull **gated/private** model files. |
 
-:::tip Model choices are best set at runtime
-The `AI_LLM_*` and `WHISPER_MODEL` variables are just **initial defaults**. Day to day, you
-pick and change models from **Settings → AI** in the web UI (below) — no restart needed.
+:::tip Models are chosen in the web UI
+The transcription and ad-detection models, remote endpoints and API keys are all set from
+**Settings → AI** in the web UI (below), with no restart needed. The environment variables only
+describe the hardware and limits.
 :::
 
 ## 3. The AI Settings page
@@ -192,10 +192,36 @@ you pull it once and it's cached on the `/models` volume.
 
 ## GPU acceleration
 
-Transcription and local LLM inference are much faster on a GPU. To use one, run a
-CUDA-enabled build of the sidecar on a GPU node and set `WHISPER_DEVICE: "cuda"` (and an
-appropriate `WHISPER_COMPUTE_TYPE`, e.g. `float16`). For ad detection specifically, pointing
-at a GPU-backed **remote** Ollama endpoint is often the simplest path.
+Transcription is much faster on an NVIDIA GPU. Use the **`latest-cuda`** (or
+`<version>-cuda`) image, which adds the CUDA libraries Whisper needs, expose the GPU to the
+container, and set `WHISPER_DEVICE: "cuda"` and `WHISPER_COMPUTE_TYPE: "float16"`:
+
+```yaml
+  pinepods-ai:
+    image: madeofpendletonwool/pinepods-ai:latest-cuda
+    environment:
+      WHISPER_DEVICE: "cuda"
+      WHISPER_COMPUTE_TYPE: "float16"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+```
+
+The `-cuda` image is amd64 only, and local LLM ad detection in it still runs on the CPU. For
+GPU ad detection, point the ad-detection model at a GPU-backed **remote** Ollama endpoint.
+
+Loaded models are freed after `PINEPODS_AI_IDLE_UNLOAD` seconds without use (5 minutes by
+default), so the GPU memory is available to other workloads between jobs.
+
+## CPU requirements
+
+Transcription runs on any CPU. Local LLM ad detection on x86-64 needs **AVX2**, which most
+Intel and AMD CPUs since 2013–2015 have, but Atom and Celeron/Pentium J and N models do not. On
+those, use a remote endpoint for ad detection.
 
 ## Next steps
 

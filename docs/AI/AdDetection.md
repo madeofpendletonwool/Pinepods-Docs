@@ -106,10 +106,7 @@ remote endpoint.
 | Client | Ad skipping |
 | --- | --- |
 | **Web** | ✅ Supported |
-| **Mobile (iOS/Android)** | ⏳ Not yet — planned in a future update |
-
-Detection and review happen on the server and in the web app today. Mobile skipping is on the
-roadmap.
+| **Mobile (iOS/Android)** | ✅ Supported |
 
 ## Accuracy expectations
 
@@ -126,4 +123,12 @@ treat auto-skip as a helpful default you can correct, not a guarantee.
   `PINEPODS_AI_URL`).
 - **Auto-detect can't be enabled.** Turn on **Auto-transcribe** for that podcast first.
 - **It's very slow / high memory.** Local CPU inference on a multi-GB model is demanding.
-  Prefer a remote (e.g. GPU-backed Ollama) endpoint for speed.
+  Prefer a remote (e.g. GPU-backed Ollama) endpoint for speed. Local detections run one at a
+  time; others wait their turn.
+- **The AI container restarts with "Illegal instruction".** Images before 0.9.3 were built for
+  newer CPUs than some hosts have. Update the image. If it still happens, the CPU lacks AVX2
+  (see [CPU requirements](./Setup.md#cpu-requirements)); use a remote endpoint instead.
+- **Some ads aren't skipped.** Many podcasts insert different ads every time the episode is
+  fetched, so ad times only fit the copy they were found on. Players skip ads only on the
+  matching server download, or a stream of the same length. Turn on server auto-download for
+  podcasts with ad detection for the most reliable skipping.

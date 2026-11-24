@@ -1,6 +1,6 @@
 # User Management
 
-Admins add, change and remove accounts under **Settings → Admin → User Management**.
+Admins add, change and remove accounts under **Settings → Users & sign-in → User Management**.
 
 ## Creating a user
 

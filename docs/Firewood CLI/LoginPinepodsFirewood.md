@@ -43,7 +43,7 @@ sudo cp target/release/pinepods_firewood /usr/local/bin/
 Run `pinepods_firewood`. The first time, it asks for:
 
 1. **Server URL:** the address you open Pinepods at, including `http://` or `https://`.
-2. **Username and password.** **F1** shows the password as you type. If you sign in to Pinepods through OIDC/SSO, press **F2** and paste an API key instead; make one in the web app under **Settings → API Keys** ([API Keys](../tutorial-basics/adding-an-api-key.md)).
+2. **Username and password.** **F1** shows the password as you type. If you sign in to Pinepods through OIDC/SSO, press **F2** and paste an API key instead; make one in the web app under **Settings → Account & security → API Keys** ([API Keys](../tutorial-basics/adding-an-api-key.md)).
 3. **MFA code**, if your account uses [MFA](../tutorial-basics/SettingUpMFA.md).
 4. **Timezone and date/time format**, if your account doesn't have them yet. Type to search the time zones.
 

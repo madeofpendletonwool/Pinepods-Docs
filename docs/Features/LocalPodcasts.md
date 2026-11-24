@@ -21,7 +21,7 @@ Keep each podcast in its own folder.
 
 ## Adding a local podcast
 
-Under **Settings → Add Local Podcast**:
+Under **Settings → Podcasts & feeds → Add Local Podcast**:
 
 1. Enter a **Podcast Name**.
 2. Enter the folder as a path inside the local-media mount, for example `audiobooks/my-series`, or click **Browse** to pick it.

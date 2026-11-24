@@ -5,7 +5,7 @@ Pinepods can keep your subscriptions and listening progress in sync with other p
 1. **The PinePods gpodder server.** Pinepods is itself a gpodder sync server. gpodder.net-compatible apps such as AntennaPod and Kasts sign in to Pinepods and sync with it directly. Nothing else to install.
 2. **An external sync server.** Pinepods also syncs, as a client, with one other server: a gpodder-compatible server (oPodSync, Podfetch, a self-hosted gpodder.net, …) or a Nextcloud with the GPodder Sync app.
 
-Both are set up in **Settings → Podcast Sync**.
+Both are set up in **Settings → Sync, import & export → Podcast Sync**.
 
 :::tip Which one do I want?
 If your other apps can talk to a gpodder server, use the PinePods gpodder server: point the apps at Pinepods and you're done. Add an external server only if you already have one that other apps rely on.
@@ -22,7 +22,7 @@ Changes you make in Pinepods (web, desktop or mobile) are recorded the moment yo
 
 ### Turning it on
 
-1. Go to **Settings → Podcast Sync**.
+1. Go to **Settings → Sync, import & export → Podcast Sync**.
 2. Under **PinePods gpodder server**, switch on **Enable the gpodder server**.
 3. The section now shows the **Server URL** and **Username** to enter in your apps, each with a copy button.
 
@@ -144,14 +144,14 @@ The PinePods gpodder server speaks the gpodder.net v2 API and the older Simple A
 ## Upgrading from 0.9.0 or earlier
 
 - Your setup is carried over. The PinePods gpodder server stays on if it was on.
-- **Apps need an app password.** An app set up with your Pinepods password stops syncing after the upgrade: generate an app password in **Settings → Podcast Sync** and enter it in the app instead of your Pinepods password.
+- **Apps need an app password.** An app set up with your Pinepods password stops syncing after the upgrade: generate an app password in **Settings → Sync, import & export → Podcast Sync** and enter it in the app instead of your Pinepods password.
 - The gpodder server is now part of the Pinepods API, on the same address and paths as before, so the server URL in your apps and your proxy stay the same. Port `8042` is gone: if you mapped it, remove the mapping.
 - If you used the PinePods gpodder server **and** an external server at the same time, the external server couldn't be carried over. Pinepods shows a notice on the home page; enter the server again in the sync settings.
 
 ## Troubleshooting
 
 - **An app can't log in.** Compare the Server URL in the app with the one in the settings, and check that the gpodder server is switched on. Apps need an app password: your Pinepods password is refused. Try a fresh app password.
-- **A podcast from an app doesn't show up.** New subscriptions are imported in the background. If the feed can't be fetched, Pinepods keeps trying for about a week and lists it under **Settings → Feed problems**, where you can try again, unsubscribe everywhere, or dismiss it. See [Feed updates, feed problems and Podping](../Features/feed-updates.md).
+- **A podcast from an app doesn't show up.** New subscriptions are imported in the background. If the feed can't be fetched, Pinepods keeps trying for about a week and lists it under **Settings → Podcasts & feeds → Feed problems**, where you can try again, unsubscribe everywhere, or dismiss it. See [Feed updates, feed problems and Podping](../Features/feed-updates.md).
 - **The external server isn't syncing.** Look at the status for the last error, and use **Test connection** to check the login.
 - **Logs.** Sync failures are logged as warnings in the Pinepods container log.
 

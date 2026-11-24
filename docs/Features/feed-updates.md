@@ -55,7 +55,7 @@ YouTube channels follow the same schedule, worked out from their videos.
 
 When a feed keeps failing, you see it instead of the podcast quietly going stale.
 
-**Settings → Feed problems** lists:
+**Settings → Podcasts & feeds → Feed problems** lists:
 
 - **Podcasts that aren't updating**, with what went wrong in plain words and since when:
   - the feed isn't there any more (the host answers "not found");
@@ -75,7 +75,7 @@ Failing feeds are retried less often the longer they fail: 30 minutes after the 
 
 [Podping](https://podping.org) is how many podcast hosts (Buzzsprout, Spreaker, RSS.com and others) announce a new episode the moment they publish it. With Podping on, Pinepods refreshes those feeds within about a minute instead of waiting for their next scheduled refresh.
 
-Turn it on under **Settings → Admin → Podcast update services**. It's off by default.
+Turn it on under **Settings → Podcast update services**. It's off by default.
 
 ### How it works
 

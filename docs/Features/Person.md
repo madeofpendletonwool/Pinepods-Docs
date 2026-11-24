@@ -29,4 +29,4 @@ Click **Follow** on a person's page. **People You Follow** in the sidebar (the *
 
 ## Discover
 
-**Discover** in the sidebar has a **Discover Hosts** section with **Top Hosts**, **Recently Added** hosts and **Popular Podcasts** from PodPeopleDB.
+**Discover** in the sidebar has a **Discover Hosts** row with the PodPeopleDB hosts who appear on the most shows. Click one to open their page.

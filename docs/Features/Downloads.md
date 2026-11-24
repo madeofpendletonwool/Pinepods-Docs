@@ -24,14 +24,14 @@ Files are written to `/opt/pinepods/downloads` inside the container. Mount it to
 
 | Setting | Where | What it does |
 |---|---|---|
-| **Auto-Delete Downloads After** | **Settings → Auto-Delete Downloads**, and per podcast | Deletes server downloads older than this many days. `0` turns it off. Checked every 6 hours. |
+| **Auto-Delete Downloads After** | **Settings → Playback → Auto-Delete Downloads**, and per podcast | Deletes server downloads older than this many days. `0` turns it off. Checked every 6 hours. |
 | **Delete downloads when finished** | Same places | Deletes an episode's server download about an hour after you finish it. Downloading it again after finishing keeps it. |
 
 The value in Settings is your default; a podcast's own setting overrides it, and **Reset** goes back to the default.
 
 ### Server download settings (admins)
 
-**Settings → Admin → Download Settings**:
+**Settings → Downloads → Download Settings**:
 
 | Setting | What it does |
 |---|---|

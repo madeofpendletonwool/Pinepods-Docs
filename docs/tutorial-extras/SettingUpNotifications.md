@@ -11,7 +11,7 @@ Push notifications are set up per user and turned on per podcast.
 
 ### 1. Set up a platform
 
-Under **Settings → Notification Settings**, pick a **Notification Platform** and switch on **Enable Notifications**.
+Under **Settings → Notifications**, pick a **Notification Platform** and switch on **Enable Notifications**.
 
 **ntfy**
 

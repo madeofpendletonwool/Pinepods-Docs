@@ -1,6 +1,6 @@
 # Playback Settings
 
-Each user sets their playback defaults under **Settings → Playback Settings**. Each number has its own **Save** button; **Add to queue position** saves as soon as you pick it.
+Each user sets their playback defaults under **Settings → Playback → Playback Settings**. Each number has its own **Save** button; **Add to queue position** saves as soon as you pick it.
 
 | Setting | Range | Default | What it does |
 |---|---|---|---|

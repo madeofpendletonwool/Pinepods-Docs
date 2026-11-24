@@ -15,7 +15,7 @@ The same dialog on the web also shows the episode's normal address, for people w
 
 ## Expiry
 
-A link works for 60 days. Under **Settings → Shared Links** you see every link you've made, with its **Episode**, **Podcast** and **Expires** date:
+A link works for 60 days. Under **Settings → Sharing → Shared Links** you see every link you've made, with its **Episode**, **Podcast** and **Expires** date:
 
 - **Extend** adds the number of days you enter to the link's expiry.
 - **Delete** turns the link off straight away.

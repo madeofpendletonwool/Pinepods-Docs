@@ -228,6 +228,24 @@ curl 'http://localhost:5000/api/trending?cat=Technology&max=24'
 
 ---
 
+### 5a. Recent Episodes of Several Podcasts
+
+**Endpoint:** `GET /api/episodes`
+
+**Description:** The newest episodes across several Podcast Index feeds, newest first. Pinepods' Discover page uses it for **Fresh episodes**.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `feeds` | string | Yes | Podcast Index feed ids, comma-separated (up to 200) |
+| `max` | integer | No | How many episodes to return (default 40, up to 200) |
+| `since` | integer | No | Only episodes published since this Unix time |
+
+```bash
+curl 'http://localhost:5000/api/episodes?feeds=920666,75075&max=20'
+```
+
+---
+
 ### 6. Podping Relay
 
 **Endpoints:** `GET /api/podping/updates`, `GET /api/podping/status`

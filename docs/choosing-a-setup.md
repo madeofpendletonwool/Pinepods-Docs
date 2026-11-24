@@ -32,7 +32,7 @@ What to know:
 - **One writer at a time.** Reads run side by side, but writes (refreshing feeds, saving listening progress, syncing apps) take turns. That's unnoticeable for a few people. With many active users and large libraries, the writes queue up.
 - **One Pinepods container.** The file belongs to one container, so you can't run several Pinepods instances against it.
 - **Persist the data folder.** Mount `/opt/pinepods/data`, or the database is lost when the container is recreated.
-- **Backups** come from Settings → Backup Server like on any server, without a database password, and scheduled backups work too. See [Backup and Restore](./tutorial-basics/Backup-Restore.md).
+- **Backups** come from Settings → Backup & restore like on any server, without a database password, and scheduled backups work too. See [Backup and Restore](./tutorial-basics/Backup-Restore.md).
 
 ### PostgreSQL: the production choice
 

@@ -44,7 +44,15 @@ The desktop app can also save episodes to your computer for offline listening; s
 
 Other things the desktop app does:
 
-- **Tray menu**: **Show Pinepods**, **Play / Pause** and **Quit Pinepods** from the system tray (menu bar on macOS).
+- **Keeps running in the tray**: closing the window hides it and playback carries on. The tray icon (menu bar on macOS) has **Show Pinepods**, **Play** / **Pause**, **Back 15 seconds**, **Forward 15 seconds**, **Mini player** and **Quit Pinepods**, and its tooltip shows what's playing. On macOS, clicking the Dock icon brings the window back. Turn this off under **Settings → Desktop app → Window and startup** to have closing the window quit the app.
+- **Starts with your computer** if you turn on **Start with your computer** in the same place. It starts in the tray, without a window.
+- **Mini player**: a small window with the player that stays on top of other windows, with the next few episodes in your queue. Open it from the tray or from **Settings → Desktop app**.
+- **Media keys and system controls**: play/pause and skip keys, the macOS Now Playing widget, the Windows media overlay and the Linux media controls (MPRIS) all control the player.
+- **Podcast links**: clicking a `podcast://`, `itpc://` or `pinepods-subscribe://` link on a website opens the podcast in Pinepods, ready to subscribe. The installer makes Pinepods the handler for these links; if you use another podcast app for `podcast://` links, your system's default-apps settings decide which one opens.
+- **Drop an OPML file** on the window to import the subscriptions in it. The import page opens with the podcasts listed for you to confirm.
+- **Notifications** for new episodes and finished downloads, off until you turn them on under **Settings → Desktop app → Notifications**. New episodes are checked every 15 minutes while the app is running.
+- **Updates itself** on macOS, Windows and with the AppImage: when a new version is out, a prompt offers **Install and restart**. **Settings → Desktop app → Updates** turns the check off or checks right away. The `.deb`, `.rpm`, Flatpak and AUR packages are updated by your package manager instead.
+- **Keeps your login in the system keychain** (macOS Keychain, Windows Credential Manager, or the Secret Service, such as GNOME Keyring or KWallet, on Linux). Where none is available it falls back to a file only your user can read. Logins saved by earlier versions move into the keychain automatically. Set `PINEPODS_CREDENTIALS=file` to always use the file, for example for a portable setup.
 - **One window**: opening Pinepods again brings the running app forward instead of starting a second copy.
 - **Window size and position** are remembered between launches.
 

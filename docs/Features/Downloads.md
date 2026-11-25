@@ -73,6 +73,12 @@ Episodes on your computer play from the file wherever you start them, without st
 - The sign-in page has **Listen offline** whenever there are downloads on the computer.
 - Listening progress made offline is kept and sent to the server when you're back online.
 
+#### Automatic downloads
+
+To keep a podcast's newest episodes on your computer, open the podcast, then its options (the gear button), and set **Download to this computer automatically** to how many to keep. The app downloads that many of the podcast's newest unplayed episodes, and once you've played one it removes it and downloads the next. Episodes you downloaded yourself are never removed this way. The check runs shortly after the app starts and every 15 minutes while it's running.
+
+**Delete played downloads** under **Settings → Desktop app → Downloads on this computer** also removes episodes you downloaded yourself once they're marked as played.
+
 Episodes are downloaded through your server when it has a copy (YouTube videos, [local media](./LocalPodcasts.md) and server downloads), otherwise from the podcast's feed. Up to two download at once; the rest wait their turn.
 
 The files are kept in a `downloads` folder inside the app's data folder, shown at the bottom of **Local Downloads**:

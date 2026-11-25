@@ -26,7 +26,19 @@ Linux also has:
 
 For an AppImage, make it executable first: `chmod +x Pinepods_*.AppImage`.
 
-When the app starts, enter your **Server URL** (the address you open Pinepods at in a browser), your username and your password. The app stays signed in after that. Signing in with an OIDC provider isn't available in the desktop app yet, so use a username and password.
+When the app starts, enter your **Server URL** (the address you open Pinepods at in a browser), your username and your password. The app stays signed in after that.
+
+#### Signing in with OIDC
+
+If your server has [OIDC providers](../tutorial-extras/OIDC-setup.md), their buttons appear under the sign-in form once you've typed the server URL. Clicking one opens the provider's sign-in page in your normal web browser (providers such as Google refuse to sign in inside an app window). When you finish there, the browser asks to open Pinepods; allow it and the app signs you in. While you're in the browser the app shows a **Cancel sign-in** link if you change your mind.
+
+No provider setup is needed beyond what the web app uses: the provider still returns to your server's `/api/auth/callback`, and the server hands the sign-in back to the app through a `pinepods://` link. Opening that link is set up when you install the app:
+
+- **macOS**: when Pinepods is in Applications (or anywhere, as an app bundle).
+- **Windows**: by the installer (`.exe` or `.msi`), and again by the app each time it starts.
+- **Linux**: by the `.deb` and `.rpm` packages; an AppImage registers itself when it first runs.
+
+If the browser says it can't open the link, sign in with a username and password instead, and attach the app's log (below) when reporting it.
 
 The desktop app can also save episodes to your computer for offline listening; see [Downloads](../Features/Downloads.md#desktop-app).
 

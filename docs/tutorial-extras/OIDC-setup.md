@@ -4,6 +4,8 @@ You can now setup OIDC logins in Pinepods to use either your own self-hosted OID
 
 Providers are managed by admins under **Settings → Users & sign-in → OIDC/SSO Settings**. The callback to give your provider is shown there as **OIDC Redirect URL**.
 
+The mobile and desktop apps sign in through the same callback, so there's nothing extra to register for them: the server sends the result on to the app with a `pinepods://` link.
+
 ### Resources
 
 Before we get started your OIDC provider may provider the option to upload an image of Pinepods to use as the App Image. You should be able to use the one below:

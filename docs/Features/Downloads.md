@@ -63,4 +63,26 @@ If the phone has an SD card, the app can store downloads on it.
 
 ## Desktop app
 
-In the desktop app, **Local Download** in an episode's menu saves it to your computer. **Local Downloads** in the sidebar lists them and plays them without a connection to the server.
+In the desktop app, **Download to this computer** in an episode's menu saves it to your computer. While it downloads, the same menu item shows its progress; click it to cancel. Once downloaded, it reads **Delete from this computer**, and the episode shows a laptop icon in lists.
+
+**Local Downloads** in the sidebar lists them, grouped by podcast, with search, **Completed** and **In Progress** filters, and **Select** for deleting several at once. Downloads still in progress show at the top with a **Cancel** button.
+
+Episodes on your computer play from the file wherever you start them, without streaming, and work without a connection to the server:
+
+- If the server can't be reached when the app starts, it opens **Local Downloads** instead of the sign-in page. **Sign in to your server** goes back once it's reachable again.
+- The sign-in page has **Listen offline** whenever there are downloads on the computer.
+- Listening progress made offline is kept and sent to the server when you're back online.
+
+Episodes are downloaded through your server when it has a copy (YouTube videos, [local media](./LocalPodcasts.md) and server downloads), otherwise from the podcast's feed. Up to two download at once; the rest wait their turn.
+
+The files are kept in a `downloads` folder inside the app's data folder, shown at the bottom of **Local Downloads**:
+
+| System | Data folder |
+|---|---|
+| Linux | `~/.local/share/pinepods` |
+| macOS | `~/Library/Application Support/com.gooseberrydevelopment.pinepods` |
+| Windows | `%APPDATA%\gooseberrydevelopment\pinepods\data` |
+
+Set the `PINEPODS_DATA_DIR` environment variable to keep them somewhere else, for example on a USB stick for a portable setup.
+
+Downloads made with Pinepods 0.7 are moved into the new layout the first time a newer version starts.

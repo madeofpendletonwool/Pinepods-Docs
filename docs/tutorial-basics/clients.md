@@ -26,7 +26,25 @@ Linux also has:
 
 For an AppImage, make it executable first: `chmod +x Pinepods_*.AppImage`.
 
-When the app starts, enter your **Server URL** (the address you open Pinepods at in a browser), your username and your password. The desktop app can also save episodes to your computer for offline listening; see [Downloads](../Features/Downloads.md#desktop-app).
+When the app starts, enter your **Server URL** (the address you open Pinepods at in a browser), your username and your password. The app stays signed in after that. Signing in with an OIDC provider isn't available in the desktop app yet, so use a username and password.
+
+The desktop app can also save episodes to your computer for offline listening; see [Downloads](../Features/Downloads.md#desktop-app).
+
+Other things the desktop app does:
+
+- **Tray menu**: **Show Pinepods**, **Play / Pause** and **Quit Pinepods** from the system tray (menu bar on macOS).
+- **One window**: opening Pinepods again brings the running app forward instead of starting a second copy.
+- **Window size and position** are remembered between launches.
+
+#### Desktop app log
+
+When reporting a problem with the desktop app, attach its log, `Pinepods.log`:
+
+| System | Log folder |
+|---|---|
+| Linux | `~/.local/share/com.gooseberrydevelopment.pinepods/logs` |
+| macOS | `~/Library/Logs/com.gooseberrydevelopment.pinepods` |
+| Windows | `%LOCALAPPDATA%\com.gooseberrydevelopment.pinepods\logs` |
 
 ### Android Install :iphone:
 

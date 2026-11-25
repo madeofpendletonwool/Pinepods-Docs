@@ -54,7 +54,16 @@ It's served at [localhost:8080](http://localhost:8080/) and rebuilds when you sa
 
 ![Connect Different Server Button](/img/diff-serv.png)
 
-Always build with `--features server_build`, as the container does; without it Trunk builds the desktop (Tauri) variant. A plain `cargo check` also misses code behind that feature, so check with `cargo check --target wasm32-unknown-unknown --features server_build`.
+The browser and the desktop app run the same build. Desktop-only features check `crate::desktop::is_desktop()` at runtime, so `cargo check --target wasm32-unknown-unknown` covers them. The `server_build` feature no longer changes anything and is kept so existing build commands keep working.
+
+### The desktop app
+
+```bash
+cd web/src-tauri
+cargo tauri dev
+```
+
+This runs `trunk serve` and opens the app against it. The native side (downloads, the local media server, saved login) is in `web/src-tauri/src`; `cargo test` there runs its tests, including downloads against a local test server and the app's commands called the way the page calls them. Set `PINEPODS_DATA_DIR` to a scratch folder to keep test runs away from your real downloads.
 
 ### The mobile apps
 

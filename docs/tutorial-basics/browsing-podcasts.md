@@ -60,4 +60,4 @@ Fresh episodes need a search service that has the `/api/episodes` endpoint (see 
 
 ## Episode actions
 
-Every episode has a three-dot menu with **Queue Episode**, **Save Episode**, **Add to Collection**, **Download Episode** (and **Local Download** in the desktop app), **Mark Episode Complete**, and **Play on** another device when one is online. Click an episode to open its page with the show notes, chapters, people, transcript and the **Share Episode** button.
+Every episode has a three-dot menu with **Queue Episode**, **Save Episode**, **Add to Collection**, **Download Episode** (and **Download to this computer** in the desktop app), **Mark Episode Complete**, and **Play on** another device when one is online. Click an episode to open its page with the show notes, chapters, people, transcript and the **Share Episode** button.

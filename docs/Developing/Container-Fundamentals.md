@@ -28,6 +28,8 @@ in the final image.
   with [Trunk](https://trunkrs.dev).
 - Shipped as static files (HTML/JS/WASM/CSS) and served directly by nginx from
   `/var/www/html`. There is no Node.js server involved.
+- Everything the UI needs is in the image, including its fonts, so the browser makes no
+  requests to outside services on load.
 - The desktop and mobile clients are separate apps; this is the browser UI.
 
 ### 2. Backend — Rust API (Axum)
@@ -83,7 +85,11 @@ Holds short-lived state: login and sync tokens, task progress, now-playing sessi
 
 nginx listens on **port 8040** (the web UI port) and:
 
-- Serves the compiled WASM frontend (with the correct `application/wasm` MIME type)
+- Serves the compiled WASM frontend (with the correct `application/wasm` MIME type). The
+  build ships gzip copies of the app files, which nginx serves to browsers that accept them;
+  other text responses are compressed on the fly. The app's hashed wasm, JS and CSS files are
+  cached by browsers for a year, and `index.html` is always revalidated, so an update is
+  picked up on the next load
 - Reverse-proxies API, RSS, and WebSocket routes to the Rust API
 - Routes gpodder.net protocol paths to the Rust API too
 - Passes the original host and scheme on (`X-Forwarded-Host`, `X-Forwarded-Proto`), so the

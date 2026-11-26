@@ -10,7 +10,8 @@ The queue is your up-next list. It's saved on the server, so the web app, the de
 - **Top** means right after the episode that's playing, so it plays next. With nothing playing, it goes first.
 - To change what **Queue Episode** does, set **Add to queue position** under **Settings → Playback → Playback Settings** (web) or **Settings → Playback** (mobile). The setting is saved on the server, so it applies to every app you use.
 - **Playing an episode** moves it to the top of the queue (adding it if it wasn't there), so whatever is playing is always first.
-- **Auto-add new episodes to queue** in a podcast's settings adds each new episode of that podcast to the end of the queue when it arrives.
+- **Auto-add new episodes to queue** in a podcast's settings (the **⋯** menu on its page in the mobile apps) adds each new episode of that podcast to the end of the queue when a refresh finds it. It's off for every podcast unless you turn it on.
+- To have every podcast you subscribe to from now on start with it on, turn on **Queue new episodes of new subscriptions** under **Settings → Playback**. It's off by default. Only episodes that arrive after you subscribe are queued, not the back catalogue, and podcasts you already have keep their own setting.
 - On a podcast's page, **Select** lets you tick several episodes and **Queue** them at once. They're added in order, at the end you chose in **Add to queue position**.
 
 ## Managing the queue

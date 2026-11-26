@@ -26,7 +26,7 @@ All of these are per user: changing them doesn't affect anyone else who subscrib
 |---|---|
 | **Download Future Episodes Automatically** | Downloads each new episode to the server. See [Auto-Download](./AutoDownload.md). |
 | **Auto-play next episode** | When an episode ends, plays the next newer episode of this podcast you haven't finished. See [What plays next](./Queue.md#what-plays-next). |
-| **Auto-add new episodes to queue** | Adds each new episode to the end of your queue. |
+| **Auto-add new episodes to queue** | Adds each new episode to the end of your queue. Off unless you turn it on, or have **Queue new episodes of new subscriptions** on in [Playback Settings](../tutorial-basics/PlaybackSettings.md) when you subscribe. In the mobile app it's in the podcast's **⋯** menu. It doesn't apply to YouTube channels. |
 | **Refresh automatically** | On by default. Off: the [scheduled refresh](./feed-updates.md#when-feeds-are-refreshed) and **Refresh** in the app skip this podcast, and it's left out of [Feed problems](./feed-updates.md#feed-problems). Use it to keep a podcast whose feed is gone, with its episodes, without the errors. **Check for new episodes** on the page still works. |
 | **Show in Inbox** | On by default. Off: this podcast's new episodes don't appear in your [Inbox](./Inbox.md). They're still in the Feed and on this page. In the mobile app it's in the podcast's **⋯** menu. |
 | **Get Notifications For New Episodes** | Sends a push notification per new episode. See [Notifications](../tutorial-extras/SettingUpNotifications.md). |

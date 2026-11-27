@@ -20,6 +20,10 @@ Open the channel and its settings:
 
 Each subscriber has their own limit and filters.
 
+## Downloading videos
+
+The audio of every video is already kept on the server for playing. **Download** on a video, or **Download all** on the channel, lists it on the **Downloads** page and keeps it past the channel's **Youtube Download Episode Limit**. Deleting the download only takes it off that list: the audio stays, because other subscribers of the channel play the same copy.
+
 ## Keeping yt-dlp working (admins)
 
 YouTube changes often break yt-dlp until a new yt-dlp comes out, so the copy inside Pinepods updates itself. **Settings → Downloads → YouTube (yt-dlp)** shows:

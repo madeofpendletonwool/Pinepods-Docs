@@ -58,6 +58,7 @@ These apply to every provider.
 - **Roles Claim**, **User Role**, **Admin Role:** set these to control access from your provider's groups or roles.
   - With a **Roles Claim** and **User Role** set, only users who have the user role or the admin role can sign in.
   - With an **Admin Role** set, users with that role are made admins, and users without it lose admin rights, every time they sign in.
+  - The **Roles Claim** can be a list, like `groups`, or a single value, like `sub`. A single value must equal the role exactly, so a small server can let in one account by putting its `sub` in **User Role**.
 
 The first time someone signs in through a provider, Pinepods creates their account. Later sign-ins update their full name from the provider, and their username if a **Username Claim** is set.
 

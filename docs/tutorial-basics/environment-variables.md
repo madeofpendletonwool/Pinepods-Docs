@@ -106,7 +106,7 @@ OIDC is turned on when `OIDC_PROVIDER_NAME`, `OIDC_CLIENT_ID` and `OIDC_CLIENT_S
 | `OIDC_NAME_CLAIM` | - | No | OIDC claim field for user's display name |
 | `OIDC_EMAIL_CLAIM` | - | No | OIDC claim field for user's email |
 | `OIDC_USERNAME_CLAIM` | - | No | OIDC claim field for username |
-| `OIDC_ROLES_CLAIM` | - | No | OIDC claim field for user roles |
+| `OIDC_ROLES_CLAIM` | - | No | OIDC claim field for user roles: a list (like `groups`) or a single value (like `sub`), which must equal the role exactly |
 | `OIDC_USER_ROLE` | - | No | Role value that grants regular user access |
 | `OIDC_ADMIN_ROLE` | - | No | Role value that grants administrator access |
 | `OIDC_DISABLE_STANDARD_LOGIN` | `false` | No | Set to `true` to disable username/password login entirely |

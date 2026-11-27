@@ -34,6 +34,7 @@ PinePods builds absolute RSS feed URLs (`<link>`, `<guid>`, `<enclosure>`) from 
 | `DB_USER` | - | **Yes** | Database username |
 | `DB_PASSWORD` | - | **Yes** | Database password |
 | `DB_NAME` | - | **Yes** | Database name, usually `pinepods_database` |
+| `DB_CREATE_DATABASE` | `true` | No | PostgreSQL only. `false` when `DB_NAME` already exists and the account can't connect to the `postgres` database, as on many hosted or shared servers: startup checks only `DB_NAME` and doesn't try to create it. Must be `true` or `false` |
 | `DB_WAIT_TIMEOUT` | `300` | No | Seconds to wait at startup for the database to accept connections before giving up. `0` waits forever. Raise it if your database starts slowly (first boot, slow hosts) |
 
 With `DB_TYPE: sqlite`, only `DB_PATH` applies; the other database variables aren't used.
